@@ -8,6 +8,15 @@ using System.Security.AccessControl;
 
 namespace InSightWindowAPI.Controllers
 {
+    public static class CacheStorage
+    {
+        // Public property named 'cache' of type IMemoryCache.
+        public static IMemoryCache cache { get; set; }
+    }
+
+
+
+
     public static class CacheKeys
     {
         public static string Entry { get { return "_Entry"; } }
@@ -54,7 +63,8 @@ namespace InSightWindowAPI.Controllers
                     // Save data in cache.
                     _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);
                 }
-                _cache.Set(nameof(WindowStatus), windowStatus);  
+                _cache.Set(nameof(WindowStatus), windowStatus);
+                CacheStorage.cache = _cache;
                 return Ok($"Data received:  T: {windowStatus.Temparature}, H {windowStatus.Humidity},WATER {windowStatus.WaterLevel}," +
                     $"IS_PROTECTED {windowStatus.IsProtected}, IS_OPEN {windowStatus.IsOpen}");
             }
@@ -72,6 +82,7 @@ namespace InSightWindowAPI.Controllers
                 if (_cache.TryGetValue(nameof(WindowStatus), out WindowStatus windowStatus))
                 {
                     Console.WriteLine("Data retrieved from cache successfully.");
+                    
                     return Ok(windowStatus);
                     //in dev
                 }
@@ -85,9 +96,8 @@ namespace InSightWindowAPI.Controllers
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
-
-           
-
         }
+
+       
     }
 }
