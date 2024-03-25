@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Caching;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections;
 using System.Security.AccessControl;
-
-
+using InSightWindowAPI.Controllers;
+using Microsoft.AspNetCore.SignalR.Client;
+using System.Data.Common;
+using Websocket.Client;
+using System.Data;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -14,7 +18,7 @@ namespace InSightWindowAPI.Controllers
         public static IMemoryCache cache { get; set; }
     }
 
-
+    
 
 
     public static class CacheKeys
@@ -35,38 +39,51 @@ namespace InSightWindowAPI.Controllers
     public class WindowStatusController : ControllerBase
     {
         private readonly IMemoryCache _cache;
+       
 
-        public WindowStatusController(IMemoryCache memoryCache)
+        
+       public WindowStatusController(IMemoryCache memoryCache)
         {
             _cache = memoryCache;
-        }
+      
 
+        }
+       
         [HttpPost]
-        public IActionResult WriteDataToCache([FromBody] WindowStatus windowStatus)
+        public async Task<IActionResult> WriteDataToCacheAsync([FromBody] WindowStatus windowStatus)
         {
-            
+
             try
             {
                 DateTime cacheEntry;
 
-                // Look for cache key.
                 if (!_cache.TryGetValue(CacheKeys.Entry, out cacheEntry))
                 {
-                    // Key not in cache, so get data.
                     cacheEntry = DateTime.Now;
-
-                    // Set cache options.
                     var cacheEntryOptions = new MemoryCacheEntryOptions()
-                         // Keep in cache for this time, reset time if accessed.
                          .SetSlidingExpiration(TimeSpan.FromSeconds(3600));
-
-                    // Save data in cache.
                     _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);
                 }
                 _cache.Set(nameof(WindowStatus), windowStatus);
                 CacheStorage.cache = _cache;
+
+                HubConnection hubConnection = new HubConnectionBuilder()
+                 .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+               // .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+                  .WithAutomaticReconnect()
+                .Build();       
+                
+                await hubConnection.StartAsync();
+                bool IsConnected = false;
+                await hubConnection.SendAsync("SendWindowStatusObject",windowStatus);
+                if (hubConnection?.State == HubConnectionState.Connected)
+                {
+                    IsConnected= true;
+                }
+                
                 return Ok($"Data received:  T: {windowStatus.Temparature}, H {windowStatus.Humidity},WATER {windowStatus.WaterLevel}," +
-                    $"IS_PROTECTED {windowStatus.IsProtected}, IS_OPEN {windowStatus.IsOpen}");
+                $"IS_PROTECTED {windowStatus.IsProtected}, IS_OPEN {windowStatus.IsOpen}, IS CONNECTED: {IsConnected}");
+                
             }
             catch (Exception ex)
             {

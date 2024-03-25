@@ -9,16 +9,17 @@ namespace InSightWindowAPI.Controllers
 {
     public class ClientStatusHub: Hub
     {
-        
+        public async Task SendWindowStatusObject(WindowStatus windowStatus)
+        {
+            await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
+
+        }
 
         public async Task SendWindowStatus(string message)
         {
-
             var windowStatus = JsonConvert.DeserializeObject<WindowStatus>(message);
-
            await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
- 
-            
+
         }
         
     }
