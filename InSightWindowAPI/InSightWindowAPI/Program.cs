@@ -19,6 +19,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
 builder => {
     builder.WithOrigins("https://localhost:44324/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    builder.WithOrigins("http://192.168.0.190:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
 });
 });
 

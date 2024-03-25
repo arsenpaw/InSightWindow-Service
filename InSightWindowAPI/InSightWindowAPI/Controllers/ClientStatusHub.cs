@@ -2,38 +2,24 @@
 using InSightWindowAPI.Controllers;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Newtonsoft.Json;
 
 namespace InSightWindowAPI.Controllers
 {
     public class ClientStatusHub: Hub
     {
+        
 
-        public async Task SendWindowStatus()
+        public async Task SendWindowStatus(string message)
         {
-           IMemoryCache _cache =  CacheStorage.cache;
-            try
-            {
-                // Check if the data exists in cache
-                if (_cache.TryGetValue(nameof(WindowStatus), out WindowStatus windowStatus))
-                {
-                    Console.WriteLine("Data retrieved from cache successfully.");
-                    await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
-                }
-                else
-                {
-                    Console.WriteLine("Data not found in cache.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
-            }
+
+            var windowStatus = JsonConvert.DeserializeObject<WindowStatus>(message);
+
+           await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
+ 
+            
         }
-        public async Task TestMe(string someRandomText)
-        {
-            await Clients.All.SendAsync(
-                $"{this.Context.User.Identity.Name} : {someRandomText}",
-                CancellationToken.None);
-        }
+        
     }
 }
