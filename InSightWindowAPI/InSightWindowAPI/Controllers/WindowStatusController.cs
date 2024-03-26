@@ -12,10 +12,25 @@ using System.Data;
 
 namespace InSightWindowAPI.Controllers
 {
-    public static class CacheStorage
+    public  class CacheStorage
     {
-        // Public property named 'cache' of type IMemoryCache.
-        public static IMemoryCache cache { get; set; }
+        public IMemoryCache _cache { get; set; }
+
+        public async Task WriteDataToCahe(IMemoryCache cache,int timeSec, object data)
+        {
+            _cache = cache;
+            DateTime cacheEntry;
+            if (!_cache.TryGetValue(CacheKeys.Entry, out cacheEntry))
+            {
+                cacheEntry = DateTime.Now;
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                     .SetSlidingExpiration(TimeSpan.FromSeconds(timeSec));
+                _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);
+            }
+            _cache.Set(nameof(WindowStatus), data);
+
+        }
+        
     }
 
     
@@ -38,49 +53,37 @@ namespace InSightWindowAPI.Controllers
     [Route("[controller]")]
     public class WindowStatusController : ControllerBase
     {
-        private readonly IMemoryCache _cache;
-       
-
-        
-       public WindowStatusController(IMemoryCache memoryCache)
+        private bool IsConnected = false;
+        public IMemoryCache _cache { get; set; }
+        public WindowStatusController(IMemoryCache memoryCache)
         {
             _cache = memoryCache;
-      
-
         }
-       
+
         [HttpPost]
         public async Task<IActionResult> WriteDataToCacheAsync([FromBody] WindowStatus windowStatus)
         {
 
             try
             {
-                DateTime cacheEntry;
-
-                if (!_cache.TryGetValue(CacheKeys.Entry, out cacheEntry))
-                {
-                    cacheEntry = DateTime.Now;
-                    var cacheEntryOptions = new MemoryCacheEntryOptions()
-                         .SetSlidingExpiration(TimeSpan.FromSeconds(3600));
-                    _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);
-                }
-                _cache.Set(nameof(WindowStatus), windowStatus);
-                CacheStorage.cache = _cache;
-
-                HubConnection hubConnection = new HubConnectionBuilder()
-                 .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-               // .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
-                  .WithAutomaticReconnect()
-                .Build();       
                 
+                HubConnection hubConnection = new HubConnectionBuilder()
+                 //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+                  .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+                  .WithAutomaticReconnect()
+                .Build();
                 await hubConnection.StartAsync();
-                bool IsConnected = false;
-                await hubConnection.SendAsync("SendWindowStatusObject",windowStatus);
                 if (hubConnection?.State == HubConnectionState.Connected)
                 {
-                    IsConnected= true;
+                    await hubConnection.SendAsync("SendWindowStatusObject", windowStatus);
+                    IsConnected = true;
                 }
-                
+                else
+                {
+                    IsConnected = false;
+                }
+               // CacheStorage cache = new CacheStorage();
+                //cache.WriteDataToCahe(_cache,10, windowStatus);
                 return Ok($"Data received:  T: {windowStatus.Temparature}, H {windowStatus.Humidity},WATER {windowStatus.WaterLevel}," +
                 $"IS_PROTECTED {windowStatus.IsProtected}, IS_OPEN {windowStatus.IsOpen}, IS CONNECTED: {IsConnected}");
                 
@@ -95,6 +98,7 @@ namespace InSightWindowAPI.Controllers
         {
             try
             {
+                
                 // Check if the data exists in cache
                 if (_cache.TryGetValue(nameof(WindowStatus), out WindowStatus windowStatus))
                 {
