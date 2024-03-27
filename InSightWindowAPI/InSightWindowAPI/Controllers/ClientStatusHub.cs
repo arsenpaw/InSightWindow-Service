@@ -4,14 +4,27 @@ using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InSightWindowAPI.Controllers
 {
     public class ClientStatusHub : Hub
     {
+
         public async Task SendWindowStatusObject(WindowStatus windowStatus)
         {
-            await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
+            try
+            {
+                await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
+
+            }
+            catch (Exception ex)
+            {
+
+                Debug.WriteLine(ex.Data);
+
+            }
+
         }
 
         public async Task SendWindowStatus(string message)

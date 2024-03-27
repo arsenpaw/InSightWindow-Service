@@ -4,8 +4,7 @@ namespace InSightWindowAPI.Storage
 {
     public class CacheManager
     {
-       
-
+  
         public async Task WriteDataToCahe(IMemoryCache _cache, int timeSec, object data)
         {
             
@@ -32,7 +31,7 @@ namespace InSightWindowAPI.Storage
             {
                 Console.WriteLine("Data not found in cache.");
 
-                return  (null);
+                return (null);
             }
 
         }
