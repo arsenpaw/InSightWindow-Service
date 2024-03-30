@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+
 namespace InSightWindowAPI
 {
     public class WindowStatus
@@ -8,9 +11,11 @@ namespace InSightWindowAPI
 
         public string IsOpen { get; set; }
 
-        public int WaterLevel { get; set; }
+        
+        public int isRain { get; set; }
 
         public string IsProtected { get; set; }
 
     }
+  
 }
