@@ -5,12 +5,17 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using InSightWindowAPI.Storage;
 
 namespace InSightWindowAPI.Controllers
 {
     public class ClientStatusHub : Hub
     {
-
+        IMemoryCache _cache;
+        public ClientStatusHub(IMemoryCache memoryCache)
+        {
+            _cache = memoryCache;
+        }
         public async Task SendWindowStatusObject(WindowStatus windowStatus)
         {
             try
@@ -32,6 +37,12 @@ namespace InSightWindowAPI.Controllers
             var windowStatus = JsonConvert.DeserializeObject<WindowStatus>(message);
             await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
 
+        }
+
+        public async Task SaveUserInput(UserInputStatus userInputStatus)
+        {
+            CacheManager<UserInputStatus> cacheManager = new CacheManager<UserInputStatus>();
+            await cacheManager.WriteDataToCahe(_cache, 60, userInputStatus);
         }
 
     }

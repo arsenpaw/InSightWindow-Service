@@ -17,7 +17,7 @@ namespace InSightWindowAPI.Storage
                 _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);
             }
             _cache.Set(nameof(T), data);
-
+            
         }
 
         public async Task<T> GetDataFromCache(IMemoryCache _cache)
