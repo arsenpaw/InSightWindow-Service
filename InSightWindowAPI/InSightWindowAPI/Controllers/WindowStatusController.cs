@@ -20,10 +20,10 @@ namespace InSightWindowAPI.Controllers
     {
         public IMemoryCache _cache { get; private set; }
 
-        CacheManager cacheManager = new CacheManager();
+        
         HubConnection hubConnection = new HubConnectionBuilder()
-                 .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-                 //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+                 //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+                 .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
                  .WithAutomaticReconnect()
                .Build();
         public WindowStatusController(IMemoryCache memoryCache)
@@ -42,8 +42,6 @@ namespace InSightWindowAPI.Controllers
                 {
                     await hubConnection.SendAsync("SendWindowStatusObject", windowStatus);
                     
-                    await cacheManager.WriteDataToCahe(_cache, 100, windowStatus);
-                    // CacheStorage.storedCache = _cache;
                     await hubConnection.StopAsync();
                     return Ok($"Data received:  T: {windowStatus.Temparature}, H {windowStatus.Humidity},WATER {windowStatus.isRain}," +
                     $"IS_PROTECTED {windowStatus.IsProtected}, IS_OPEN {windowStatus.IsOpen}");
@@ -66,6 +64,7 @@ namespace InSightWindowAPI.Controllers
         {
             try
             {
+                CacheManager<WindowStatus> cacheManager = new CacheManager<WindowStatus>();
                 var data = await cacheManager.GetDataFromCache(_cache);
                 if (data != null)
                 {

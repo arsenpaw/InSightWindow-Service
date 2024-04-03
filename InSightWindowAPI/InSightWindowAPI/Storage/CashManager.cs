@@ -2,10 +2,10 @@
 
 namespace InSightWindowAPI.Storage
 {
-    public class CacheManager
+    public class CacheManager<T>
     {
   
-        public async Task WriteDataToCahe(IMemoryCache _cache, int timeSec, object data)
+        public async Task WriteDataToCahe(IMemoryCache _cache, int timeSec, T data)
         {
             
             DateTime cacheEntry;
@@ -16,22 +16,22 @@ namespace InSightWindowAPI.Storage
                      .SetSlidingExpiration(TimeSpan.FromSeconds(timeSec));
                 _cache.Set(CacheKeys.Entry, cacheEntry, cacheEntryOptions);
             }
-            _cache.Set(nameof(WindowStatus), data);
+            _cache.Set(nameof(T), data);
 
         }
 
-        public async Task<WindowStatus> GetDataFromCache(IMemoryCache _cache)
+        public async Task<T> GetDataFromCache(IMemoryCache _cache)
         {
-            if (_cache.TryGetValue(nameof(WindowStatus), out WindowStatus windowStatus))
+            if (_cache.TryGetValue(nameof(T), out T info))
             {
                 Console.WriteLine("Data retrieved from cache successfully.");
-                return await Task.FromResult(windowStatus);
+                return await Task.FromResult<T>(info);
             }
             else
             {
                 Console.WriteLine("Data not found in cache.");
 
-                return (null);
+                return (default(T));
             }
 
         }
