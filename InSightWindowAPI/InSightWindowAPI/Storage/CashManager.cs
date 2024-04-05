@@ -2,10 +2,10 @@
 
 namespace InSightWindowAPI.Storage
 {
-    public class CacheManager<T>
+    public class CacheManager
     {
   
-        public async Task WriteDataToCahe(IMemoryCache _cache, int timeSec, T data)
+        public async Task WriteDataToCahe<T>(IMemoryCache _cache, int timeSec, T data)
         {
             
             DateTime cacheEntry;
@@ -20,7 +20,7 @@ namespace InSightWindowAPI.Storage
             
         }
 
-        public async Task<T> GetDataFromCache(IMemoryCache _cache)
+        public async Task<T> GetDataFromCache<T>(IMemoryCache _cache)
         {
             if (_cache.TryGetValue(nameof(T), out T info))
             {

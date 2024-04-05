@@ -20,6 +20,7 @@ namespace InSightWindowAPI.Controllers
         {
             try
             {
+                
                 await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
 
             }
@@ -41,8 +42,8 @@ namespace InSightWindowAPI.Controllers
 
         public async Task SaveUserInput(UserInputStatus userInputStatus)
         {
-            CacheManager<UserInputStatus> cacheManager = new CacheManager<UserInputStatus>();
-            await cacheManager.WriteDataToCahe(_cache, 60, userInputStatus);
+            CacheManager cacheManager = new CacheManager();
+            await cacheManager.WriteDataToCahe(_cache, 360, userInputStatus);
         }
 
     }

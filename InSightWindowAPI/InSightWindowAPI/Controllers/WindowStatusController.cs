@@ -37,9 +37,12 @@ namespace InSightWindowAPI.Controllers
 
             try
             {
+                
                 await hubConnection.StartAsync();
+                CacheManager cacheManager = new CacheManager();
+                await cacheManager.WriteDataToCahe(_cache,150,windowStatus);
                 if (hubConnection.State == HubConnectionState.Connected)
-                {
+                { 
                     await hubConnection.SendAsync("SendWindowStatusObject", windowStatus);
                     
                     await hubConnection.StopAsync();
@@ -60,12 +63,38 @@ namespace InSightWindowAPI.Controllers
             }
         }
         [HttpGet]
+        [Route("getUserInput")]
+        public async Task<IActionResult> GetUserInput()
+        {
+            try
+            {
+                CacheManager cacheManager = new CacheManager();
+                var data = await cacheManager.GetDataFromCache<UserInputStatus>(_cache);
+                if (data != null)
+                {
+                    Console.WriteLine("Data retrieved from cache successfully.");
+                    return Ok(data);
+                }
+                else
+                {
+                    Console.WriteLine("Data not found in cache.");
+                    return NotFound("Cash is empty");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        
         public async Task<IActionResult> GetDataFromCash()
         {
             try
             {
-                CacheManager<WindowStatus> cacheManager = new CacheManager<WindowStatus>();
-                var data = await cacheManager.GetDataFromCache(_cache);
+                CacheManager cacheManager = new CacheManager();
+                var data = await cacheManager.GetDataFromCache<WindowStatus>(_cache);
                 if (data != null)
                 {
                     Console.WriteLine("Data retrieved from cache successfully.");
