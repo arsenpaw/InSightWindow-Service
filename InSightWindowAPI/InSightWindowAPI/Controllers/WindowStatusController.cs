@@ -22,8 +22,8 @@ namespace InSightWindowAPI.Controllers
 
         
         HubConnection hubConnection = new HubConnectionBuilder()
-                // .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-                 .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+                .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+                // .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
                  .WithAutomaticReconnect()
                .Build();
         public WindowStatusController(IMemoryCache memoryCache)
@@ -39,8 +39,6 @@ namespace InSightWindowAPI.Controllers
             {
                 
                 await hubConnection.StartAsync();
-                CacheManager cacheManager = new CacheManager();
-                await cacheManager.WriteDataToCahe(_cache,150,windowStatus);
                 if (hubConnection.State == HubConnectionState.Connected)
                 { 
                     await hubConnection.SendAsync("SendWindowStatusObject", windowStatus);
@@ -68,8 +66,8 @@ namespace InSightWindowAPI.Controllers
         {
             try
             {
-                CacheManager cacheManager = new CacheManager();
-                var data = await cacheManager.GetDataFromCache<UserInputStatus>(_cache);
+                CacheManager cacheManager1 = new CacheManager();
+                var data = await cacheManager1.GetDataFromCache<UserInputStatus>(_cache);
                 if (data != null)
                 {
                     Console.WriteLine("Data retrieved from cache successfully.");
@@ -78,7 +76,7 @@ namespace InSightWindowAPI.Controllers
                 else
                 {
                     Console.WriteLine("Data not found in cache.");
-                    return NotFound("Cash is empty");
+                    return NotFound("No data");
                 }
             }
             catch (Exception ex)

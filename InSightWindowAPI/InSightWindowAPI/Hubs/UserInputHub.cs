@@ -19,7 +19,7 @@ namespace InSightWindowAPI.Hubs
         public async Task SaveUserInput(UserInputStatus userInputStatus)
         {
             CacheManager cacheManager = new CacheManager();
-            await cacheManager.WriteDataToCahe(_cache, 360, userInputStatus);
+            await cacheManager.WriteDataToCahe<UserInputStatus>(_cache, 3600, userInputStatus);
         }
     }
 }
