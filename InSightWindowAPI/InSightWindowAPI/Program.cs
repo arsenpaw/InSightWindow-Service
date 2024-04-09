@@ -1,4 +1,4 @@
-using InSightWindowAPI.Controllers;
+using InSightWindowAPI.Hubs;
 using Microsoft.Extensions.Options;
 
 string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -39,6 +39,7 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
 app.MapControllers();
 app.MapHub<ClientStatusHub>("/client-hub");
+app.MapHub<UserInputHub>("/user-input-hub");
 
 app.UseAuthorization();
 
