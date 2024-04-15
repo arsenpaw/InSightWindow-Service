@@ -39,7 +39,8 @@ namespace InSightWindowAPI.Controllers
                 
                 await hubConnection.StartAsync();
                 if (hubConnection.State == HubConnectionState.Connected)
-                { 
+                {
+                    await hubConnection.SendAsync("SendWindowStatusObject", windowStatus);
                     _cache.Set(nameof(WindowStatus), windowStatus);   
                     await hubConnection.StopAsync();
                     return Ok($"Data received:  T: {windowStatus.Temparature}, H {windowStatus.Humidity},WATER {windowStatus.isRain}," +

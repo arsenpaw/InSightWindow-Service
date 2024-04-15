@@ -18,6 +18,20 @@ namespace InSightWindowAPI.Hubs
         public async Task SaveUserInput(UserInputStatus userInputStatus)
         {
             _cache.Set(nameof(UserInputStatus), userInputStatus);
+            await Task.Run(() => SendUserInputResponce());
+        }
+        public async Task SendUserInputResponce()
+        {
+            await Task.Delay(4000);
+            var userInputStatus = _cache.Get<WindowStatus>(nameof(WindowStatus));
+            if (userInputStatus != null)
+            {
+                await Clients.All.SendAsync("ReceiveUserInputResponce", userInputStatus);
+            }
+            else
+            {
+                await Clients.All.SendAsync("ReceiveUserInputResponce", "No user input found");
+            }
         }
     }
 }
