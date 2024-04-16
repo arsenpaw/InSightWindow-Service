@@ -22,7 +22,7 @@ namespace InSightWindowAPI.Hubs
         }
         public async Task SendUserInputResponce()
         {
-            await Task.Delay(4000);
+            await Task.Delay(1500);
             var userInputStatus = _cache.Get<WindowStatus>(nameof(WindowStatus));
             if (userInputStatus != null)
             {
@@ -30,7 +30,7 @@ namespace InSightWindowAPI.Hubs
             }
             else
             {
-                await Clients.All.SendAsync("ReceiveUserInputResponce", "No user input found");
+                await Clients.All.SendAsync("ReceiveUserInputResponce", userInputStatus);
             }
         }
     }
