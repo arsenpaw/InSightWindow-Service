@@ -11,7 +11,8 @@ namespace InSightWindowAPI
 
         public string IsOpen { get; set; }
 
-        
+        public int isAlarm { get; set; }
+
         public int isRain { get; set; }
 
         public string IsProtected { get; set; }

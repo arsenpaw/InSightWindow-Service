@@ -21,7 +21,7 @@ builder => {
     builder.WithOrigins("https://localhost:44324/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     builder.WithOrigins("http://localhost:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     builder.WithOrigins("http://192.168.4.2:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    builder.WithOrigins("http://192.168.4.1:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    builder.WithOrigins("http://192.168.0.180:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
 });
 });
 
