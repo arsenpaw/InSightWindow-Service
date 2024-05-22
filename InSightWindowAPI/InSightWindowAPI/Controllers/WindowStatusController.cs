@@ -21,9 +21,8 @@ namespace InSightWindowAPI.Controllers
 
         //REMOVE THIS
         HubConnection hubConnection = new HubConnectionBuilder()
-                  //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-                  .WithUrl(new Uri("http://192.168.0.180:81/client-hub")) 
-                   //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+                  .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+               //    .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
                  .WithAutomaticReconnect()
                .Build();
         public WindowStatusController(IMemoryCache memoryCache)
@@ -75,7 +74,7 @@ namespace InSightWindowAPI.Controllers
                 else
                 {
                     Console.WriteLine("Data not found in cache.");
-                    return NotFound("No data");
+                    return StatusCode(500,"No data");
                 }
             }
             catch (Exception ex)

@@ -22,16 +22,10 @@ namespace InSightWindowAPI.Hubs
         }
         public async Task SendUserInputResponce()
         {
-            await Task.Delay(1500);
+            await Task.Delay(3000);
             var userInputStatus = _cache.Get<WindowStatus>(nameof(WindowStatus));
-            if (userInputStatus != null)
-            {
-                await Clients.All.SendAsync("ReceiveUserInputResponce", userInputStatus);
-            }
-            else
-            {
-                await Clients.All.SendAsync("ReceiveUserInputResponce", userInputStatus);
-            }
+             await Clients.All.SendAsync("ReceiveUserInputResponce", userInputStatus);
+            
         }
     }
 }
