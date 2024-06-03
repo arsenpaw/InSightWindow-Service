@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace InSightWindowAPI
+namespace InSightWindowAPI.Models
 {
     public class WindowStatus
     {
@@ -18,5 +18,5 @@ namespace InSightWindowAPI
         public string IsProtected { get; set; }
 
     }
-  
+
 }

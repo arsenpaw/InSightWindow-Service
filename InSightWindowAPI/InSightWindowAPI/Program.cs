@@ -1,9 +1,19 @@
+using InSightWindowAPI.Controllers;
 using InSightWindowAPI.Hubs;
+using InSightWindowAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using InSightWindowAPI;
 using Microsoft.Extensions.Options;
+
 
 string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+    });
 
 // Add services to the container.
 
@@ -13,6 +23,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
+builder.Services.AddDbContext<UsersContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<UsersDbController>();
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 builder.Services.AddCors(options =>
 {

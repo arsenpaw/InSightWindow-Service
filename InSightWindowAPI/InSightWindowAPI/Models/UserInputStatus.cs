@@ -1,4 +1,4 @@
-﻿namespace InSightWindowAPI
+﻿namespace InSightWindowAPI.Models
 {
     public class UserInputStatus
     {

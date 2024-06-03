@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using InSightWindowAPI.Models;
 
 namespace InSightWindowAPI.Hubs
 
@@ -22,7 +23,7 @@ namespace InSightWindowAPI.Hubs
         }
         public async Task SendUserInputResponce()
         {
-            await Task.Delay(3000);
+            await Task.Delay(2500);
             var userInputStatus = _cache.Get<WindowStatus>(nameof(WindowStatus));
              await Clients.All.SendAsync("ReceiveUserInputResponce", userInputStatus);
             

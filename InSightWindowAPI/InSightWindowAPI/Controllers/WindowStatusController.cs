@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System.Data.Common;
 using Websocket.Client;
 using System.Data;
+using InSightWindowAPI.Models;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -35,8 +36,7 @@ namespace InSightWindowAPI.Controllers
         {
 
             try
-            {
-                
+            { 
                 await hubConnection.StartAsync();
                 if (hubConnection.State == HubConnectionState.Connected)
                 {
@@ -48,11 +48,8 @@ namespace InSightWindowAPI.Controllers
                 }
                 else
                 {
-
                     return BadRequest($"Server disconected from SinglR hub");
                 }
-
-
             }
             catch (Exception ex)
             {
