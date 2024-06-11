@@ -120,19 +120,27 @@ namespace InSightWindowAPI.Controllers
 
            
         }
-        // POST: api/UsersDb
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("create")]
         public async Task<ActionResult<UserLogin>> CreatUser(UserRegister user)
         {
+
           if (_context.Users == null)
           {
               return Problem("Entity set 'UsersContext.Users'  is null.");
           }
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            var sameUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+            if ( sameUser != null)
+            {
+                return Conflict("This email have been already used");
+                
+            }
+            else
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return Ok("User had been created");
+            }
+           
         }
 
         [HttpPost("login")]
