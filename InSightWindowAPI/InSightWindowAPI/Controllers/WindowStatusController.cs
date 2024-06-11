@@ -18,12 +18,12 @@ namespace InSightWindowAPI.Controllers
     [Route("[controller]")]
     public class WindowStatusController : ControllerBase
     {
-        public IMemoryCache _cache { get; private set; }
+        public IMemoryCache _cache { get;  set; }
 
         //REMOVE THIS
         HubConnection hubConnection = new HubConnectionBuilder()
-                  .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-               //    .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+                  .WithUrl(new Uri($"http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+                 //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
                  .WithAutomaticReconnect()
                .Build();
         public WindowStatusController(IMemoryCache memoryCache)

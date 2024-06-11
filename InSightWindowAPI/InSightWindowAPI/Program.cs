@@ -25,7 +25,8 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UsersContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<UsersDbController>();
+builder.Services.AddTransient<UsersDbController>();
+builder.Services.AddTransient<DevicesDbController>();   
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 builder.Services.AddCors(options =>
@@ -34,8 +35,9 @@ builder.Services.AddCors(options =>
 builder => {
     builder.WithOrigins("https://localhost:44324/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     builder.WithOrigins("http://localhost:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    builder.WithOrigins("http://192.168.4.2:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    builder.WithOrigins("http://192.168.0.180:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    builder.WithOrigins("http://localhost:81/api/UsersDb/login").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    builder.WithOrigins("http://localhost:81/api/UsersDb/create").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    builder.WithOrigins("http://localhost:81/api/UsersDb").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
 });
 });
 

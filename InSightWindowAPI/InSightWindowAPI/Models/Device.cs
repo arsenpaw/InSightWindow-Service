@@ -15,6 +15,6 @@ namespace InSightWindowAPI.Models
 
         public Guid? UserId { get; set; }
 
-        public User? User { get; set; }
+        public UserRegister? User { get; set; }
     }
 }

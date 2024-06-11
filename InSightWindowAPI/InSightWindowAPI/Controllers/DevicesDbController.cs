@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models;
 using System.Diagnostics;
+using AutoMapper;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -16,9 +17,12 @@ namespace InSightWindowAPI.Controllers
     {
         private readonly UsersContext _context;
 
-        public DevicesDbController(UsersContext context)
+        private readonly IMapper _mapper;  
+
+        public DevicesDbController(UsersContext context,IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/DevicesDb
@@ -49,33 +53,31 @@ namespace InSightWindowAPI.Controllers
 
             return device;
         }
-
-        // PUT: api/DevicesDb/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("BindTo/{userId}/{deviceId}")]
-        public async Task<IActionResult> PutDevice(Guid userId, Guid deviceId)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutDevice(Guid id, Device device)
         {
-            var userToBind = await _context.Users.FindAsync(userId);
-            var deviceToBind = await _context.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == deviceId);
-            if (userToBind == null || deviceToBind == null)
+            var deviceToBind = await _context.Devices.FirstOrDefaultAsync(x => x.Id == id);
+            if (deviceToBind == null )
             {
                 return NotFound();
             }
-            deviceToBind.UserId = userId;
-            deviceToBind.User = userToBind;  
+            _mapper.Map(device,deviceToBind );
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(deviceToBind);
+                return Ok(device);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-               Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
                 return StatusCode(500, "An error occurred while saving the changes.");
             }
 
-            return NoContent();
+          
         }
+        // PUT: api/DevicesDb/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    
 
         // POST: api/DevicesDb
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

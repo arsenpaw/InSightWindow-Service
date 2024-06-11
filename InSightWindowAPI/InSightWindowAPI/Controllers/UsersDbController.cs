@@ -37,7 +37,7 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserLogin>>> GetUsers()
         {
           if (_context.Users == null)
           {
@@ -48,7 +48,7 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(Guid id)
+        public async Task<ActionResult<UserLogin>> GetUser(Guid id)
         {
           if (_context.Users == null)
           {
@@ -63,23 +63,27 @@ namespace InSightWindowAPI.Controllers
 
             return user;
         }
+        [HttpGet("test")]
+        public async Task<ActionResult<UserLogin>> Test()
+        {
+            return Ok("Acces allowed");
+        }
+
 
         // PUT: api/UsersDb/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, User user)
+        public async Task<IActionResult> PutUser(Guid id, UserLogin user)
         {   
           
             var foundUser = await _context.Users.FindAsync(id);
-            var mappedOlduser = JsonConvert.SerializeObject( _mapper.Map<User>(foundUser));
-            var mappedNewuser = JsonConvert.SerializeObject(_mapper.Map<User>(user));
+            var mappedOlduser = JsonConvert.SerializeObject( _mapper.Map<UserLogin>(foundUser));
+            var mappedNewuser = JsonConvert.SerializeObject(_mapper.Map<UserLogin>(user));
             if (mappedOlduser == mappedNewuser) { return new NoChanges(); }
             if (foundUser == null) { return NotFound(); }
-            //  _context.Entry(mappedOlduser).State = EntityState.Modified;
             try
             {
-                foundUser.Name = user.Name;
-                foundUser.Password = user.Password;
+                 _mapper.Map(user, foundUser);
                 Debug.WriteLine(_context.Entry(foundUser).State);
                 await _context.SaveChangesAsync();
             }
@@ -91,10 +95,12 @@ namespace InSightWindowAPI.Controllers
 
             return Ok();
         }
+        
+
         [HttpPut("BindTo/{userId}/{deviceId}")]
         public async Task<IActionResult> PutDevice(Guid userId, Guid deviceId)
         {
-            var userToBind = await _context.Users.FindAsync(userId);
+            UserRegister userToBind = await _context.Users.FindAsync(userId);
             var deviceToBind = await _context.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == deviceId);
             if (userToBind == null || deviceToBind == null)
             {
@@ -112,12 +118,12 @@ namespace InSightWindowAPI.Controllers
                 return StatusCode(500, "An error occurred while saving the changes.");
             }
 
-            return NoContent();
+           
         }
         // POST: api/UsersDb
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<User>> CreatUser(User user)
+        [HttpPost("create")]
+        public async Task<ActionResult<UserLogin>> CreatUser(UserRegister user)
         {
           if (_context.Users == null)
           {
@@ -128,6 +134,27 @@ namespace InSightWindowAPI.Controllers
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<UserLogin>> LoginUser(UserLogin user)
+        {
+            var userToFind = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+            if (userToFind == null)
+            {
+                return NotFound("UserLogin not found");
+            }
+            if (userToFind.Password == user.Password)
+            {
+                return Ok();
+            }
+            else 
+            {
+                return Unauthorized("Invalid pasword");
+            }
+
+           
+        }
+
 
         // DELETE: api/UsersDb/5
         [HttpDelete("{id}")]

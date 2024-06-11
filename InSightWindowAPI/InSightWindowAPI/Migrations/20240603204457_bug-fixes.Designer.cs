@@ -45,7 +45,7 @@ namespace InSightWindowAPI.Migrations
                     b.ToTable("Devices");
                 });
 
-            modelBuilder.Entity("InSightWindowAPI.Models.User", b =>
+            modelBuilder.Entity("InSightWindowAPI.Models.UserLogin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,14 +66,14 @@ namespace InSightWindowAPI.Migrations
 
             modelBuilder.Entity("InSightWindowAPI.Models.Device", b =>
                 {
-                    b.HasOne("InSightWindowAPI.Models.User", "User")
+                    b.HasOne("InSightWindowAPI.Models.UserLogin", "UserLogin")
                         .WithMany("Devices")
                         .HasForeignKey("UserId");
 
-                    b.Navigation("User");
+                    b.Navigation("UserLogin");
                 });
 
-            modelBuilder.Entity("InSightWindowAPI.Models.User", b =>
+            modelBuilder.Entity("InSightWindowAPI.Models.UserLogin", b =>
                 {
                     b.Navigation("Devices");
                 });

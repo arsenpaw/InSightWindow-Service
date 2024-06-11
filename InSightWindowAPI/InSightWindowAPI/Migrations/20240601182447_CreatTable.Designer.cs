@@ -45,7 +45,7 @@ namespace InSightWindowAPI.Migrations
                     b.ToTable("Devices");
                 });
 
-            modelBuilder.Entity("InSightWindowAPI.Models.User", b =>
+            modelBuilder.Entity("InSightWindowAPI.Models.UserLogin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -66,7 +66,7 @@ namespace InSightWindowAPI.Migrations
 
             modelBuilder.Entity("InSightWindowAPI.Models.Device", b =>
                 {
-                    b.HasOne("InSightWindowAPI.Models.User", "Owner")
+                    b.HasOne("InSightWindowAPI.Models.UserLogin", "Owner")
                         .WithMany("Devices")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -75,7 +75,7 @@ namespace InSightWindowAPI.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("InSightWindowAPI.Models.User", b =>
+            modelBuilder.Entity("InSightWindowAPI.Models.UserLogin", b =>
                 {
                     b.Navigation("Devices");
                 });

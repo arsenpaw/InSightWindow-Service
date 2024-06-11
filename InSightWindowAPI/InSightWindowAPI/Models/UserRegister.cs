@@ -1,20 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Hosting;
 
 namespace InSightWindowAPI.Models
 {
-    public class User
+    public class UserRegister:UserLogin
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; private set; }
 
         [Required]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public string LastName { get; set; }
 
         public ICollection<Device>? Devices { get; set; } = new List<Device>();
     }

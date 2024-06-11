@@ -10,12 +10,12 @@ namespace InSightWindowAPI.Models
         {
 
         }
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserRegister> Users { get; set; }
         public DbSet<Device> Devices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<UserRegister>()
              .HasMany(u => u.Devices)
              .WithOne(d => d.User)
              .HasForeignKey(d => d.UserId);

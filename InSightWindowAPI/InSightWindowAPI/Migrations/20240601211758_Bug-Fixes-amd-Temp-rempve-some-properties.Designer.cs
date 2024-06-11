@@ -40,7 +40,7 @@ namespace InSightWindowAPI.Migrations
                     b.ToTable("Devices");
                 });
 
-            modelBuilder.Entity("InSightWindowAPI.Models.User", b =>
+            modelBuilder.Entity("InSightWindowAPI.Models.UserLogin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
