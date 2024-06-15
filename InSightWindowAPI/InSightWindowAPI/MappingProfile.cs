@@ -14,11 +14,10 @@ namespace InSightWindowAPI
                 .ForMember(
                 dest => dest.Id,
                 opt => opt.Ignore());
-            CreateMap<UserRegisterDto, UserDto>();        
+            CreateMap<User, UserDto>();        
+            CreateMap<UserDto, UserDto>();
+            CreateMap<UserDto, User>();
             CreateMap<Device, DeviceDto>();
-            CreateMap<UserDto, UserRegisterDto>();
-            CreateMap<UserRegisterDto, User>();
-
         }
     }
 }

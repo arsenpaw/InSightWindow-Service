@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models;
 using System.Diagnostics;
 using AutoMapper;
+using InSightWindowAPI.Models.Dto;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -27,24 +28,27 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/DevicesDb
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Device>>> GetDevices()
+        public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDevices()
         {
           if (_context.Devices == null)
           {
               return NotFound();
           }
-            return await _context.Devices.ToListAsync();
+            var devices = await _context.Devices.ToListAsync();
+            List<DeviceDto> deviseDto = new List<DeviceDto>(); 
+            foreach (var item in devices) { deviseDto.Add(_mapper.Map<DeviceDto>(item)); }
+            return deviseDto;
         }
 
         // GET: api/DevicesDb/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Device>> GetDevice(Guid id)
+        public async Task<ActionResult<DeviceDto>> GetDevice(Guid id)
         {
           if (_context.Devices == null)
           {
               return NotFound();
           }
-            var device = await _context.Devices.FindAsync(id);
+            var device = _mapper.Map<DeviceDto>(await _context.Devices.FindAsync(id));
 
             if (device == null)
             {
@@ -54,16 +58,14 @@ namespace InSightWindowAPI.Controllers
             return device;
         }
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDevice(Guid id, Device device)
+        public async Task<IActionResult> PutDevice(Guid id, DeviceDto device)
         {
-            var deviceToBind = await _context.Devices.FirstOrDefaultAsync(x => x.Id == id);
-            if (deviceToBind == null )
-            {
-                return NotFound();
-            }
-            _mapper.Map(device,deviceToBind );
+            var deviceToChange = await _context.Devices.FirstOrDefaultAsync(x => x.Id == id);
+            if (deviceToChange == null ) { return NotFound();}
+            
             try
             {
+                _mapper.Map(device, deviceToChange);
                 await _context.SaveChangesAsync();
                 return Ok(device);
             }
@@ -82,16 +84,16 @@ namespace InSightWindowAPI.Controllers
         // POST: api/DevicesDb
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Device>> PostDevice(Device device)
+        public async Task<ActionResult<DeviceDto>> PostDevice(DeviceDto device)
         {
           if (_context.Devices == null)
           {
               return Problem("Entity set 'UsersContext.Devices'  is null.");
           }
-            _context.Devices.Add(device);
+            _context.Devices.Add(_mapper.Map<Device>(device));
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDevice", new { id = device.Id }, device);
+            return Ok(device);
         }
 
         // DELETE: api/DevicesDb/5
@@ -107,11 +109,18 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
-
-            _context.Devices.Remove(device);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            try
+            {
+                _context.Devices.Remove(device);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine($"Failed to delete device {id}");
+                return StatusCode(500, "Error, in deleting ");
+            }
+            
         }
 
         private bool DeviceExists(Guid id)

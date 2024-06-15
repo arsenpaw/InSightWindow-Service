@@ -1,7 +1,10 @@
-﻿namespace InSightWindowAPI.Models.Dto
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace InSightWindowAPI.Models.Dto
 {
     public record DeviceDto
     {
-        public string Name { get; set; } = null!;
+        [Required]
+        public string Name { get; set; };
     }
 }

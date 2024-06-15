@@ -1,14 +1,14 @@
-﻿namespace InSightWindowAPI.Models.Dto
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace InSightWindowAPI.Models.Dto
 {
-    public record UserDto
+    public record UserDto : UserLoginDto
     {
-        
-        public string Email { get; set; }
 
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
 
-       // public string Password { get; set; }
     }
 }

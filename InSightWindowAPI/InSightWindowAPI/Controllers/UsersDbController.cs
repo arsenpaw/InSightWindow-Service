@@ -68,7 +68,7 @@ namespace InSightWindowAPI.Controllers
 
             return user;
         }
-        [HttpGet("test")]
+       
       
 
 
@@ -79,10 +79,11 @@ namespace InSightWindowAPI.Controllers
         {   
           
             var foundUser = await _context.Users.FindAsync(id);
+            if (foundUser == null) { return NotFound(); }
             var  oldUserToCompare = _mapper.Map<UserDto>(foundUser);
             var newUserToCompare = _mapper.Map<UserDto>(user);
             if (oldUserToCompare == newUserToCompare) { return new NoChanges(); }
-            if (foundUser == null) { return NotFound(); }
+            
             try
             {
                  _mapper.Map(user, foundUser);
@@ -125,7 +126,7 @@ namespace InSightWindowAPI.Controllers
            
         }
         [HttpPost("create")]
-        public async Task<ActionResult> CreatUser(UserRegisterDto user)
+        public async Task<ActionResult> CreatUser(UserDto user)
         {
 
           if (_context.Users == null)
