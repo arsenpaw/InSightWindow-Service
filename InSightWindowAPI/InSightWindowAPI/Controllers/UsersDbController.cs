@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using System.Diagnostics;
 using AutoMapper;
 using Newtonsoft.Json;
+using InSightWindowAPI.Models.Dto;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -37,24 +38,28 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserLogin>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
           if (_context.Users == null)
           {
               return NotFound();
-          }
-            return await _context.Users.ToListAsync();
+          };
+            var users = await _context.Users.ToListAsync();
+            List<UserDto> dtoUsers = new List<UserDto>();
+            foreach (var item in users) { dtoUsers.Add(_mapper.Map<UserDto>(item)); };
+            return Ok(dtoUsers);
         }
 
         // GET: api/UsersDb/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserLogin>> GetUser(Guid id)
+        public async Task<ActionResult<UserDto>> GetUser(Guid id)
         {
           if (_context.Users == null)
           {
               return NotFound();
           }
-            var user = await _context.Users.FindAsync(id);
+
+            UserDto user =   _mapper.Map<UserDto>(await _context.Users.FindAsync(id));
 
             if (user == null)
             {
@@ -64,22 +69,19 @@ namespace InSightWindowAPI.Controllers
             return user;
         }
         [HttpGet("test")]
-        public async Task<ActionResult<UserLogin>> Test()
-        {
-            return Ok("Acces allowed");
-        }
+      
 
 
         // PUT: api/UsersDb/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, UserLogin user)
+        public async Task<IActionResult> PutUser(Guid id, UserDto user)
         {   
           
             var foundUser = await _context.Users.FindAsync(id);
-            var mappedOlduser = JsonConvert.SerializeObject( _mapper.Map<UserLogin>(foundUser));
-            var mappedNewuser = JsonConvert.SerializeObject(_mapper.Map<UserLogin>(user));
-            if (mappedOlduser == mappedNewuser) { return new NoChanges(); }
+            var  oldUserToCompare = _mapper.Map<UserDto>(foundUser);
+            var newUserToCompare = _mapper.Map<UserDto>(user);
+            if (oldUserToCompare == newUserToCompare) { return new NoChanges(); }
             if (foundUser == null) { return NotFound(); }
             try
             {
@@ -100,17 +102,19 @@ namespace InSightWindowAPI.Controllers
         [HttpPut("BindTo/{userId}/{deviceId}")]
         public async Task<IActionResult> PutDevice(Guid userId, Guid deviceId)
         {
-            UserRegister userToBind = await _context.Users.FindAsync(userId);
+            var userToBind = await _context.Users.Include(x => x.Devices).FirstOrDefaultAsync(x => x.Id == userId);
             var deviceToBind = await _context.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == deviceId);
-            if (userToBind == null || deviceToBind == null)
-            {
-                return NotFound();
-            }
-            userToBind.Devices.Add(deviceToBind);
+
             try
             {
-                await _context.SaveChangesAsync();
-                return Ok(deviceToBind);
+                if (userToBind != null &&  deviceToBind != null)
+                {
+                    userToBind.Devices.Add(deviceToBind);
+                    await _context.SaveChangesAsync();
+                    return Ok($"{_mapper.Map<DeviceDto>(deviceToBind)}, has bind to {_mapper.Map<UserDto>(userToBind)}"); 
+                }
+                else { return NotFound(); }
+                
             }
             catch (Exception ex)
             {
@@ -121,7 +125,7 @@ namespace InSightWindowAPI.Controllers
            
         }
         [HttpPost("create")]
-        public async Task<ActionResult<UserLogin>> CreatUser(UserRegister user)
+        public async Task<ActionResult> CreatUser(UserRegisterDto user)
         {
 
           if (_context.Users == null)
@@ -136,7 +140,8 @@ namespace InSightWindowAPI.Controllers
             }
             else
             {
-                _context.Users.Add(user);
+                var userToAdd = _mapper.Map<User>(user);
+                _context.Users.Add(userToAdd);
                 await _context.SaveChangesAsync();
                 return Ok("User had been created");
             }
@@ -144,7 +149,7 @@ namespace InSightWindowAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<UserLogin>> LoginUser(UserLogin user)
+        public async Task<ActionResult> LoginUser(UserLoginDto user)
         {
             var userToFind = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
             if (userToFind == null)
@@ -184,9 +189,6 @@ namespace InSightWindowAPI.Controllers
             return NoContent();
         }
 
-        private bool UserExists(Guid id)
-        {
-            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+       
     }
 }

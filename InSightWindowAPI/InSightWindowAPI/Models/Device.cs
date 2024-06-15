@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
+using InSightWindowAPI.Models.Dto;
 
 namespace InSightWindowAPI.Models
 {
@@ -15,6 +16,6 @@ namespace InSightWindowAPI.Models
 
         public Guid? UserId { get; set; }
 
-        public UserRegister? User { get; set; }
+        public User? User { get; set; }
     }
 }

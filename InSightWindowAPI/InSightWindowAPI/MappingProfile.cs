@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using InSightWindowAPI.Models;
+using InSightWindowAPI.Models.Dto;
+using System.Diagnostics;
 
 namespace InSightWindowAPI
 {
@@ -7,18 +9,15 @@ namespace InSightWindowAPI
     {
         public MappingProfile()
         {
-            CreateMap<UserRegister, UserRegister>()
-                    .ForMember(
-                        dest => dest.Id,
-                        opt => opt.Ignore())
-                    .ForMember(
-                 dest => dest.Devices,
-                        opt => opt.Ignore());
+          
             CreateMap<Device, Device>()
                 .ForMember(
                 dest => dest.Id,
                 opt => opt.Ignore());
-
+            CreateMap<UserRegisterDto, UserDto>();        
+            CreateMap<Device, DeviceDto>();
+            CreateMap<UserDto, UserRegisterDto>();
+            CreateMap<UserRegisterDto, User>();
 
         }
     }

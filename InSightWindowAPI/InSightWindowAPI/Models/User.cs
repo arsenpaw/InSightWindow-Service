@@ -3,11 +3,17 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InSightWindowAPI.Models
 {
-    public class UserRegister:UserLogin
+    public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; private set; }
+
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
 
         [Required]
         public string FirstName { get; set; }
