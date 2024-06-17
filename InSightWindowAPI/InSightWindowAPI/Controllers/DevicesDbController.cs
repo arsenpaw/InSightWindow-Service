@@ -26,7 +26,7 @@ namespace InSightWindowAPI.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/DevicesDb
+      
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDevices()
         {
@@ -40,7 +40,6 @@ namespace InSightWindowAPI.Controllers
             return deviseDto;
         }
 
-        // GET: api/DevicesDb/5
         [HttpGet("{id}")]
         public async Task<ActionResult<DeviceDto>> GetDevice(Guid id)
         {
@@ -77,12 +76,6 @@ namespace InSightWindowAPI.Controllers
 
           
         }
-        // PUT: api/DevicesDb/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    
-
-        // POST: api/DevicesDb
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<DeviceDto>> PostDevice(DeviceDto device)
         {
@@ -96,7 +89,7 @@ namespace InSightWindowAPI.Controllers
             return Ok(device);
         }
 
-        // DELETE: api/DevicesDb/5
+     
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDevice(Guid id)
         {

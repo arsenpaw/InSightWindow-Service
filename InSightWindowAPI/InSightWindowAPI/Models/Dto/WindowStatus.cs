@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace InSightWindowAPI.Models
+namespace InSightWindowAPI.Models.Dto
 {
     public class WindowStatus
     {

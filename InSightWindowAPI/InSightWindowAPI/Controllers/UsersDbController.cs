@@ -11,6 +11,12 @@ using System.Diagnostics;
 using AutoMapper;
 using Newtonsoft.Json;
 using InSightWindowAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
+using InSightWindowAPI.JwtSetting;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -29,15 +35,18 @@ namespace InSightWindowAPI.Controllers
     {
         private readonly UsersContext _context;
         private readonly IMapper _mapper;
+        private readonly JwtSettings _jwtSettings;
 
-        public UsersDbController(UsersContext context, IMapper mapper)
+        public UsersDbController(UsersContext context, IMapper mapper, JwtSettings jwtSettings)
         {
             _context = context;
             _mapper = mapper;
+            _jwtSettings = jwtSettings;
         }
 
         // GET: api/UsersDb
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
           if (_context.Users == null)
@@ -159,13 +168,15 @@ namespace InSightWindowAPI.Controllers
             }
             if (userToFind.Password == user.Password)
             {
-                return Ok();
+                var token = GenerateToken(userToFind);
+
+                return Ok(token);
             }
             else 
             {
                 return Unauthorized("Invalid pasword");
             }
-
+           
            
         }
 
@@ -189,7 +200,26 @@ namespace InSightWindowAPI.Controllers
 
             return NoContent();
         }
+        
+        private string GenerateToken(User user)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString() ),
+        
+            };
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiryMinutes),
+                signingCredentials: creds
+                );
+            return new JwtSecurityTokenHandler().WriteToken(token) ;
+        }
 
-       
+
     }
 }

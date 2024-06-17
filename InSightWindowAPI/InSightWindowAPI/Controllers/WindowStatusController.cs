@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 using System.Data.Common;
 using Websocket.Client;
 using System.Data;
-using InSightWindowAPI.Models;
+using InSightWindowAPI.Models.Dto;
 
 namespace InSightWindowAPI.Controllers
 {

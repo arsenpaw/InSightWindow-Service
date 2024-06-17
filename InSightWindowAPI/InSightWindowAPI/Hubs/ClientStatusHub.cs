@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
-using InSightWindowAPI.Models;
+using InSightWindowAPI.Models.Dto;
 
 namespace InSightWindowAPI.Hubs
 {
