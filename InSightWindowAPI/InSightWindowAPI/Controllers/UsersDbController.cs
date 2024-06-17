@@ -137,7 +137,7 @@ namespace InSightWindowAPI.Controllers
         [HttpPost("create")]
         public async Task<ActionResult> CreatUser(UserDto user)
         {
-
+            
           if (_context.Users == null)
           {
               return Problem("Entity set 'UsersContext.Users'  is null.");
@@ -150,6 +150,7 @@ namespace InSightWindowAPI.Controllers
             }
             else
             {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 var userToAdd = _mapper.Map<User>(user);
                 _context.Users.Add(userToAdd);
                 await _context.SaveChangesAsync();
@@ -166,18 +167,13 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound("UserLogin not found");
             }
-            if (userToFind.Password == user.Password)
+            if (!BCrypt.Net.BCrypt.Verify(user.Password,userToFind.Password))
             {
-                var token = GenerateToken(userToFind);
-
-                return Ok(token);
+                return BadRequest("Invalid pasword");
+               
             }
-            else 
-            {
-                return Unauthorized("Invalid pasword");
-            }
-           
-           
+            var token = GenerateToken(userToFind);
+            return Ok(token);
         }
 
 
