@@ -9,27 +9,42 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using InSightWindowAPI.JwtSetting;
 
-
 string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure JWT settings
 var jwtSettings = new JwtSettings();
 builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
+builder.Services.AddSingleton(jwtSettings);
+
+// Configure JSON options for controllers
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
     });
+
+// Add services to the container
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
+builder.Services.AddSignalR();
+builder.Services.AddDbContext<UsersContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddTransient<UsersDbController>();
+builder.Services.AddTransient<DevicesDbController>();
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+// Configure authentication
 builder.Services.AddAuthentication(options =>
 {
-
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
         ValidateAudience = true,
@@ -41,40 +56,23 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
-
-
-// Add services to the container.
-builder.Services.AddSingleton(jwtSettings);
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddMemoryCache();
-builder.Services.AddSignalR();
-builder.Services.AddDbContext<UsersContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddTransient<UsersDbController>();
-builder.Services.AddTransient<DevicesDbController>();   
-builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-builder.Services.AddAuthorization();
-
-
+// Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-builder => {
-    builder.WithOrigins("https://localhost:44324/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    builder.WithOrigins("http://localhost:81/client-hub").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    builder.WithOrigins("http://localhost:81/api/UsersDb/login").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    builder.WithOrigins("http://localhost:81/api/UsersDb/create").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-    builder.WithOrigins("http://localhost:81/api/UsersDb").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-});
+    options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+    {
+        builder.WithOrigins(
+            "https://localhost:44324",
+            "http://localhost:81")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -84,12 +82,11 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
 app.MapHub<ClientStatusHub>("/client-hub");
 app.MapHub<UserInputHub>("/user-input-hub");
-
-app.UseAuthorization();
-app.UseAuthentication();    
-app.MapControllers();
 
 app.Run();

@@ -31,6 +31,7 @@ namespace InSightWindowAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersDbController : ControllerBase
     {
         private readonly UsersContext _context;
@@ -46,16 +47,16 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          };
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+
             var users = await _context.Users.ToListAsync();
-            List<UserDto> dtoUsers = new List<UserDto>();
-            foreach (var item in users) { dtoUsers.Add(_mapper.Map<UserDto>(item)); };
+            var dtoUsers = _mapper.Map<List<UserDto>>(users);
             return Ok(dtoUsers);
         }
 
@@ -63,128 +64,126 @@ namespace InSightWindowAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> GetUser(Guid id)
         {
-          if (_context.Users == null)
-          {
-              return NotFound();
-          }
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
 
-            UserDto user =   _mapper.Map<UserDto>(await _context.Users.FindAsync(id));
-
+            var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            return user;
+            var userDto = _mapper.Map<UserDto>(user);
+            return Ok(userDto);
         }
-       
-      
-
 
         // PUT: api/UsersDb/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, UserDto user)
-        {   
-          
+        {
             var foundUser = await _context.Users.FindAsync(id);
-            if (foundUser == null) { return NotFound(); }
-            var  oldUserToCompare = _mapper.Map<UserDto>(foundUser);
+            if (foundUser == null)
+            {
+                return NotFound();
+            }
+
+            var oldUserToCompare = _mapper.Map<UserDto>(foundUser);
             var newUserToCompare = _mapper.Map<UserDto>(user);
-            if (oldUserToCompare == newUserToCompare) { return new NoChanges(); }
-            
+            if (oldUserToCompare.Equals(newUserToCompare))
+            {
+                return new NoChanges();
+            }
+
+            _mapper.Map(user, foundUser);
+
             try
             {
-                 _mapper.Map(user, foundUser);
-                Debug.WriteLine(_context.Entry(foundUser).State);
                 await _context.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (DbUpdateConcurrencyException)
             {
-
-                return BadRequest(ex.Data);
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
             }
 
-            return Ok();
+            return NoContent();
         }
-        
 
         [HttpPut("BindTo/{userId}/{deviceId}")]
-        public async Task<IActionResult> PutDevice(Guid userId, Guid deviceId)
+        public async Task<IActionResult> BindDevice(Guid userId, Guid deviceId)
         {
-            var userToBind = await _context.Users.Include(x => x.Devices).FirstOrDefaultAsync(x => x.Id == userId);
-            var deviceToBind = await _context.Devices.Include(x => x.User).FirstOrDefaultAsync(x => x.Id == deviceId);
+            var user = await _context.Users.Include(u => u.Devices).FirstOrDefaultAsync(u => u.Id == userId);
+            var device = await _context.Devices.Include(d => d.User).FirstOrDefaultAsync(d => d.Id == deviceId);
 
-            try
+            if (user == null || device == null)
             {
-                if (userToBind != null &&  deviceToBind != null)
-                {
-                    userToBind.Devices.Add(deviceToBind);
-                    await _context.SaveChangesAsync();
-                    return Ok($"{_mapper.Map<DeviceDto>(deviceToBind)}, has bind to {_mapper.Map<UserDto>(userToBind)}"); 
-                }
-                else { return NotFound(); }
-                
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return StatusCode(500, "An error occurred while saving the changes.");
+                return NotFound();
             }
 
-           
+            user.Devices.Add(device);
+            await _context.SaveChangesAsync();
+
+            var userDto = _mapper.Map<UserDto>(user);
+            var deviceDto = _mapper.Map<DeviceDto>(device);
+
+            return Ok(new { User = userDto, Device = deviceDto });
         }
+
         [HttpPost("create")]
-        public async Task<ActionResult> CreatUser(UserDto user)
+        [AllowAnonymous]
+        public async Task<ActionResult> CreateUser(UserDto user)
         {
-            
-          if (_context.Users == null)
-          {
-              return Problem("Entity set 'UsersContext.Users'  is null.");
-          }
-            var sameUser = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
-            if ( sameUser != null)
+            if (_context.Users == null)
             {
-                return Conflict("This email have been already used");
-                
+                return Problem("Entity set 'UsersContext.Users' is null.");
             }
-            else
+
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+            if (existingUser != null)
             {
-                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-                var userToAdd = _mapper.Map<User>(user);
-                _context.Users.Add(userToAdd);
-                await _context.SaveChangesAsync();
-                return Ok("User had been created");
+                return Conflict("This email has already been used.");
             }
-           
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            var userEntity = _mapper.Map<User>(user);
+            _context.Users.Add(userEntity);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetUser), new { id = userEntity.Id }, user);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> LoginUser(UserLoginDto user)
+        [AllowAnonymous]
+        public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
         {
-            var userToFind = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
-            if (userToFind == null)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userLogin.Email);
+            if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
             {
-                return NotFound("UserLogin not found");
+                return Unauthorized("Invalid email or password.");
             }
-            if (!BCrypt.Net.BCrypt.Verify(user.Password,userToFind.Password))
-            {
-                return BadRequest("Invalid pasword");
-               
-            }
-            var token = GenerateToken(userToFind);
-            return Ok(token);
-        }
 
+            var token = GenerateToken(user);
+            return Ok(new { Token = token });
+        }
 
         // DELETE: api/UsersDb/5
         [HttpDelete("{id}")]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             if (_context.Users == null)
             {
                 return NotFound();
             }
+
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
@@ -196,14 +195,15 @@ namespace InSightWindowAPI.Controllers
 
             return NoContent();
         }
-        
+
         private string GenerateToken(User user)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString() ),
-        
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                //new Claim(ClaimTypes.Role, "Admin"), add role in db! 
             };
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken(
@@ -212,10 +212,14 @@ namespace InSightWindowAPI.Controllers
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiryMinutes),
                 signingCredentials: creds
-                );
-            return new JwtSecurityTokenHandler().WriteToken(token) ;
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-
+        private bool UserExists(Guid id)
+        {
+            return _context.Users.Any(e => e.Id == id);
+        }
     }
 }
