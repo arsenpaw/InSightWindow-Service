@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using InSightWindowAPI.Enums;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -47,7 +48,7 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
         {
             if (_context.Users == null)
@@ -134,7 +135,7 @@ namespace InSightWindowAPI.Controllers
             var userDto = _mapper.Map<UserDto>(user);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
-            return Ok(new { User = userDto, Device = deviceDto });
+            return Ok(new { User =userDto.FirstName.Union(userDto.LastName), Device = deviceDto });
         }
 
         [HttpPost("create")]
@@ -176,7 +177,7 @@ namespace InSightWindowAPI.Controllers
 
         // DELETE: api/UsersDb/5
         [HttpDelete("{id}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles =UserRole.ADMIN)]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             if (_context.Users == null)
@@ -201,7 +202,7 @@ namespace InSightWindowAPI.Controllers
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                //new Claim(ClaimTypes.Role, "Admin"), add role in db! 
+                new Claim(ClaimTypes.Role, user.Role.RoleName)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));

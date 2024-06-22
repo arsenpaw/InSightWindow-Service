@@ -18,6 +18,7 @@ namespace InSightWindowAPI
             CreateMap<UserDto, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<Device, DeviceDto>();
+            CreateMap<DeviceDto, Device>();
         }
     }
 }

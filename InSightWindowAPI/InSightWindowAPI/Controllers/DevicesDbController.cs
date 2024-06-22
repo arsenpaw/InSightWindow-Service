@@ -9,9 +9,11 @@ using InSightWindowAPI.Models;
 using System.Diagnostics;
 using AutoMapper;
 using InSightWindowAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InSightWindowAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DevicesDbController : ControllerBase
@@ -114,6 +116,23 @@ namespace InSightWindowAPI.Controllers
                 return StatusCode(500, "Error, in deleting ");
             }
             
+        }
+        
+        [HttpGet("DeviceOfUser/{userId}")]
+        public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDeviceList(Guid userId)
+        {
+            if (_context.Devices == null)
+            {
+                return Problem("Entity set 'UsersContext.Devices'  is null.");
+            }
+
+            var devices = await _context.Devices
+                                    . Where(x => x.UserId == userId)
+                                    .ToListAsync();
+
+            var deviceList = _mapper.Map<List<DeviceDto>>(devices);
+
+            return Ok(deviceList);
         }
 
         private bool DeviceExists(Guid id)

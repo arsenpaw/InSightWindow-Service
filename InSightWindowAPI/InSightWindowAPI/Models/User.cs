@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace InSightWindowAPI.Models
 {
@@ -21,6 +22,8 @@ namespace InSightWindowAPI.Models
         [Required]
         public string LastName { get; set; }
 
-        public ICollection<Device>? Devices { get; set; } = new List<Device>();
+        public Role Role { get; set; } = new Role();
+
+        public ICollection<Device> Devices { get; set; } = new List<Device>();
     }
 }
