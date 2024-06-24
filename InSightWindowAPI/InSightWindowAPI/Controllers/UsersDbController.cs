@@ -6,10 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models;
-using Microsoft.AspNetCore.Diagnostics;
-using System.Diagnostics;
 using AutoMapper;
-using Newtonsoft.Json;
 using InSightWindowAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using InSightWindowAPI.JwtSetting;
@@ -18,6 +15,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using InSightWindowAPI.Enums;
+using System.Net;
+using System.Net.Http;
+using System.Web;
+using Azure;
+
 
 namespace InSightWindowAPI.Controllers
 {
@@ -170,9 +172,14 @@ namespace InSightWindowAPI.Controllers
             {
                 return Unauthorized("Invalid email or password.");
             }
+            var token = await GenerateToken(user);
+            var result = new ObjectResult(Ok())
+            {
+                StatusCode = 200
+            };
 
-            var token = GenerateToken(user);
-            return Ok(new { Token = token });
+            Response.Headers.Add("Bearer", token.ToString());
+            return result;  
         }
 
         // DELETE: api/UsersDb/5
@@ -197,12 +204,13 @@ namespace InSightWindowAPI.Controllers
             return NoContent();
         }
 
-        private string GenerateToken(User user)
+        private async Task <string> GenerateToken(User user)
         {
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role.RoleName)
+                new Claim(ClaimTypes.Role, user.Role.RoleName),
+              
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
