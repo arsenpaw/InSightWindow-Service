@@ -57,9 +57,9 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
-
             var users = await _context.Users.ToListAsync();
             var dtoUsers = _mapper.Map<List<UserDto>>(users);
+
             return Ok(dtoUsers);
         }
 
@@ -71,14 +71,14 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
-
             var user = await _context.Users.FindAsync(id);
+
             if (user == null)
             {
                 return NotFound();
             }
-
             var userDto = _mapper.Map<UserDto>(user);
+
             return Ok(userDto);
         }
 
@@ -87,13 +87,14 @@ namespace InSightWindowAPI.Controllers
         public async Task<IActionResult> PutUser(Guid id, UserDto user)
         {
             var foundUser = await _context.Users.FindAsync(id);
+
             if (foundUser == null)
             {
                 return NotFound();
             }
-
             var oldUserToCompare = _mapper.Map<UserDto>(foundUser);
             var newUserToCompare = _mapper.Map<UserDto>(user);
+
             if (oldUserToCompare.Equals(newUserToCompare))
             {
                 return new NoChanges();
@@ -130,10 +131,8 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
-
             user.Devices.Add(device);
             await _context.SaveChangesAsync();
-
             var userDto = _mapper.Map<UserDto>(user);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
@@ -148,13 +147,12 @@ namespace InSightWindowAPI.Controllers
             {
                 return Problem("Entity set 'UsersContext.Users' is null.");
             }
-
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
+
             if (existingUser != null)
             {
                 return Conflict("This email has already been used.");
             }
-
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             var userEntity = _mapper.Map<User>(user);
             _context.Users.Add(userEntity);
@@ -168,17 +166,15 @@ namespace InSightWindowAPI.Controllers
         public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userLogin.Email);
+
             if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
             {
                 return Unauthorized("Invalid email or password.");
             }
             var token = await GenerateToken(user);
-            var result = new ObjectResult(Ok())
-            {
-                StatusCode = 200
-            };
-
+            var result = new ObjectResult(Ok());
             Response.Headers.Add("Bearer", token.ToString());
+
             return result;  
         }
 
@@ -191,13 +187,11 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
-
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
@@ -215,6 +209,7 @@ namespace InSightWindowAPI.Controllers
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
             var token = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,

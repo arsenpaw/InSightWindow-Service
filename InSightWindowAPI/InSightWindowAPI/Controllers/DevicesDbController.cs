@@ -39,6 +39,7 @@ namespace InSightWindowAPI.Controllers
             var devices = await _context.Devices.ToListAsync();
             List<DeviceDto> deviseDto = new List<DeviceDto>(); 
             foreach (var item in devices) { deviseDto.Add(_mapper.Map<DeviceDto>(item)); }
+
             return deviseDto;
         }
 
@@ -62,6 +63,7 @@ namespace InSightWindowAPI.Controllers
         public async Task<IActionResult> PutDevice(Guid id, DeviceDto device)
         {
             var deviceToChange = await _context.Devices.FirstOrDefaultAsync(x => x.Id == id);
+
             if (deviceToChange == null ) { return NotFound();}
             
             try
@@ -100,6 +102,7 @@ namespace InSightWindowAPI.Controllers
                 return NotFound();
             }
             var device = await _context.Devices.FindAsync(id);
+
             if (device == null)
             {
                 return NotFound();
