@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using InSightWindowAPI.JwtSetting;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -28,7 +30,16 @@ builder.Services.AddControllers()
 // Add services to the container
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UsersContext>(options =>
@@ -89,5 +100,5 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHub<ClientStatusHub>("/client-hub");
 app.MapHub<UserInputHub>("/user-input-hub");
-
 app.Run();
+

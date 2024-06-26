@@ -13,6 +13,7 @@ namespace InSightWindowAPI.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Device> Devices { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; } 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,10 @@ namespace InSightWindowAPI.Models
                 .HasOne(u => u.Role)
                 .WithOne(x => x.User)
                 .HasForeignKey<Role>(x => x.UserId);
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.RefreshToken)
+                .WithOne(x => x.User)
+                .HasForeignKey<RefreshToken>(x => x.UserId);
 
 
         }

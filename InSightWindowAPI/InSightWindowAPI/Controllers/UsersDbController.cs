@@ -19,6 +19,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using Azure;
+using System.Security.Cryptography;
 
 
 namespace InSightWindowAPI.Controllers
@@ -120,6 +121,26 @@ namespace InSightWindowAPI.Controllers
 
             return NoContent();
         }
+        // CHANGE THIS LATER !!!!!!!!!!!!!
+        [HttpDelete("{id}")]
+        // [Authorize(Roles = UserRole.ADMIN)]
+        [AllowAnonymous]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            if (_context.Users == null)
+            {
+                return NotFound();
+            }
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
         [HttpPut("BindTo/{userId}/{deviceId}")]
         public async Task<IActionResult> BindDevice(Guid userId, Guid deviceId)
@@ -136,7 +157,7 @@ namespace InSightWindowAPI.Controllers
             var userDto = _mapper.Map<UserDto>(user);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
-            return Ok(new { User =userDto.FirstName.Union(userDto.LastName), Device = deviceDto });
+            return Ok(new { User = userDto.FirstName.Union(userDto.LastName), Device = deviceDto });
         }
 
         [HttpPost("create")]
@@ -155,6 +176,7 @@ namespace InSightWindowAPI.Controllers
             }
             user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
             var userEntity = _mapper.Map<User>(user);
+            userEntity.RefreshToken = await GenerateRefreshToken();
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
 
@@ -172,31 +194,77 @@ namespace InSightWindowAPI.Controllers
                 return Unauthorized("Invalid email or password.");
             }
             var token = await GenerateToken(user);
+            var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(u => u.UserId == user.Id);
+
+            if (refreshToken.ExpitedDate <DateTime.Now)
+            {
+                var newRefreshToken = await GenerateRefreshToken();  
+                _mapper.Map(newRefreshToken,refreshToken);
+                await _context.SaveChangesAsync();
+               
+            }
+            // при новому логіні ревшер токен новий чи нє 
+            await SetRefreshToken(refreshToken);
             var result = new ObjectResult(Ok());
             Response.Headers.Add("Bearer", token.ToString());
 
-            return result;  
+            return result;
         }
-
-        // DELETE: api/UsersDb/5
-        [HttpDelete("{id}")]
-        [Authorize(Roles =UserRole.ADMIN)]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        [HttpPost("refresh-tokens")]
+        [AllowAnonymous]
+        public async Task<ActionResult<string>> RefreshTokens()
         {
-            if (_context.Users == null)
+           var refreshToken = Request.Cookies["refreshToken"];
+           var oldRefreshTokenObj =  await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken);
+
+           if (oldRefreshTokenObj == null) 
+                 return Unauthorized("Invalid refresh token");
+           if(oldRefreshTokenObj.ExpitedDate < DateTime.Now)
             {
-                return NotFound();
+                // ATTENTION
+                return Unauthorized();
             }
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            _context.Users.Remove(user);
+           //update refresh token
+            var newRefreshToken = await GenerateRefreshToken();
+            _mapper.Map(newRefreshToken, oldRefreshTokenObj); 
+            await SetRefreshToken(newRefreshToken);
+
+            //update default token
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == oldRefreshTokenObj.UserId);
+            string token = await GenerateToken(user);
+
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            var result = new ObjectResult(Ok());
+            Response.Headers.Add("Bearer", token.ToString());
+
+            return Ok();
+
+        }   
+
+            
+        private async Task SetRefreshToken(RefreshToken refreshToken)
+        {
+            var cookieOption = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = refreshToken.ExpitedDate,
+
+            };
+            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOption);
         }
+
+        private async Task<RefreshToken> GenerateRefreshToken()
+        {
+            var refreshToken = new RefreshToken
+            {
+                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                ExpitedDate = DateTime.Now.AddMonths(3),
+            };
+            return refreshToken;
+        }
+
+        
 
         private async Task <string> GenerateToken(User user)
         {

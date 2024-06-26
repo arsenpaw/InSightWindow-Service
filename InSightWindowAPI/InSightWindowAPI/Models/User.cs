@@ -25,5 +25,7 @@ namespace InSightWindowAPI.Models
         public Role Role { get; set; } = new Role();
 
         public ICollection<Device> Devices { get; set; } = new List<Device>();
+        
+        public RefreshToken RefreshToken { get; set; }
     }
 }
