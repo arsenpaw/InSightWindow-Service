@@ -39,6 +39,13 @@ namespace InSightWindowAPI.Controllers
 
             return Ok(new JwtSecurityTokenHandler().WriteToken(token));
         }
+        [HttpGet("utc")]
+        public IActionResult Ee()
+        {
+
+
+            return Ok($"{DateTime.Now} - now, {DateTime.UtcNow} - utc ");
+        }
     }
 
 

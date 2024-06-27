@@ -197,7 +197,7 @@ namespace InSightWindowAPI.Controllers
             var token = await GenerateToken(user);
             var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(u => u.UserId == user.Id);
 
-            if (refreshToken.ExpitedDate <DateTime.Now)
+            if (refreshToken.ExpitedDate <DateTime.UtcNow)
             {
                 var newRefreshToken = await GenerateRefreshToken();  
                 _mapper.Map(newRefreshToken,refreshToken);
@@ -214,11 +214,11 @@ namespace InSightWindowAPI.Controllers
             {
                 return BadRequest("Refresh token is missing");
             }
-            var oldRefreshTokenObj =  await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken);
+            var oldRefreshTokenObj =  await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken.ToString());
 
            if (oldRefreshTokenObj == null) 
                  return Unauthorized("Invalid refresh token");
-           if(oldRefreshTokenObj.ExpitedDate < DateTime.Now)
+           if(oldRefreshTokenObj.ExpitedDate < DateTime.UtcNow)
                 return Unauthorized("Token expired");
      
            //update refresh token
@@ -241,8 +241,8 @@ namespace InSightWindowAPI.Controllers
         private async Task<ObjectResult> CreatResponceWithTokens(string token,RefreshToken refreshToken)
         {
             var result = new ObjectResult(Ok());
-            Response.Headers.Add("Token", token.ToString());
-            Response.Headers.Add("Refresh-Token", refreshToken.Token.ToString());
+            Response.Headers.Add("token", token.ToString());
+            Response.Headers.Add("refresh-token", refreshToken.Token.ToString());
             return result;
         }
 
@@ -253,7 +253,7 @@ namespace InSightWindowAPI.Controllers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                ExpitedDate = DateTime.Now.AddMonths(3),
+                ExpitedDate = DateTime.UtcNow.AddMonths(3),
             };
             return refreshToken;
         }
@@ -276,7 +276,7 @@ namespace InSightWindowAPI.Controllers
                 issuer: _jwtSettings.Issuer,
                 audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(_jwtSettings.ExpiryMinutes),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
                 signingCredentials: creds
             );
 
