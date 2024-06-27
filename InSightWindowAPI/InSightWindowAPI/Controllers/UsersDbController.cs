@@ -210,16 +210,17 @@ namespace InSightWindowAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<string>> RefreshTokens()
         {
-           var refreshToken = Request.Cookies["refreshToken"];
-           var oldRefreshTokenObj =  await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken);
+            if (!Request.Headers.TryGetValue("refresh-token", out var refreshToken))
+            {
+                return BadRequest("Refresh token is missing");
+            }
+            var oldRefreshTokenObj =  await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken);
 
            if (oldRefreshTokenObj == null) 
                  return Unauthorized("Invalid refresh token");
            if(oldRefreshTokenObj.ExpitedDate < DateTime.Now)
-            {
-                // ATTENTION
-                return Unauthorized();
-            }
+                return Unauthorized("Token expired");
+     
            //update refresh token
             var newRefreshToken = await GenerateRefreshToken();
             _mapper.Map(newRefreshToken, oldRefreshTokenObj); 
