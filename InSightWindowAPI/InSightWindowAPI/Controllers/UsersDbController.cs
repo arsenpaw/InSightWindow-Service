@@ -20,6 +20,7 @@ using System.Net.Http;
 using System.Web;
 using Azure;
 using System.Security.Cryptography;
+using NuGet.Common;
 
 
 namespace InSightWindowAPI.Controllers
@@ -200,15 +201,10 @@ namespace InSightWindowAPI.Controllers
             {
                 var newRefreshToken = await GenerateRefreshToken();  
                 _mapper.Map(newRefreshToken,refreshToken);
-               // тут бага
-               
             }
-            // при новому логіні ревшер токен новий чи нє 
-            await SetRefreshToken(refreshToken);
-            var result = new ObjectResult(Ok());
-            Response.Headers.Add("Bearer", token.ToString());
+
             await _context.SaveChangesAsync();
-            return result;
+            return await CreatResponceWithTokens(token, refreshToken);
         }
         [HttpPost("refresh-tokens")]
         [AllowAnonymous]
@@ -227,7 +223,7 @@ namespace InSightWindowAPI.Controllers
            //update refresh token
             var newRefreshToken = await GenerateRefreshToken();
             _mapper.Map(newRefreshToken, oldRefreshTokenObj); 
-            await SetRefreshToken(newRefreshToken);
+           
 
             //update default token
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == oldRefreshTokenObj.UserId);
@@ -235,27 +231,21 @@ namespace InSightWindowAPI.Controllers
 
             await _context.SaveChangesAsync();
 
-            var result = new ObjectResult(Ok());
-            Response.Headers.Add("Bearer", token.ToString());
 
-            return Ok();
 
-        }   
+            return await CreatResponceWithTokens(token, newRefreshToken);
 
-            
-        private async Task SetRefreshToken(RefreshToken refreshToken)
-        {
-            var cookieOption = new CookieOptions
-            {
-                HttpOnly = true,
-                IsEssential = true,
-                Expires = refreshToken.ExpitedDate,
-                Secure = true,
-                SameSite = SameSiteMode.None
-
-            };
-            HttpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOption);
         }
+
+        private async Task<ObjectResult> CreatResponceWithTokens(string token,RefreshToken refreshToken)
+        {
+            var result = new ObjectResult(Ok());
+            Response.Headers.Add("Token", token.ToString());
+            Response.Headers.Add("Refresh-Token", refreshToken.Token.ToString());
+            return result;
+        }
+
+    
 
         private async Task<RefreshToken> GenerateRefreshToken()
         {
