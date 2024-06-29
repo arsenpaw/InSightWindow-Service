@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using InSightWindowAPI.Models.DeviceModel;
 
 namespace InSightWindowAPI.Models
 {

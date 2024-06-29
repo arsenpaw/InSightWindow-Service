@@ -142,8 +142,9 @@ namespace InSightWindowAPI.Controllers
 
             return NoContent();
         }
-
+        //temporary
         [HttpPut("BindTo/{userId}/{deviceId}")]
+        [AllowAnonymous]
         public async Task<IActionResult> BindDevice(Guid userId, Guid deviceId)
         {
             var user = await _context.Users.Include(u => u.Devices).FirstOrDefaultAsync(u => u.Id == userId);

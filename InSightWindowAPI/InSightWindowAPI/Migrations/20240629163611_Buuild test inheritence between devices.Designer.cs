@@ -4,6 +4,7 @@ using InSightWindowAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InSightWindowAPI.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20240629163611_Buuild test inheritence between devices")]
+    partial class Buuildtestinheritencebetweendevices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace InSightWindowAPI.Migrations
 
                     b.ToTable("Devices");
 
-                    b.HasDiscriminator<string>("DeviceType").HasValue("Device");
+                    b.HasDiscriminator<string>("DeviceType").HasValue("BulbTest");
 
                     b.UseTphMappingStrategy();
                 });
@@ -136,7 +139,7 @@ namespace InSightWindowAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7cc40a34-8d4b-459e-8c87-e02d397f9af3"),
+                            Id = new Guid("e02814f3-4673-4cbb-b022-b3a7133b1a22"),
                             DeviceType = "BulbTest",
                             LightPowered = 24,
                             isOn = true
@@ -155,7 +158,7 @@ namespace InSightWindowAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dd08d963-3a5c-4d53-a941-f83e863d2f8e"),
+                            Id = new Guid("92381f13-15eb-4ed4-ad57-19b0ef46b57d"),
                             DeviceType = "Window",
                             isOpen = true
                         });

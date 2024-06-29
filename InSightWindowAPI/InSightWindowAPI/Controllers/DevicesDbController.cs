@@ -10,10 +10,11 @@ using System.Diagnostics;
 using AutoMapper;
 using InSightWindowAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
+using InSightWindowAPI.Models.DeviceModel;
 
 namespace InSightWindowAPI.Controllers
 {
-    [Authorize]
+   
     [Route("api/[controller]")]
     [ApiController]
     public class DevicesDbController : ControllerBase
@@ -36,11 +37,8 @@ namespace InSightWindowAPI.Controllers
           {
               return NotFound();
           }
-            var devices = await _context.Devices.ToListAsync();
-            List<DeviceDto> deviseDto = new List<DeviceDto>(); 
-            foreach (var item in devices) { deviseDto.Add(_mapper.Map<DeviceDto>(item)); }
-
-            return deviseDto;
+            List<Device> allDevices = await _context.Devices.ToListAsync();
+             return _mapper.Map<List<DeviceDto>>(allDevices);
         }
 
         [HttpGet("{id}")]

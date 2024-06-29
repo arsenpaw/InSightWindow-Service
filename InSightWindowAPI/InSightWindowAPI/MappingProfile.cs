@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using InSightWindowAPI.Models;
+using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Models.Dto;
 using System.Diagnostics;
 
@@ -18,6 +19,7 @@ namespace InSightWindowAPI
             CreateMap<UserDto, UserDto>();
             CreateMap<UserDto, User>();
             CreateMap<Device, DeviceDto>();
+         //   CreateMap<List<Device>,List<DeviceDto>>();
             CreateMap<DeviceDto, Device>();
             CreateMap<RefreshToken, RefreshToken>()
                 .ForMember( dest => dest.UserId, opt => opt.Ignore())

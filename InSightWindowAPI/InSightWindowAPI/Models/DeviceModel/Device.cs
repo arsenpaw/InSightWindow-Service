@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations; 
 using System.Reflection.Metadata;
 using InSightWindowAPI.Models.Dto;
 
-namespace InSightWindowAPI.Models
+namespace InSightWindowAPI.Models.DeviceModel
 {
-    public class Device
+    public abstract class Device
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; private set; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
 
-        [Required]
-        public string Name { get; set; } = null!;
+        public required string DeviceType { get; set; } 
 
         public Guid? UserId { get; set; }
 

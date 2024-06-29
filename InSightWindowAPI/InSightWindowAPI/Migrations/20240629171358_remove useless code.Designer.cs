@@ -4,6 +4,7 @@ using InSightWindowAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InSightWindowAPI.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20240629171358_remove useless code")]
+    partial class removeuselesscode
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,7 +139,7 @@ namespace InSightWindowAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("7cc40a34-8d4b-459e-8c87-e02d397f9af3"),
+                            Id = new Guid("4baf082a-4749-4f6a-8c41-17a85f26377e"),
                             DeviceType = "BulbTest",
                             LightPowered = 24,
                             isOn = true
@@ -155,7 +158,7 @@ namespace InSightWindowAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("dd08d963-3a5c-4d53-a941-f83e863d2f8e"),
+                            Id = new Guid("8172f5a4-656f-47cf-accf-6d97a9c8936c"),
                             DeviceType = "Window",
                             isOpen = true
                         });
