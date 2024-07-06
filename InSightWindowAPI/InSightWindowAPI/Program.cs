@@ -11,7 +11,7 @@ using InSightWindowAPI.JwtSetting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
-string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+string myCorses = "AllowAllOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,11 +51,27 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 // Configure authentication
 builder.Services.AddAuthentication(options =>
 {
+    
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    
 })
 .AddJwtBearer(options =>
 {
+    options.Events = new JwtBearerEvents
+    { 
+        OnMessageReceived = context =>
+        {
+            var accesToken = context.Request.Headers.FirstOrDefault(head => head.Key == "token").Value;
+
+            if (!string.IsNullOrEmpty(accesToken))
+            {
+                context.Token = accesToken; 
+            }
+            return Task.CompletedTask;
+        }
+    
+    };
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -71,14 +87,11 @@ builder.Services.AddAuthentication(options =>
 // Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+    options.AddPolicy(name: myCorses, builder =>
     {
-        builder.WithOrigins(
-            "https://localhost:44324",
-            "http://localhost:81")
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
     });
 });
 
@@ -91,7 +104,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors(myCorses);
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

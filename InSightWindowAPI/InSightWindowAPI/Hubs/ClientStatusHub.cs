@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using InSightWindowAPI.Models.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InSightWindowAPI.Hubs
 {
+    [Authorize]
     public class ClientStatusHub : Hub
     {
        
