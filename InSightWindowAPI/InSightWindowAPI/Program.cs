@@ -58,20 +58,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.Events = new JwtBearerEvents
-    { 
-        OnMessageReceived = context =>
-        {
-            var accesToken = context.Request.Headers.FirstOrDefault(head => head.Key == "token").Value;
-
-            if (!string.IsNullOrEmpty(accesToken))
-            {
-                context.Token = accesToken; 
-            }
-            return Task.CompletedTask;
-        }
-    
-    };
+  
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,

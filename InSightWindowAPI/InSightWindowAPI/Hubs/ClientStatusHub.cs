@@ -12,12 +12,20 @@ namespace InSightWindowAPI.Hubs
     [Authorize]
     public class ClientStatusHub : Hub
     {
-       
+        public override Task OnConnectedAsync()
+        {
+            var userId = Context.UserIdentifier;
+          
+            return base.OnConnectedAsync();
+        }
+
         public async Task SendWindowStatusObject(WindowStatus windowStatus)
         {
             try
             {
                 await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
+
+                
             }
             catch (Exception ex)
             {

@@ -18,9 +18,12 @@ namespace InSightWindowAPI
             CreateMap<User, UserDto>();        
             CreateMap<UserDto, UserDto>();
             CreateMap<UserDto, User>();
+
             CreateMap<Device, DeviceDto>();
+                  
          //   CreateMap<List<Device>,List<DeviceDto>>();
-            CreateMap<DeviceDto, Device>();
+            CreateMap<DeviceDto, Device>()
+                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<RefreshToken, RefreshToken>()
                 .ForMember( dest => dest.UserId, opt => opt.Ignore())
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
