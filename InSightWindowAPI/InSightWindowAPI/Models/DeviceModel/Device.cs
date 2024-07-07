@@ -5,7 +5,7 @@ using InSightWindowAPI.Models.Dto;
 
 namespace InSightWindowAPI.Models.DeviceModel
 {
-    public abstract class Device
+    public  class Device
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
