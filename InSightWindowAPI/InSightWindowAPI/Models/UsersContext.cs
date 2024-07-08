@@ -35,13 +35,7 @@ namespace InSightWindowAPI.Models
             modelBuilder.Entity<Device>()
                 .UseTphMappingStrategy()
                 .HasDiscriminator<string>("DeviceType"); 
-            modelBuilder.Entity<Window>().HasData(
-              new Window { DeviceType = nameof(Window), isOpen = true }
-          );
 
-            modelBuilder.Entity<BulbTest>().HasData(
-                new BulbTest { DeviceType = nameof(BulbTest), isOn = true, LightPowered = 24 }
-            );
 
         }
     }

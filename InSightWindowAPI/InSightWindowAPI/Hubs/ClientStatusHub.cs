@@ -6,25 +6,46 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
 using InSightWindowAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
+using InSightWindowAPI.Models;
+using Microsoft.EntityFrameworkCore;
+using InSightWindowAPI.Models.DeviceModel;
 
 namespace InSightWindowAPI.Hubs
 {
     [Authorize]
     public class ClientStatusHub : Hub
     {
-        public override Task OnConnectedAsync()
+        private readonly UsersContext _context;
+
+        public ClientStatusHub(UsersContext context)
         {
+            _context = context;
+        }
+        public async Task<string> GetTargetUserIdOrDefault(Device device)
+        {
+             Device foundDevice =   await _context.Devices.FirstOrDefaultAsync(x => x.Id == device.Id);
+            return foundDevice != null ? foundDevice.UserId.ToString() : null;
+        }
+
+        public override  Task OnConnectedAsync()
+        {
+         
             var userId = Context.UserIdentifier;
           
             return base.OnConnectedAsync();
         }
 
-        public async Task SendWindowStatusObject(WindowStatus windowStatus)
+        public async Task SendWindowStatusObject(AllWindowDataDto windowStatus)
         {
             try
             {
-                await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
-
+                if (windowStatus.UserId != null)
+                    await Clients.User(windowStatus.UserId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
+                else
+                {
+                    var userId = await GetTargetUserIdOrDefault(windowStatus);
+                    await Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
+                }
                 
             }
             catch (Exception ex)
@@ -35,7 +56,7 @@ namespace InSightWindowAPI.Hubs
 
         public async Task SendWindowStatus(string message)
         {
-            var windowStatus = JsonConvert.DeserializeObject<WindowStatus>(message);
+            var windowStatus = JsonConvert.DeserializeObject<AllWindowDataDto>(message);
             await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
         }
     }

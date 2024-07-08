@@ -2,6 +2,13 @@
 {
     public class Window : Device
     {
-       public bool isOpen { get; set; }
+
+        public string IsOpen { get; set; }
+
+        public int isAlarm { get; set; }
+
+        public string IsProtected { get; set; }
+
+
     }
 }

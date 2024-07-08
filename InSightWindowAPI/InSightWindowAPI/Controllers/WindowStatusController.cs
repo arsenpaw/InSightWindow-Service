@@ -10,6 +10,11 @@ using System.Data.Common;
 using Websocket.Client;
 using System.Data;
 using InSightWindowAPI.Models.Dto;
+using InSightWindowAPI.Hubs;
+using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using InSightWindowAPI.Models.DeviceModel;
+using InSightWindowAPI.Models;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -20,40 +25,42 @@ namespace InSightWindowAPI.Controllers
     {
         public IMemoryCache _cache { get;  set; }
 
-        //REMOVE THIS
-        HubConnection hubConnection = new HubConnectionBuilder()
-                  .WithUrl(new Uri($"http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-                 //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
-                 .WithAutomaticReconnect()
-               .Build();
-        public WindowStatusController(IMemoryCache memoryCache)
+        private readonly UsersContext _context;
+
+        private readonly IHubContext<ClientStatusHub> _hubContext;
+
+        private async Task<string> GetTargetUserIdOrDefault(Device device)
+        {
+            var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == device.Id);
+            return foundDevice != null ? foundDevice.UserId.ToString() : null;
+        }
+
+        public WindowStatusController(IMemoryCache memoryCache, IHubContext<ClientStatusHub> hubContext, UsersContext context)
         {
             _cache = memoryCache;
+            _hubContext = hubContext;
+            _context = context;
         }
 
         [HttpPost]
-        public async Task<IActionResult> WriteDataToCacheAsync([FromBody] WindowStatus windowStatus)
+        public async Task<IActionResult> WriteDataToCacheAsync([FromBody] AllWindowDataDto windowStatus)
         {
 
             try
-            { 
-                await hubConnection.StartAsync();
-                if (hubConnection.State == HubConnectionState.Connected)
-                {
-                    await hubConnection.SendAsync("SendWindowStatusObject", windowStatus);
-                    _cache.Set(nameof(WindowStatus), windowStatus);   
-                    await hubConnection.StopAsync();
-                    return Ok($"Data received:  T: {windowStatus.Temparature}, H {windowStatus.Humidity},WATER {windowStatus.isRain}," +
-                    $"IS_PROTECTED {windowStatus.IsProtected}, IS_OPEN {windowStatus.IsOpen}");
-                }
+            {
+                if (windowStatus.UserId != null)
+                    await _hubContext.Clients.User(windowStatus.UserId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
                 else
                 {
-                    return BadRequest($"Server disconected from SinglR hub");
+                    var userId = await GetTargetUserIdOrDefault(windowStatus);
+                    await _hubContext.Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
                 }
+                return Ok();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                Debug.WriteLine(ex.Data);
+                return StatusCode(500);
             }
         }
         [HttpGet]
@@ -86,7 +93,7 @@ namespace InSightWindowAPI.Controllers
         {
             try
             {
-                var data = _cache.Get<WindowStatus>(nameof(WindowStatus));
+                var data = _cache.Get<AllWindowDataDto>(nameof(AllWindowDataDto));
                 if (data != null)
                 {
                     Console.WriteLine("Data retrieved from cache successfully.");

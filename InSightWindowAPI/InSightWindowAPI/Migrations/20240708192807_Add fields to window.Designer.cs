@@ -4,6 +4,7 @@ using InSightWindowAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InSightWindowAPI.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20240708192807_Add fields to window")]
+    partial class Addfieldstowindow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,6 +141,9 @@ namespace InSightWindowAPI.Migrations
                 {
                     b.HasBaseType("InSightWindowAPI.Models.DeviceModel.Device");
 
+                    b.Property<int>("Humidity")
+                        .HasColumnType("int");
+
                     b.Property<string>("IsOpen")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -146,7 +152,13 @@ namespace InSightWindowAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Temparature")
+                        .HasColumnType("int");
+
                     b.Property<int>("isAlarm")
+                        .HasColumnType("int");
+
+                    b.Property<int>("isRain")
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Window");
