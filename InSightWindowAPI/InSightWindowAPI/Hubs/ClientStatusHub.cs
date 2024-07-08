@@ -39,12 +39,13 @@ namespace InSightWindowAPI.Hubs
         {
             try
             {
-                if (windowStatus.UserId != null)
-                    await Clients.User(windowStatus.UserId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
+
+                var userId = await GetTargetUserIdOrDefault(windowStatus);
+                if (userId != null) 
+                    await Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
                 else
                 {
-                    var userId = await GetTargetUserIdOrDefault(windowStatus);
-                    await Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
+
                 }
                 
             }

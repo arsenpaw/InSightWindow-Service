@@ -48,14 +48,14 @@ namespace InSightWindowAPI.Controllers
 
             try
             {
-                if (windowStatus.UserId != null)
-                    await _hubContext.Clients.User(windowStatus.UserId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
-                else
+                var userId = await GetTargetUserIdOrDefault(windowStatus);
+                if (userId != null)
                 {
-                    var userId = await GetTargetUserIdOrDefault(windowStatus);
                     await _hubContext.Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
+                    return Ok();
                 }
-                return Ok();
+                else
+                    return NotFound("Cannot found user with this type of device");
             }
             catch (Exception ex)
             {
