@@ -138,7 +138,7 @@ namespace InSightWindowAPI.Migrations
                 {
                     b.HasBaseType("InSightWindowAPI.Models.DeviceModel.Device");
 
-                    b.Property<string>("IsOpen")
+                    b.Property<string>("IsOpenButton")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

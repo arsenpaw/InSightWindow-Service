@@ -43,7 +43,7 @@ namespace InSightWindowAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> WriteDataToCacheAsync([FromBody] AllWindowDataDto windowStatus)
+        public async Task<IActionResult> SendWidnowStatusToClient([FromBody] AllWindowDataDto windowStatus)
         {
 
             try
@@ -65,11 +65,11 @@ namespace InSightWindowAPI.Controllers
         }
         [HttpGet]
         [Route("getUserInput")]
-        public async Task<IActionResult> GetUserInput()
+        public async Task<IActionResult> GetUserInput(Guid deviceId)
         {
             try
             {
-                var data = _cache.Get<UserInputStatus>(nameof(UserInputStatus));
+                var data = _cache.Get<UserInputStatus>(deviceId.ToString());
                 if (data != null)
                 {
                     Console.WriteLine("Data retrieved from cache successfully.");
@@ -87,29 +87,7 @@ namespace InSightWindowAPI.Controllers
             }
         }
 
-        [HttpGet]
-        
-        public async Task<IActionResult> GetDataFromCash()
-        {
-            try
-            {
-                var data = _cache.Get<AllWindowDataDto>(nameof(AllWindowDataDto));
-                if (data != null)
-                {
-                    Console.WriteLine("Data retrieved from cache successfully.");
-                    return Ok(data);
-                }
-                else
-                {
-                    Console.WriteLine("Data not found in cache.");
-                    return NotFound("Cash is empty");
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
-        }
+       
 
 
     }

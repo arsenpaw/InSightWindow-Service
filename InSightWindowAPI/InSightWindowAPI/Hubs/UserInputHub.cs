@@ -18,13 +18,13 @@ namespace InSightWindowAPI.Hubs
         }
         public async Task SaveUserInput(UserInputStatus userInputStatus)
         {
-            _cache.Set(nameof(UserInputStatus), userInputStatus);
-            await Task.Run(() => SendUserInputResponce());
+            _cache.Set(userInputStatus.DeviceId.ToString(), userInputStatus);
+            await SendUserInputResponce(userInputStatus);
         }
-        public async Task SendUserInputResponce()
+        public async Task SendUserInputResponce(UserInputStatus oldUserInputStatus)
         {
             await Task.Delay(2500);
-            var userInputStatus = _cache.Get<AllWindowDataDto>(nameof(AllWindowDataDto));
+            var userInputStatus = _cache.Get<AllWindowDataDto>(oldUserInputStatus.DeviceId.ToString());
             await Clients.All.SendAsync("ReceiveUserInputResponce", userInputStatus);
         }
     }

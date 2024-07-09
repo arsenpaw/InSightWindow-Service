@@ -24,10 +24,10 @@ namespace InSightWindowAPI.Migrations
             migrationBuilder.RenameColumn(
                 name: "isOpen",
                 table: "Devices",
-                newName: "IsOpen");
+                newName: "IsOpenButton");
 
             migrationBuilder.AlterColumn<string>(
-                name: "IsOpen",
+                name: "IsOpenButton",
                 table: "Devices",
                 type: "nvarchar(max)",
                 nullable: true,
@@ -90,7 +90,7 @@ namespace InSightWindowAPI.Migrations
                 table: "Devices");
 
             migrationBuilder.RenameColumn(
-                name: "IsOpen",
+                name: "IsOpenButton",
                 table: "Devices",
                 newName: "isOpen");
 

@@ -144,7 +144,7 @@ namespace InSightWindowAPI.Migrations
                     b.Property<int>("Humidity")
                         .HasColumnType("int");
 
-                    b.Property<string>("IsOpen")
+                    b.Property<string>("IsOpenButton")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

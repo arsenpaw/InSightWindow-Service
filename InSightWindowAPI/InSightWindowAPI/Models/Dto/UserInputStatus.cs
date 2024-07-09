@@ -2,9 +2,11 @@
 {
     public class UserInputStatus
     {
-        public bool isProtected { get; set; }
+        public Guid DeviceId { get; set; }  
 
-        public bool IsOpen { get; set; }
+        public bool IsProtectedButton { get; set; }
+
+        public bool IsOpenButton { get; set; }
 
     }
 }
