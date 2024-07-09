@@ -16,46 +16,31 @@ namespace InSightWindowAPI.Hubs
     public class ClientStatusHub : Hub
     {
         private readonly UsersContext _context;
+        private IMemoryCache _cache;
 
-        public ClientStatusHub(UsersContext context)
+        public ClientStatusHub(UsersContext context, IMemoryCache memoryCache)
         {
             _context = context;
+            _cache = memoryCache;
         }
+
         public async Task<string> GetTargetUserIdOrDefault(Device device)
         {
-             Device foundDevice =   await _context.Devices.FirstOrDefaultAsync(x => x.Id == device.Id);
+            Device foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == device.Id);
             return foundDevice != null ? foundDevice.UserId.ToString() : null;
+        }
+
+        public async Task SaveUserInput(UserInputStatus userInputStatus)
+        {
+            _cache.Set(userInputStatus.DeviceId.ToString(), userInputStatus);
         }
 
         public override  Task OnConnectedAsync()
         {
-         
-            var userId = Context.UserIdentifier;
-          
+            var userId = Context.UserIdentifier; 
             return base.OnConnectedAsync();
         }
 
-        public async Task SendWindowStatusObject(AllWindowDataDto windowStatus)
-        {
-            try
-            {
 
-                var userId = await GetTargetUserIdOrDefault(windowStatus);
-                if (userId != null) 
-                    await Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
-               
-                
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Data);
-            }
-        }
-
-        public async Task SendWindowStatus(string message)
-        {
-            var windowStatus = JsonConvert.DeserializeObject<AllWindowDataDto>(message);
-            await Clients.All.SendAsync("ReceiveWindowStatus", windowStatus);
-        }
     }
 }

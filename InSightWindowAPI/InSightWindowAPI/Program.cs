@@ -99,6 +99,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<ClientStatusHub>("/client-hub");
-app.MapHub<UserInputHub>("/user-input-hub");
 app.Run();
 

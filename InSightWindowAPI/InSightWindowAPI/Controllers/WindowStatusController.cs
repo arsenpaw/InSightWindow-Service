@@ -23,15 +23,16 @@ namespace InSightWindowAPI.Controllers
     [Route("[controller]")]
     public class WindowStatusController : ControllerBase
     {
-        public IMemoryCache _cache { get;  set; }
+        public IMemoryCache _cache { get; set; }
 
         private readonly UsersContext _context;
 
         private readonly IHubContext<ClientStatusHub> _hubContext;
 
-        private async Task<string> GetTargetUserIdOrDefault(Device device)
+
+        private async Task<string> GetTargetUserIdOrDefault(Guid deviceId)
         {
-            var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == device.Id);
+            var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
             return foundDevice != null ? foundDevice.UserId.ToString() : null;
         }
 
@@ -48,7 +49,7 @@ namespace InSightWindowAPI.Controllers
 
             try
             {
-                var userId = await GetTargetUserIdOrDefault(windowStatus);
+                var userId = await GetTargetUserIdOrDefault(windowStatus.Id);
                 if (userId != null)
                 {
                     await _hubContext.Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
@@ -78,7 +79,7 @@ namespace InSightWindowAPI.Controllers
                 else
                 {
                     Console.WriteLine("Data not found in cache.");
-                    return StatusCode(500,"No data");
+                    return StatusCode(500, "No data");
                 }
             }
             catch (Exception ex)
@@ -86,9 +87,27 @@ namespace InSightWindowAPI.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpPost]
+        [Route("sendDeviceResponce")]
+        public async Task<IActionResult> SetDeviceResponce(UserInputStatus deviceReply)
+        {
+            try
+            {
+                var userId = await GetTargetUserIdOrDefault(deviceReply.DeviceId);
+                if (userId != null)
+                {
+                    await _hubContext.Clients.User(userId).SendAsync("ReceiveUserInputResponce", deviceReply);
+                    return Ok();
+                }
+                else
+                    return NotFound("Cannot found user with this type of device");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Data);
+                return StatusCode(500);
+            }
 
-       
-
-
+        }
     }
 }

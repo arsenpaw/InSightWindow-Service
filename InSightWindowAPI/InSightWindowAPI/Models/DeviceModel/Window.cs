@@ -3,11 +3,11 @@
     public class Window : Device
     {
 
-        public string IsOpen { get; set; }
+        public bool IsOpen { get; set; }
 
         public int isAlarm { get; set; }
 
-        public string IsProtected { get; set; }
+        public bool IsProtected { get; set; }
 
 
     }
