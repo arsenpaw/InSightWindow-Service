@@ -10,7 +10,7 @@ namespace InSightWindowAPI.Models.Dto
 
         public int Humidity { get; set; }
 
-        public int isRain { get; set; }
+        public bool isRain { get; set; }
 
     }
 }
