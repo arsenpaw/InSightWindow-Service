@@ -21,7 +21,7 @@ using System.Web;
 using Azure;
 using System.Security.Cryptography;
 using NuGet.Common;
-
+using InSightWindow.Models;
 
 namespace InSightWindowAPI.Controllers
 {

@@ -11,6 +11,7 @@ using AutoMapper;
 using InSightWindowAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using InSightWindowAPI.Models.DeviceModel;
+using InSightWindow.Models;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -37,7 +38,7 @@ namespace InSightWindowAPI.Controllers
           {
               return NotFound();
           }
-            List<Device> allDevices = await _context.Devices.ToListAsync();
+            List<Device> allDevices = await _context.Devices.ToListAsync<Device>();
              return _mapper.Map<List<DeviceDto>>(allDevices);
         }
 

@@ -3,7 +3,7 @@ using InSightWindowAPI.Models;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Models.Dto;
 using System.Diagnostics;
-
+using InSightWindow.Models;
 namespace InSightWindowAPI
 {
     public class MappingProfile: Profile

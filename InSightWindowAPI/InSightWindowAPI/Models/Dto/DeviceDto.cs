@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace InSightWindowAPI.Models.Dto
+namespace InSightWindow.Models
 {
     public record DeviceDto
     {
