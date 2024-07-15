@@ -86,7 +86,7 @@ namespace InSightWindowAPI.Controllers
         public async Task<ActionResult<UserDto>> GetUser()
         {
             Guid id = HttpContext.GetUserIdFromClaims();    
-            if (_context.Users == null)
+            if (id == Guid.Empty)
             {
                 return NotFound();
             }

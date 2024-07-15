@@ -133,7 +133,6 @@ namespace InSightWindowAPI.Controllers
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role.RoleName),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
 
             };
 

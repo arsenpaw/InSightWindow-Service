@@ -8,12 +8,12 @@ namespace InSightWindowAPI.Controllers
         {
 
             var identity = httpContext.User.Identity as ClaimsIdentity;
-
-            // Gets list of claims.
+            if (identity == null) 
+                return Guid.Empty;
             IEnumerable<Claim> claim = identity.Claims;
-
-            // Gets name from claims. Generally it's an email address.
             var usernameClaim = claim.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+            if (usernameClaim == null)
+                return Guid.Empty;
             return new Guid(usernameClaim.Value);
         }
     }
