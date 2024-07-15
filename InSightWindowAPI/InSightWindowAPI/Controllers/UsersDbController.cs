@@ -22,6 +22,9 @@ using Azure;
 using System.Security.Cryptography;
 using NuGet.Common;
 using InSightWindow.Models;
+using Microsoft.IdentityModel.JsonWebTokens;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace InSightWindowAPI.Controllers
 {
@@ -49,6 +52,18 @@ namespace InSightWindowAPI.Controllers
             _mapper = mapper;
         }
 
+        private Guid GetUserIdFromClaims(HttpContext httpContext)
+        {
+
+            var identity = httpContext.User.Identity as ClaimsIdentity;
+
+            // Gets list of claims.
+            IEnumerable<Claim> claim = identity.Claims;
+
+            // Gets name from claims. Generally it's an email address.
+            var usernameClaim = claim.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
+            return new Guid(usernameClaim.Value);
+        }
         // GET: api/UsersDb
         [HttpGet]
         [Authorize(Roles = UserRole.ADMIN)]
@@ -65,9 +80,12 @@ namespace InSightWindowAPI.Controllers
         }
 
         // GET: api/UsersDb/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<UserDto>> GetUser(Guid id)
+        [HttpGet]
+        [Route("concreteUser")]
+        
+        public async Task<ActionResult<UserDto>> GetUser()
         {
+            Guid id = HttpContext.GetUserIdFromClaims();    
             if (_context.Users == null)
             {
                 return NotFound();
@@ -84,9 +102,11 @@ namespace InSightWindowAPI.Controllers
         }
 
         // PUT: api/UsersDb/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(Guid id, UserDto user)
+        [HttpPut]
+        [Route("concreteUser")]
+        public async Task<IActionResult> PutUser( UserDto user)
         {
+            Guid id = HttpContext.GetUserIdFromClaims();
             var foundUser = await _context.Users.FindAsync(id);
 
             if (foundUser == null)
@@ -122,11 +142,11 @@ namespace InSightWindowAPI.Controllers
             return NoContent();
         }
         // CHANGE THIS LATER !!!!!!!!!!!!!
-        [HttpDelete("{id}")]
-        // [Authorize(Roles = UserRole.ADMIN)]
-        [AllowAnonymous]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        [HttpDelete]
+        [Route("concreteUser")]
+        public async Task<IActionResult> DeleteUser()
         {
+            Guid id = HttpContext.GetUserIdFromClaims();
             if (_context.Users == null)
             {
                 return NotFound();
@@ -142,10 +162,10 @@ namespace InSightWindowAPI.Controllers
             return NoContent();
         }
         //temporary
-        [HttpPut("BindTo/{userId}/{deviceId}")]
-        [AllowAnonymous]
-        public async Task<IActionResult> BindDevice(Guid userId, Guid deviceId)
+        [HttpPut("BindTo/{deviceId}")]
+        public async Task<IActionResult> BindDevice( Guid deviceId)
         {
+            Guid userId = HttpContext.GetUserIdFromClaims();
             var user = await _context.Users.Include(u => u.Devices).FirstOrDefaultAsync(u => u.Id == userId);
             var device = await _context.Devices.Include(d => d.User).FirstOrDefaultAsync(d => d.Id == deviceId);
 

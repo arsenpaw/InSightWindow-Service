@@ -93,7 +93,7 @@ namespace InSightWindowAPI.Hubs
                     return "200 OK";
                 }
                 else
-                    return "202 No user subscribed";
+                    return "202  No user subscribed";
             }
             catch (Exception ex)
             {

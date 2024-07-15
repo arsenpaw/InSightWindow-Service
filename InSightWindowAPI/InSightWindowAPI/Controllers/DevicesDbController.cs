@@ -121,9 +121,10 @@ namespace InSightWindowAPI.Controllers
             
         }
         
-        [HttpGet("DeviceOfUser/{userId}")]
-        public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDeviceList(Guid userId)
+        [HttpGet("DeviceOfUser")]
+        public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDeviceList()
         {
+            Guid userId = HttpContext.GetUserIdFromClaims();
             if (_context.Devices == null)
             {
                 return Problem("Entity set 'UsersContext.Devices'  is null.");
