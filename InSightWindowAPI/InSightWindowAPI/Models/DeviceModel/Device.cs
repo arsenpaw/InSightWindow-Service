@@ -5,7 +5,7 @@ using InSightWindowAPI.Models.Dto;
 
 namespace InSightWindowAPI.Models.DeviceModel
 {
-    public class Device
+    public abstract class Device
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -13,8 +13,8 @@ namespace InSightWindowAPI.Models.DeviceModel
 
         public required string DeviceType { get; set; } 
 
-        public virtual Guid? UserId { get; set; }
+        public  Guid? UserId { get; set; }
 
-        public virtual User? User { get; set; }
+        public  User? User { get; set; }
     }
 }

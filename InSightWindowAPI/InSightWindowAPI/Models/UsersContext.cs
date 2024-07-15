@@ -1,8 +1,8 @@
-﻿
+﻿using NuGet.Protocol;
+using InSightWindowAPI.Models.DeviceModel;
+using System.Collections;
 using InSightWindowAPI.Models.DeviceModel;
 using Microsoft.EntityFrameworkCore;
-
-
 namespace InSightWindowAPI.Models
 {
     public class UsersContext : DbContext
@@ -38,5 +38,17 @@ namespace InSightWindowAPI.Models
 
 
         }
+        public class DeviceType
+        {
+            public List<string> AllowedDevice { get; init; } = new List<string>();
+            public DeviceType()
+            {
+                AllowedDevice.Add(nameof(Window));
+                AllowedDevice.Add(nameof(BulbTest));
+                AllowedDevice.Add(nameof(Device));
+            }
+        }
     }
 }
+
+
