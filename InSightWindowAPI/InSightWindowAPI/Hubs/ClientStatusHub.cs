@@ -19,11 +19,20 @@ namespace InSightWindowAPI.Hubs
         private IMemoryCache _cache;
         private ILogger<ClientStatusHub> _logger;
 
+       
+
         public ClientStatusHub(UsersContext context, IMemoryCache memoryCache, ILogger<ClientStatusHub> logger)
         {
             _context = context;
             _cache = memoryCache;
             _logger = logger;
+        }
+
+        public override Task OnConnectedAsync()
+        {
+            var userId = Context.UserIdentifier;
+            _logger.Log(LogLevel.Information, $"User {userId} connected to hub", userId);
+            return base.OnConnectedAsync();
         }
 
         public async Task<string> GetTargetUserIdOrDefault(Guid deviceId)
@@ -38,12 +47,7 @@ namespace InSightWindowAPI.Hubs
             _cache.Set(userInputStatus.DeviceId.ToString(), userInputStatus);
         }
 
-        public override  Task OnConnectedAsync()
-        {
-            Console.WriteLine("new user connected");
-            _logger.Log(LogLevel.Information, "User connected");
-            return base.OnConnectedAsync();
-        }
+       
 
         public void Test(string deviceId) 
         {
@@ -52,22 +56,24 @@ namespace InSightWindowAPI.Hubs
         }
         public async Task<string> SendUserInputToTargetDevice(UserInputStatus userInputStatus)
         {
-            if (userInputStatus == null) { _logger.Log(LogLevel.Information, "Null data received"); return "415 Unsuported Media Type"; }
+            if (userInputStatus == null || userInputStatus.DeviceId == Guid.Empty)  { _logger.Log(LogLevel.Information, "Null data received"); return "415 Unsuported Media Type"; }
             _logger.Log(LogLevel.Information, "Try to send data to device from hub");
 
             try
             {
                 Guid userJWTId = new Guid(Context.UserIdentifier);
-                var subscribedUser = await _context.Devices.Where(device => device.UserId == userJWTId).Select(colum => colum.Id).FirstOrDefaultAsync();
-                if (subscribedUser == userJWTId)
+                var subscribedUserId = await _context.Devices.Where(device => device.UserId == userJWTId && device.Id == userInputStatus.DeviceId).Select(colum => colum.Id).FirstOrDefaultAsync();
+                if (subscribedUserId == userJWTId)
                 {
                     // send data to microcontroller}
-                    _logger.Log(LogLevel.Information, "Data sened");
+
+                    await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput",userInputStatus);
+                    _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",userJWTId,userInputStatus.DeviceId);
                     return "200 OK";
                 }
                 else
                 {
-                    _logger.Log(LogLevel.Warning, $"User {userJWTId} has tried to hack the sending system", userJWTId);
+                    _logger.Log(LogLevel.Warning, "Suspicious activity detected from user  {userJWTId}", userJWTId);
                     return "401 Unauthorized ";
                 }
             }

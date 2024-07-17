@@ -44,25 +44,14 @@ namespace InSightWindowAPI.Controllers
     {
         private readonly UsersContext _context;
         private readonly IMapper _mapper;
-     
+        
+        private readonly ILogger<UsersDbController> _logger;    
 
-        public UsersDbController(UsersContext context, IMapper mapper)
+        public UsersDbController(ILogger<UsersDbController> logger,UsersContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-        }
-
-        private Guid GetUserIdFromClaims(HttpContext httpContext)
-        {
-
-            var identity = httpContext.User.Identity as ClaimsIdentity;
-
-            // Gets list of claims.
-            IEnumerable<Claim> claim = identity.Claims;
-
-            // Gets name from claims. Generally it's an email address.
-            var usernameClaim = claim.Where(x => x.Type == ClaimTypes.NameIdentifier).FirstOrDefault();
-            return new Guid(usernameClaim.Value);
+            _logger = logger;
         }
         // GET: api/UsersDb
         [HttpGet]
@@ -82,7 +71,6 @@ namespace InSightWindowAPI.Controllers
         // GET: api/UsersDb/5
         [HttpGet]
         [Route("concreteUser")]
-        
         public async Task<ActionResult<UserDto>> GetUser()
         {
             Guid id = HttpContext.GetUserIdFromClaims();    
@@ -126,17 +114,11 @@ namespace InSightWindowAPI.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("User has updated info from {@oldUserToCompare} to {@newUserToCompare} ", oldUserToCompare, newUserToCompare);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+               _logger.LogCritical("PUT UserDbController {@ex}", ex);
             }
 
             return NoContent();
@@ -158,27 +140,27 @@ namespace InSightWindowAPI.Controllers
             }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
-
+            _logger.LogInformation("User {@user} delete account", user );
             return NoContent();
         }
         //temporary
-        [HttpPut("BindTo/{deviceId}")]
-        public async Task<IActionResult> BindDevice( Guid deviceId)
+        [HttpPost("BindTo")]
+        public async Task<IActionResult> BindDevice([FromQuery] Guid deviceId)
         {
-            Guid userId = HttpContext.GetUserIdFromClaims();
-            var user = await _context.Users.Include(u => u.Devices).FirstOrDefaultAsync(u => u.Id == userId);
-            var device = await _context.Devices.Include(d => d.User).FirstOrDefaultAsync(d => d.Id == deviceId);
 
-            if (user == null || device == null)
+            Guid userId = HttpContext.GetUserIdFromClaims();
+            var device = await _context.Devices.Include(d => d.User).FirstOrDefaultAsync(d => d.Id == deviceId);
+            if (device == null)
             {
                 return NotFound();
             }
-            user.Devices.Add(device);
+
+            device.UserId = userId;
             await _context.SaveChangesAsync();
-            var userDto = _mapper.Map<UserDto>(user);
+            _logger.LogInformation(" New device binded {@device}", device);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
-            return Ok(new { User = userDto.FirstName.Union(userDto.LastName), Device = deviceDto });
+            return Ok(deviceDto);
         }
 
 

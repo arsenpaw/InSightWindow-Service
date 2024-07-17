@@ -20,18 +20,20 @@ namespace InSightWindowAPI.Controllers
         private readonly UsersContext _context;
         private readonly IMapper _mapper;
         private readonly JwtSettings _jwtSettings;
-
-        public AuthController(UsersContext context, IMapper mapper, JwtSettings jwtSettings)
+        private readonly ILogger<AuthController> _logger;   
+        public AuthController(UsersContext context, IMapper mapper, JwtSettings jwtSettings, ILogger<AuthController> logger)
         {
             _context = context;
             _mapper = mapper;
             _jwtSettings = jwtSettings;
+            _logger = logger;
         }
 
         [HttpPost("create")]
         [AllowAnonymous]
         public async Task<ActionResult> CreateUser(UserDto user)
         {
+         
             if (_context.Users == null)
             {
                 return Problem("Entity set 'UsersContext.Users' is null.");
@@ -47,7 +49,8 @@ namespace InSightWindowAPI.Controllers
             userEntity.RefreshToken = await GenerateRefreshToken();
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
-
+       
+            _logger.LogInformation("User with {Email} has registered in ", user.Email);
             return Ok(user);
         }
 
@@ -71,6 +74,7 @@ namespace InSightWindowAPI.Controllers
             }
 
             await _context.SaveChangesAsync();
+            _logger.LogInformation("User with enail: {Email} has logged in ", user.Email);
             return await CreatResponceWithTokens(token, refreshToken);
         }
         [HttpPost("refresh-tokens")]
@@ -82,11 +86,18 @@ namespace InSightWindowAPI.Controllers
                 return BadRequest("Refresh token is missing");
             }
             var oldRefreshTokenObj = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken.ToString());
-
+            Guid requestingUser = HttpContext.GetUserIdFromClaims();
             if (oldRefreshTokenObj == null)
+            {
+
+                _logger.Log(LogLevel.Warning, "{requestingUser} has provided bad refresh token", requestingUser);
                 return Unauthorized("Invalid refresh token");
+            }
             if (oldRefreshTokenObj.ExpitedDate < DateTime.UtcNow)
+            {
+                _logger.Log(LogLevel.Warning, "{requestingUser} token has expired", requestingUser);
                 return Unauthorized("Token expired");
+            }
 
             //update refresh token
             var newRefreshToken = await GenerateRefreshToken();
@@ -100,7 +111,7 @@ namespace InSightWindowAPI.Controllers
             await _context.SaveChangesAsync();
 
 
-
+            _logger.Log(LogLevel.Information, "{requestingUser} has succesfully update tokens", requestingUser);
             return await CreatResponceWithTokens(token, newRefreshToken);
 
         }
@@ -113,8 +124,6 @@ namespace InSightWindowAPI.Controllers
             return result;
         }
 
-
-
         private async Task<RefreshToken> GenerateRefreshToken()
         {
             var refreshToken = new RefreshToken
@@ -124,8 +133,6 @@ namespace InSightWindowAPI.Controllers
             };
             return refreshToken;
         }
-
-
 
         private async Task<string> GenerateToken(User user)
         {

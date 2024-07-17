@@ -24,10 +24,13 @@ namespace InSightWindowAPI.Controllers
 
         private readonly IMapper _mapper;  
 
-        public DevicesDbController(UsersContext context,IMapper mapper)
+        private readonly ILogger<DevicesDbController> _logger;
+
+        public DevicesDbController(ILogger<DevicesDbController> logger,UsersContext context,IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
       

@@ -10,6 +10,7 @@ using System.Text;
 using InSightWindowAPI.JwtSetting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Serilog;
 
 string myCorses = "AllowAllOrigins";
 
@@ -48,6 +49,12 @@ builder.Services.AddTransient<UsersDbController>();
 builder.Services.AddTransient<DevicesDbController>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
+builder.Host.UseSerilog((context, config) =>
+{
+    config.WriteTo.Console()
+        .WriteTo.Debug()
+        .MinimumLevel.Information();
+});
 // Configure authentication
 builder.Services.AddAuthentication(options =>
 {

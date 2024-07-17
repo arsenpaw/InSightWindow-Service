@@ -18,7 +18,7 @@ using InSightWindowAPI.Models;
 
 namespace InSightWindowAPI.Controllers
 {
-
+    // this is legacy controller, it will probably will be deleted
     [ApiController]
     [Route("[controller]")]
     public class WindowStatusController : ControllerBase
@@ -30,11 +30,6 @@ namespace InSightWindowAPI.Controllers
         private readonly IHubContext<ClientStatusHub> _hubContext;
 
 
-        private async Task<string> GetTargetUserIdOrDefault(Guid deviceId)
-        {
-            var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
-            return foundDevice != null ? foundDevice.UserId.ToString() : null;
-        }
 
         public WindowStatusController(IMemoryCache memoryCache, IHubContext<ClientStatusHub> hubContext, UsersContext context)
         {
@@ -49,10 +44,14 @@ namespace InSightWindowAPI.Controllers
 
             try
             {
-                var userId = await GetTargetUserIdOrDefault(windowStatus.Id);
+                Guid? userId = await _context.Devices
+                 .Where(device => device.Id == windowStatus.Id)
+                 .Select(device => device.UserId)
+                 .FirstOrDefaultAsync();
+
                 if (userId != null)
                 {
-                    await _hubContext.Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
+                    await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
                     return Ok();
                 }
                 else
@@ -93,7 +92,7 @@ namespace InSightWindowAPI.Controllers
         {
             try
             {
-                var userId = await GetTargetUserIdOrDefault(deviceReply.DeviceId);
+                string userId = _context.Devices.Where(user => user.Id == deviceReply.DeviceId).Select(col => col.Id).FirstOrDefaultAsync().ToString();
                 if (userId != null)
                 {
                     await _hubContext.Clients.User(userId).SendAsync("ReceiveUserInputResponce", deviceReply);
