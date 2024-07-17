@@ -11,6 +11,7 @@ using InSightWindowAPI.JwtSetting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Serilog;
+using Serilog.Events;
 
 string myCorses = "AllowAllOrigins";
 
@@ -53,6 +54,7 @@ builder.Host.UseSerilog((context, config) =>
 {
     config.WriteTo.Console()
         .WriteTo.Debug()
+        .WriteTo.File(@"D:\InSightWindow Server\InSightWindow-Service\IIS-LOGS.txt", LogEventLevel.Warning)
         .MinimumLevel.Information();
 });
 // Configure authentication

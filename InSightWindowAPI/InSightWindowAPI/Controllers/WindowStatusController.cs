@@ -92,10 +92,13 @@ namespace InSightWindowAPI.Controllers
         {
             try
             {
-                string userId = _context.Devices.Where(user => user.Id == deviceReply.DeviceId).Select(col => col.Id).FirstOrDefaultAsync().ToString();
+                Guid? userId = await _context.Devices
+               .Where(device => device.Id == deviceReply.DeviceId)
+               .Select(device => device.UserId)
+               .FirstOrDefaultAsync();
                 if (userId != null)
                 {
-                    await _hubContext.Clients.User(userId).SendAsync("ReceiveUserInputResponce", deviceReply);
+                    await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveUserInputResponce", deviceReply);
                     return Ok();
                 }
                 else
