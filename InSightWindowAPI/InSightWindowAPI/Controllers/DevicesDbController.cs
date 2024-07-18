@@ -86,10 +86,6 @@ namespace InSightWindowAPI.Controllers
         public async Task<ActionResult<DeviceDto>> PostDevice(DeviceDto device)
         {
 
-          if (_context.Devices == null || !new DeviceType().AllowedDevice.Contains(device.DeviceType))
-          {
-              return StatusCode(415,"Entity set 'UsersContext.Devices'  is null or device type wrong");
-          }
             _context.Devices.Add(_mapper.Map<Device>(device));
             await _context.SaveChangesAsync();
 

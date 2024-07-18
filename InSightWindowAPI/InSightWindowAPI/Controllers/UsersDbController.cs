@@ -24,6 +24,7 @@ using NuGet.Common;
 using InSightWindow.Models;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.AspNetCore.Identity;
+using InSightWindowAPI.Filters;
 
 
 namespace InSightWindowAPI.Controllers
@@ -40,6 +41,7 @@ namespace InSightWindowAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [ValidateUserId]
     public class UsersDbController : ControllerBase
     {
         private readonly UsersContext _context;
@@ -71,6 +73,7 @@ namespace InSightWindowAPI.Controllers
         // GET: api/UsersDb/5
         [HttpGet]
         [Route("concreteUser")]
+       
         public async Task<ActionResult<UserDto>> GetUser()
         {
             Guid id = HttpContext.GetUserIdFromClaims();    
@@ -110,17 +113,9 @@ namespace InSightWindowAPI.Controllers
             }
 
             _mapper.Map(user, foundUser);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-                _logger.LogInformation("User has updated info from {@oldUserToCompare} to {@newUserToCompare} ", oldUserToCompare, newUserToCompare);
-            }
-            catch (Exception ex)
-            {
-               _logger.LogCritical("PUT UserDbController {@ex}", ex);
-            }
-
+             await _context.SaveChangesAsync();
+             _logger.LogInformation("User has updated info from {@oldUserToCompare} to {@newUserToCompare} ", oldUserToCompare, newUserToCompare);
+  
             return NoContent();
         }
         // CHANGE THIS LATER !!!!!!!!!!!!!
@@ -129,10 +124,6 @@ namespace InSightWindowAPI.Controllers
         public async Task<IActionResult> DeleteUser()
         {
             Guid id = HttpContext.GetUserIdFromClaims();
-            if (_context.Users == null)
-            {
-                return NotFound();
-            }
             var user = await _context.Users.FindAsync(id);
             if (user == null)
             {

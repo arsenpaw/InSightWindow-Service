@@ -12,7 +12,8 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Serilog;
 using Serilog.Events;
-
+using FluentValidation.AspNetCore;
+using InSightWindowAPI.Filters;
 string myCorses = "AllowAllOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -90,7 +91,15 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
+builder.Services.AddControllers(conf =>
+{
+    conf.Filters.Add(new ValidateUserId());
+});
 
+builder.Services.AddFluentValidation(config =>
+{
+    config.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
+ });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
