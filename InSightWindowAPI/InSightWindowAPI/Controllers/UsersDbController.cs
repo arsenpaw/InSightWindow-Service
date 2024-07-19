@@ -41,7 +41,7 @@ namespace InSightWindowAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    [ValidateUserId]
+    [ValidateUserIdAsync("UsersDbController")]
     public class UsersDbController : ControllerBase
     {
         private readonly UsersContext _context;

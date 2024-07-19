@@ -91,10 +91,6 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader();
     });
 });
-builder.Services.AddControllers(conf =>
-{
-    conf.Filters.Add(new ValidateUserId());
-});
 
 builder.Services.AddFluentValidation(config =>
 {
