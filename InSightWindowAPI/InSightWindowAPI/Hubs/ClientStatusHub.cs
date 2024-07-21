@@ -35,25 +35,22 @@ namespace InSightWindowAPI.Hubs
             return base.OnConnectedAsync();
         }
 
-        public async Task<string> GetTargetUserIdOrDefault(Guid deviceId)
+        public async Task<Guid> GetTargetUserIdOrDefault(Guid deviceId)
         {
             var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
-            if (foundDevice == null) { return null ; }
-            return foundDevice.UserId.ToString();
+            if (foundDevice != null) 
+            {
+                return (Guid)foundDevice.UserId;  
+            }
+            return Guid.Empty;
         }
-
-        public async Task SaveUserInput(UserInputStatus userInputStatus)
-        {
-            _cache.Set(userInputStatus.DeviceId.ToString(), userInputStatus);
-        }
-
-       
-
+ 
         public void Test(string deviceId) 
         {
             _logger.Log(LogLevel.Information, "Test method invoked");
             Debug.WriteLine(deviceId);  
         }
+
         public async Task<string> SendUserInputToTargetDevice(UserInputStatus userInputStatus)
         {
             if (userInputStatus == null || userInputStatus.DeviceId == Guid.Empty)  { _logger.Log(LogLevel.Information, "Null data received"); return "415 Unsuported Media Type"; }
@@ -95,7 +92,7 @@ namespace InSightWindowAPI.Hubs
                 var userId = await GetTargetUserIdOrDefault(windowStatus.Id);
                 if (userId != null)
                 {
-                    await Clients.User(userId).SendAsync("ReceiveWindowStatus", windowStatus);
+                    await Clients.User(userId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
                     return "200 OK";
                 }
                 else
