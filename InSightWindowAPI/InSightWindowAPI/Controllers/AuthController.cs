@@ -58,6 +58,7 @@ namespace InSightWindowAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
         {
+            
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userLogin.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))

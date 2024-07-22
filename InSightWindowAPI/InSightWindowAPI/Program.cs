@@ -55,8 +55,9 @@ builder.Host.UseSerilog((context, config) =>
 {
     config.WriteTo.Console()
         .WriteTo.Debug()
-        .WriteTo.File(@"D:\InSightWindow Server\InSightWindow-Service\IIS-LOGS.txt", LogEventLevel.Warning)
+        .WriteTo.File($@"{AppDomain.CurrentDomain.BaseDirectory}\IIS-LOGS.txt", LogEventLevel.Warning)
         .MinimumLevel.Information();
+    
 });
 // Configure authentication
 builder.Services.AddAuthentication(options =>
