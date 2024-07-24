@@ -33,7 +33,8 @@ namespace InSightWindowAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> CreateUser(UserDto user)
         {
-         
+            
+
             if (_context.Users == null)
             {
                 return Problem("Entity set 'UsersContext.Users' is null.");
@@ -58,7 +59,7 @@ namespace InSightWindowAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
         {
-            
+            _logger.LogWarning(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt"));
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userLogin.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))

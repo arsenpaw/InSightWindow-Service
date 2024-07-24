@@ -21,6 +21,9 @@ namespace InSightWindowAPI.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
+               .HasIndex(u => u.Email)
+               .IsUnique();
+            modelBuilder.Entity<User>()
              .HasMany(u => u.Devices)
              .WithOne(d => d.User)
              .HasForeignKey(d => d.UserId);

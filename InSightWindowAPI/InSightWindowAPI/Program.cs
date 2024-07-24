@@ -53,9 +53,10 @@ builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 builder.Host.UseSerilog((context, config) =>
 {
+    var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt");
     config.WriteTo.Console()
         .WriteTo.Debug()
-        .WriteTo.File($@"{AppDomain.CurrentDomain.BaseDirectory}\IIS-LOGS.txt", LogEventLevel.Warning)
+        .WriteTo.File(logFilePath, LogEventLevel.Warning)
         .MinimumLevel.Information();
     
 });

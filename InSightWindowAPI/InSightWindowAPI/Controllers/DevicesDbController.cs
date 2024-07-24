@@ -123,14 +123,15 @@ namespace InSightWindowAPI.Controllers
         [HttpGet("DeviceOfUser")]
         public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDeviceList()
         {
+
             Guid userId = HttpContext.GetUserIdFromClaims();
             if (_context.Devices == null)
             {
-                return Problem("Entity set 'UsersContext.Devices'  is null.");
+                return Problem("Entity set 'UsersContext.Devices' is null.");
             }
 
             var devices = await _context.Devices
-                                    . Where(x => x.UserId == userId)
+                                    .Where(x => x.UserId == userId)
                                     .ToListAsync();
 
             var deviceList = _mapper.Map<List<DeviceDto>>(devices);
