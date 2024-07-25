@@ -25,7 +25,7 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/FireBaseTokens/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ICollection<string>>> GetFireBaseToken(Guid id)
+        public async Task<ActionResult<List<string>>> GetUserTokens(Guid id)
         {
           if (_context.FireBaseTokens == null)
           {
@@ -75,7 +75,7 @@ namespace InSightWindowAPI.Controllers
         // POST: api/FireBaseTokens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{token}")]
-        public async Task<ActionResult<FireBaseToken>> PostFireBaseToken(string token)
+        public async Task<ActionResult<FireBaseToken>> SetUserToken(string token)
         {
             //mb validate firebase token
             var userId = HttpContext.GetUserIdFromClaims();

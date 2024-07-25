@@ -25,6 +25,7 @@ using InSightWindow.Models;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.AspNetCore.Identity;
 using InSightWindowAPI.Filters;
+using InSightWindowAPI.Serivces;
 
 
 namespace InSightWindowAPI.Controllers
@@ -46,7 +47,7 @@ namespace InSightWindowAPI.Controllers
     {
         private readonly UsersContext _context;
         private readonly IMapper _mapper;
-        
+       
         private readonly ILogger<UsersDbController> _logger;    
 
         public UsersDbController(ILogger<UsersDbController> logger,UsersContext context, IMapper mapper)
@@ -54,6 +55,7 @@ namespace InSightWindowAPI.Controllers
             _context = context;
             _mapper = mapper;
             _logger = logger;
+      
         }
         // GET: api/UsersDb
         [HttpGet]

@@ -15,6 +15,12 @@ using Serilog.Events;
 using FluentValidation.AspNetCore;
 using InSightWindowAPI.Filters;
 using AutoMapper;
+using InSightWindowAPI.Serivces;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
+using Microsoft.VisualBasic;
+using FirebaseAdmin.Messaging;
 string myCorses = "AllowAllOrigins";
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,6 +50,7 @@ builder.Services.AddSwaggerGen(options =>
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UsersContext>(options =>
@@ -99,6 +106,17 @@ builder.Services.AddFluentValidation(config =>
 {
     config.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
  });
+
+
+var pathToKeyFile = builder.Configuration["Firebase:KeyFilePath"];
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile(pathToKeyFile),
+});
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline

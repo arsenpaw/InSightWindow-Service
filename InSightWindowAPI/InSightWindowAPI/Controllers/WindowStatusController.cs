@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Models;
+using InSightWindowAPI.Serivces;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -29,33 +30,25 @@ namespace InSightWindowAPI.Controllers
 
         private readonly IHubContext<ClientStatusHub> _hubContext;
 
+        public readonly IPushNotificationService _pusher;
 
 
-        public WindowStatusController(IMemoryCache memoryCache, IHubContext<ClientStatusHub> hubContext, UsersContext context)
+        public WindowStatusController(IMemoryCache memoryCache, IHubContext<ClientStatusHub> hubContext, UsersContext context, IPushNotificationService push)
         {
             _cache = memoryCache;
             _hubContext = hubContext;
             _context = context;
+            _pusher = push;
         }
 
         [HttpPost]
-        public async Task<IActionResult> SendWidnowStatusToClient([FromBody] AllWindowDataDto windowStatus)
+        public async Task<IActionResult> SendAlarm(Guid userId)
         {
 
             try
             {
-                Guid? userId = await _context.Devices
-                 .Where(device => device.Id == windowStatus.Id)
-                 .Select(device => device.UserId)
-                 .FirstOrDefaultAsync();
-
-                if (userId != null)
-                {
-                    await _hubContext.Clients.User(userId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
-                    return Ok();
-                }
-                else
-                    return NotFound("Cannot found user with this type of device");
+                await _pusher.SendNotificationToUser(userId, "Alarm", "Alarm was triggered");
+                return Ok();
             }
             catch (Exception ex)
             {

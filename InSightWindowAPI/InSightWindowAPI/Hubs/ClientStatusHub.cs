@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using InSightWindowAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models.DeviceModel;
+using InSightWindowAPI.Serivces;
 
 namespace InSightWindowAPI.Hubs
 {
@@ -18,14 +19,15 @@ namespace InSightWindowAPI.Hubs
         private readonly UsersContext _context;
         private IMemoryCache _cache;
         private ILogger<ClientStatusHub> _logger;
+        private readonly IPushNotificationService _pusher;
 
-       
 
-        public ClientStatusHub(UsersContext context, IMemoryCache memoryCache, ILogger<ClientStatusHub> logger)
+        public ClientStatusHub(UsersContext context, IMemoryCache memoryCache, ILogger<ClientStatusHub> logger, IPushNotificationService pusher)
         {
             _context = context;
             _cache = memoryCache;
             _logger = logger;
+            _pusher = pusher;
         }
 
         public override Task OnConnectedAsync()
@@ -94,7 +96,7 @@ namespace InSightWindowAPI.Hubs
                 {
                   if (windowStatus.isAlarm)
                     {
-
+                        await _pusher.SendNotificationToUser(userId, "Alarm", "Alarm was triggered");
                     }
                     await Clients.User(userId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
                     return "200 OK";
