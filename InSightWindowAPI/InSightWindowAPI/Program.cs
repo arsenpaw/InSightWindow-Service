@@ -14,6 +14,7 @@ using Serilog;
 using Serilog.Events;
 using FluentValidation.AspNetCore;
 using InSightWindowAPI.Filters;
+using AutoMapper;
 string myCorses = "AllowAllOrigins";
 
 var builder = WebApplication.CreateBuilder(args);

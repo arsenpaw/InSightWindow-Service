@@ -28,5 +28,7 @@ namespace InSightWindowAPI.Models
         public ICollection<Device> Devices { get; set; } = new List<Device>();
         
         public RefreshToken RefreshToken { get; set; }
+
+        public ICollection<FireBaseToken> FireBaseTokens { get; set; }    
     }
 }

@@ -17,12 +17,18 @@ namespace InSightWindowAPI.Models
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Window> WindowDevices { get; set; }
         public DbSet<BulbTest> BulbTestDevices { get; set; }
+        public DbSet<FireBaseToken> FireBaseTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>()
                .HasIndex(u => u.Email)
                .IsUnique();
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.FireBaseTokens)
+                .WithOne(f => f.User)
+                .HasForeignKey(f => f.UserId);
+
             modelBuilder.Entity<User>()
              .HasMany(u => u.Devices)
              .WithOne(d => d.User)

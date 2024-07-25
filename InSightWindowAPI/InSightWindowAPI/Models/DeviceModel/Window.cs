@@ -5,7 +5,7 @@
 
         public bool IsOpen { get; set; }
 
-        public int isAlarm { get; set; }
+        public bool isAlarm { get; set; }
 
         public bool IsProtected { get; set; }
 

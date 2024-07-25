@@ -92,6 +92,10 @@ namespace InSightWindowAPI.Hubs
                 var userId = await GetTargetUserIdOrDefault(windowStatus.Id);
                 if (userId.Equals(Guid.Empty))
                 {
+                  if (windowStatus.isAlarm)
+                    {
+
+                    }
                     await Clients.User(userId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
                     return "200 OK";
                 }
