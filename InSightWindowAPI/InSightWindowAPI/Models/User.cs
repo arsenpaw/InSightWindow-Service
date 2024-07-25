@@ -29,6 +29,6 @@ namespace InSightWindowAPI.Models
         
         public RefreshToken RefreshToken { get; set; }
 
-        public ICollection<FireBaseToken> FireBaseTokens { get; set; }    
+        public FireBaseToken FireBaseToken { get; set; }    
     }
 }

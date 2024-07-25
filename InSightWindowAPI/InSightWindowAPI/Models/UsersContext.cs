@@ -25,10 +25,12 @@ namespace InSightWindowAPI.Models
                .HasIndex(u => u.Email)
                .IsUnique();
             modelBuilder.Entity<User>()
-                .HasMany(u => u.FireBaseTokens)
+                .HasOne(u => u.FireBaseToken)
                 .WithOne(f => f.User)
-                .HasForeignKey(f => f.UserId);
-
+                .HasForeignKey<FireBaseToken>(f => f.UserId);
+            modelBuilder.Entity<FireBaseToken>()
+               .HasIndex(u => u.UserId)
+               .IsUnique();
             modelBuilder.Entity<User>()
              .HasMany(u => u.Devices)
              .WithOne(d => d.User)

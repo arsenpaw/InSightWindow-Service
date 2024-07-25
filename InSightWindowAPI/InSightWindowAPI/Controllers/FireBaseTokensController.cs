@@ -15,42 +15,22 @@ namespace InSightWindowAPI.Controllers
     [ApiController]
     public class FireBaseTokensController : ControllerBase
     {
+        private readonly ILogger<FireBaseTokensController> _loger;
         private readonly UsersContext _context;
 
-        public FireBaseTokensController(UsersContext context)
+        public FireBaseTokensController(UsersContext context, ILogger<FireBaseTokensController> logger)
         {
             _context = context;
+            _loger = logger;
         }
 
 
-        // GET: api/FireBaseTokens/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<List<string>>> GetUserTokens(Guid id)
-        {
-          if (_context.FireBaseTokens == null)
-          {
-              return NotFound();
-          }
-            var fireBaseTokenList = await _context.FireBaseTokens.Where(x => x.UserId == id).Select(f => f.Token).ToListAsync();
-
-            if (fireBaseTokenList == null)
-            {
-                return NotFound();
-            }
-
-            return fireBaseTokenList;
-        }
 
         // PUT: api/FireBaseTokens/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutFireBaseToken(Guid id, FireBaseToken fireBaseToken)
-        {
-            if (id != fireBaseToken.Id)
-            {
-                return BadRequest();
-            }
-
+        { 
             _context.Entry(fireBaseToken).State = EntityState.Modified;
 
             try
@@ -59,7 +39,7 @@ namespace InSightWindowAPI.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!FireBaseTokenExists(id))
+                if (true)
                 {
                     return NotFound();
                 }
@@ -77,48 +57,41 @@ namespace InSightWindowAPI.Controllers
         [HttpPost("{token}")]
         public async Task<ActionResult<FireBaseToken>> SetUserToken(string token)
         {
-            //mb validate firebase token
-            var userId = HttpContext.GetUserIdFromClaims();
-            var oldUserTokens = await _context.FireBaseTokens.Where(x => x.UserId == userId).Select(f => f.Token).ToListAsync();
-            if (oldUserTokens.Contains(token))
+            _loger.LogInformation("Manage user token");
+            try
             {
-                return StatusCode(204, "Already exists");
+                var userId = HttpContext.GetUserIdFromClaims();
+                var oldUserTokens = await _context.FireBaseTokens.FirstOrDefaultAsync(x => x.UserId == userId);
+                if (oldUserTokens != null && oldUserTokens.Token == token)
+                {
+                    return Ok();
+                }
+                else if (oldUserTokens != null && oldUserTokens.Token != null)
+                {
+                    oldUserTokens.Token = token;
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+                else
+                {
+                    FireBaseToken fireBaseToken = new FireBaseToken
+                    {
+                        UserId = userId,
+                        Token = token
+                    };
+                    _context.FireBaseTokens.Add(fireBaseToken);
+                    await _context.SaveChangesAsync();
+
+                    return Ok();
+                }
             }
-
-            FireBaseToken fireBaseToken = new FireBaseToken
+            catch (Exception ex)
             {
-                UserId = userId,
-                Token = token
-            };
-            _context.FireBaseTokens.Add(fireBaseToken);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetFireBaseToken", new { id = fireBaseToken.Id }, fireBaseToken);
+               
+                _loger.LogError(ex.Message);
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
         }
 
-        // DELETE: api/FireBaseTokens/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteFireBaseToken(Guid id)
-        {
-            if (_context.FireBaseTokens == null)
-            {
-                return NotFound();
-            }
-            var fireBaseToken = await _context.FireBaseTokens.FindAsync(id);
-            if (fireBaseToken == null)
-            {
-                return NotFound();
-            }
-
-            _context.FireBaseTokens.Remove(fireBaseToken);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool FireBaseTokenExists(Guid id)
-        {
-            return (_context.FireBaseTokens?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

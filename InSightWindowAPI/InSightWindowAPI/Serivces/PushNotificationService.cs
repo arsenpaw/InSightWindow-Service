@@ -27,29 +27,28 @@ namespace InSightWindowAPI.Serivces
         public async Task SendNotificationToUser(Guid userId,string title,string body)
         {
             _logger.LogInformation("Sending notification to user with id: " + userId);
-            var tokens = await _context.FireBaseTokens.Where(x => x.UserId == userId).Select(f => f.Token).ToListAsync();
-            if (tokens == null)
+          
+            string token = await _context.FireBaseTokens.Where(x => x.UserId == userId).Select(f => f.Token).FirstOrDefaultAsync();
+            if (token == null)
             {
                 _logger.LogInformation("No tokens found for user with id: " + userId);
                 return;
             }
             try
             {
-                foreach (var token in tokens)
+                var message = new Message()
                 {
-                    var message = new Message()
+                    Token = token,
+                    Notification = new FirebaseAdmin.Messaging.Notification()
                     {
-                        Token = token,
-                        Notification = new FirebaseAdmin.Messaging.Notification()
-                        {
-                            Title = title,
-                            Body = body
-                        }
-                    };
+                        Title = title,
+                        Body = body
+                    }
+                };
 
-                    string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
-                    Console.WriteLine("Successfully sent message: " + response);
-                }
+                string response = await FirebaseMessaging.DefaultInstance.SendAsync(message);
+                _logger.LogInformation("Successfully sent message: " + response); 
+             
             }
             catch(Exception exs)
             {
