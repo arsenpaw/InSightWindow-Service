@@ -123,6 +123,21 @@ namespace InSightWindowAPI.Controllers
             var result = new ObjectResult(Ok());
             Response.Headers.Add("token", token.ToString());
             Response.Headers.Add("refresh-token", refreshToken.Token.ToString());
+            Response.Cookies.Append("refresh-token", refreshToken.Token.ToString(), new CookieOptions
+            {
+                Domain = "localhost",
+                Expires = refreshToken.ExpitedDate,
+                SameSite = SameSiteMode.Strict,
+                IsEssential = true,
+            });
+            Response.Cookies.Append("token", token.ToString(), new CookieOptions
+            {
+                Domain = "localhost",
+                IsEssential = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+            });
+            
             return result;
         }
 
