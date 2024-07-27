@@ -96,9 +96,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myCorses, builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins("http://localhost:3000")
                .AllowAnyMethod()
-               .AllowAnyHeader();
+               .WithHeaders("Content-Type")
+               .AllowCredentials();
     });
 });
 

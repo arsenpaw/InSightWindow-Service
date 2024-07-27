@@ -121,21 +121,24 @@ namespace InSightWindowAPI.Controllers
         private async Task<ObjectResult> CreatResponceWithTokens(string token, RefreshToken refreshToken)
         {
             var result = new ObjectResult(Ok());
+            Response.Headers.Add("Access-Control-Expose-Headers", "token,refresh-token");
             Response.Headers.Add("token", token.ToString());
             Response.Headers.Add("refresh-token", refreshToken.Token.ToString());
             Response.Cookies.Append("refresh-token", refreshToken.Token.ToString(), new CookieOptions
             {
-                Domain = "localhost",
                 Expires = refreshToken.ExpitedDate,
-                SameSite = SameSiteMode.Strict,
                 IsEssential = true,
+                  Path = "/"
+
             });
             Response.Cookies.Append("token", token.ToString(), new CookieOptions
             {
                 Domain = "localhost",
                 IsEssential = true,
-                SameSite = SameSiteMode.Strict,
                 Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+                Path = "/",
+                HttpOnly = true
+
             });
             
             return result;
