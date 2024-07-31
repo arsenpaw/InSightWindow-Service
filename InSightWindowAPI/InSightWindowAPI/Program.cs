@@ -34,10 +34,10 @@ builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+      
     });
 
-// Add services to the container
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -96,9 +96,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myCorses, builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
+        builder.WithOrigins("http://localhost:3000", "http://192.168.0.188:3000")
                .AllowAnyMethod()
-               .WithHeaders("Content-Type")
+               .AllowAnyHeader()
                .AllowCredentials();
     });
 });

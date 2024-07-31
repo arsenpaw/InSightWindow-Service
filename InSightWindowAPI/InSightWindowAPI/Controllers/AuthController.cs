@@ -102,10 +102,13 @@ namespace InSightWindowAPI.Controllers
             }
 
             //update refresh token
-            var newRefreshToken = await GenerateRefreshToken();
-            _mapper.Map(newRefreshToken, oldRefreshTokenObj);
-
-
+            RefreshToken newRefreshToken;
+            if (oldRefreshTokenObj.ExpitedDate < DateTime.UtcNow.AddMonths(2))
+            {
+                newRefreshToken = await GenerateRefreshToken();
+                _mapper.Map(newRefreshToken, oldRefreshTokenObj);
+            }
+            else { newRefreshToken = oldRefreshTokenObj; }
             //update default token
             var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == oldRefreshTokenObj.UserId);
             string token = await GenerateToken(user);
@@ -122,22 +125,26 @@ namespace InSightWindowAPI.Controllers
         {
             var result = new ObjectResult(Ok());
             Response.Headers.Add("Access-Control-Expose-Headers", "token,refresh-token");
-            Response.Headers.Add("token", token.ToString());
-            Response.Headers.Add("refresh-token", refreshToken.Token.ToString());
-            Response.Cookies.Append("refresh-token", refreshToken.Token.ToString(), new CookieOptions
+            Response.Headers.Add("token", token);
+            Response.Headers.Add("refresh-token", refreshToken.Token);
+            Response.Cookies.Append("refresh-token", refreshToken.Token, new CookieOptions
             {
+                Domain = "localhost",
                 Expires = refreshToken.ExpitedDate,
                 IsEssential = true,
-                  Path = "/"
+                  Path = "/",
+                  SameSite = SameSiteMode.Strict
+                  
 
             });
             Response.Cookies.Append("token", token.ToString(), new CookieOptions
             {
                 Domain = "localhost",
                 IsEssential = true,
-                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+                Expires = refreshToken.ExpitedDate,
                 Path = "/",
-                HttpOnly = true
+                SameSite = SameSiteMode.Strict
+
 
             });
             
@@ -149,7 +156,8 @@ namespace InSightWindowAPI.Controllers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                ExpitedDate = DateTime.UtcNow.AddMonths(3),
+                ExpitedDate = DateTime.UtcNow.AddMonths(6),
+               
             };
             return refreshToken;
         }

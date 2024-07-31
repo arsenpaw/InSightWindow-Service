@@ -18,6 +18,7 @@ namespace InSightWindowAPI.Controllers
    
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DevicesDbController : ControllerBase
     {
         private readonly UsersContext _context;
@@ -130,13 +131,39 @@ namespace InSightWindowAPI.Controllers
                 return Problem("Entity set 'UsersContext.Devices' is null.");
             }
 
-            var devices = await _context.Devices
-                                    .Where(x => x.UserId == userId)
-                                    .ToListAsync();
+            var userWithDevices = await _context.Users
+            .GroupJoin(_context.Devices,
+               user => user.Id,
+               device => device.UserId,
+               (user, devices) => new
+               {
+                   User = user,
+                   Devices = devices
+               })
+            .Where(userGroup => userGroup.User.Id == userId)
+            .FirstOrDefaultAsync();
 
-            var deviceList = _mapper.Map<List<DeviceDto>>(devices);
+            if (userWithDevices != null)
+            {
+                if (userWithDevices.Devices.Any())
+                {
+                    var devices = userWithDevices.Devices.ToList();
+                    var deviceList = _mapper.Map<List<DeviceDto>>(devices);
 
-            return Ok(deviceList);
+                    return Ok(deviceList);
+                }
+                else
+                {
+                    return StatusCode(204, "User has no devices");
+                }
+            }
+            else
+            {
+                return NotFound("User not exist");
+            }
+
+
+           
         }
 
         private bool DeviceExists(Guid id)
