@@ -15,6 +15,7 @@ namespace InSightWindowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly UsersContext _context;
@@ -28,7 +29,6 @@ namespace InSightWindowAPI.Controllers
             _jwtSettings = jwtSettings;
             _logger = logger;
         }
-        [AllowAnonymous]
         [HttpGet("test")]
         public async Task<IActionResult> TestQuery()
         {
@@ -46,7 +46,6 @@ namespace InSightWindowAPI.Controllers
             return Ok(t);
         }
         [HttpPost("create")]
-        [AllowAnonymous]
         public async Task<ActionResult> CreateUser(UserDto user)
         {
             
@@ -72,7 +71,6 @@ namespace InSightWindowAPI.Controllers
         }
 
         [HttpPost("login")]
-        [AllowAnonymous]
         public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
         {
             _logger.LogWarning(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt"));
@@ -96,7 +94,6 @@ namespace InSightWindowAPI.Controllers
             return await CreatResponceWithTokens(token, refreshToken);
         }
         [HttpPost("refresh-tokens")]
-        [AllowAnonymous]
         public async Task<ActionResult<string>> RefreshTokens()
         {
             if (!Request.Headers.TryGetValue("refresh-token", out var refreshToken))
