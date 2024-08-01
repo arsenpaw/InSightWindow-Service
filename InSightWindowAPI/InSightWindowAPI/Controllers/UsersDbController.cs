@@ -126,6 +126,11 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
+            var isUserHasDevices = await _context.Devices.AnyAsync(device => device.UserId == id);
+            if (isUserHasDevices)
+            {
+                return Conflict("User has devices, please delete them first");
+            }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             _logger.LogInformation("User {@user} delete account", user );
