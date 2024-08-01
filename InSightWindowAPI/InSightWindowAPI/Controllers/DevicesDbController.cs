@@ -12,6 +12,7 @@ using InSightWindowAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindow.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -154,7 +155,7 @@ namespace InSightWindowAPI.Controllers
                 }
                 else
                 {
-                    return StatusCode(204, "User has no devices");
+                    return NoContent();
                 }
             }
             else
@@ -162,8 +163,6 @@ namespace InSightWindowAPI.Controllers
                 return NotFound("User not exist");
             }
 
-
-           
         }
 
         private bool DeviceExists(Guid id)

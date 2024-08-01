@@ -28,7 +28,23 @@ namespace InSightWindowAPI.Controllers
             _jwtSettings = jwtSettings;
             _logger = logger;
         }
+        [AllowAnonymous]
+        [HttpGet("test")]
+        public async Task<IActionResult> TestQuery()
+        {
+            var t =  _context.Users.GroupJoin(_context.FireBaseTokens,
+                 user => user.Id,
+                 device => device.UserId,
+                 (user, devices) => new
+                 {
+                     User = user,
+                     Devices = devices
+                 })
+                 .Where(model => model.Devices.Count() != 0).ToList();
 
+
+            return Ok(t);
+        }
         [HttpPost("create")]
         [AllowAnonymous]
         public async Task<ActionResult> CreateUser(UserDto user)
@@ -88,6 +104,7 @@ namespace InSightWindowAPI.Controllers
                 return BadRequest("Refresh token is missing");
             }
             var oldRefreshTokenObj = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken.ToString());
+            
             Guid requestingUser = HttpContext.GetUserIdFromClaims();
             if (oldRefreshTokenObj == null)
             {
@@ -107,16 +124,15 @@ namespace InSightWindowAPI.Controllers
             {
                 newRefreshToken = await GenerateRefreshToken();
                 _mapper.Map(newRefreshToken, oldRefreshTokenObj);
+                await _context.SaveChangesAsync();
+                _logger.Log(LogLevel.Information, "{requestingUser} has succesfully update their tokens", requestingUser);
             }
             else { newRefreshToken = oldRefreshTokenObj; }
             //update default token
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == oldRefreshTokenObj.UserId);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == newRefreshToken.UserId);
             string token = await GenerateToken(user);
 
-            await _context.SaveChangesAsync();
-
-
-            _logger.Log(LogLevel.Information, "{requestingUser} has succesfully update tokens", requestingUser);
+            _logger.Log(LogLevel.Information, "{requestingUser} has succesfully receive tokens", requestingUser);
             return await CreatResponceWithTokens(token, newRefreshToken);
 
         }

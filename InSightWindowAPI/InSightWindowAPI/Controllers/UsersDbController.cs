@@ -115,7 +115,7 @@ namespace InSightWindowAPI.Controllers
   
             return NoContent();
         }
-        // CHANGE THIS LATER !!!!!!!!!!!!!
+
         [HttpDelete]
         [Route("concreteUser")]
         public async Task<IActionResult> DeleteUser()
@@ -129,15 +129,24 @@ namespace InSightWindowAPI.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
             _logger.LogInformation("User {@user} delete account", user );
-            return NoContent();
+            return Ok();
         }
-        //temporary
+
         [HttpPost("BindTo")]
         public async Task<IActionResult> BindDevice([FromQuery] Guid deviceId)
         {
 
             Guid userId = HttpContext.GetUserIdFromClaims();
-            var device = await _context.Devices.Include(d => d.User).FirstOrDefaultAsync(d => d.Id == deviceId);
+            
+            var device = await _context.Devices.GroupJoin(_context.Users,
+                            device => device.UserId,
+                            user => user.Id,
+                            (device, users) => new
+                            {
+                                Device = device,
+                                Users = users
+                            }).Where(model => model.Device.Id == deviceId && model.Device.UserId == null).Select(model => model.Device).FirstOrDefaultAsync();
+
             if (device == null)
             {
                 return NotFound();
@@ -150,7 +159,7 @@ namespace InSightWindowAPI.Controllers
 
             return Ok(deviceDto);
         }
-
+       
 
         private bool UserExists(Guid id)
         {
