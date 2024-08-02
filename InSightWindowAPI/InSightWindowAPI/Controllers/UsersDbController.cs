@@ -164,7 +164,34 @@ namespace InSightWindowAPI.Controllers
 
             return Ok(deviceDto);
         }
-       
+        [HttpPost("UnbindFrom")]
+        public async Task<IActionResult> UnbindDevice([FromQuery] Guid deviceId)
+        {
+
+            Guid userId = HttpContext.GetUserIdFromClaims();
+
+            var device = await _context.Devices.GroupJoin(_context.Users,
+                            device => device.UserId,
+                            user => user.Id,
+                            (device, users) => new
+                            {
+                                Device = device,
+                                Users = users
+                            }).Where(model => model.Device.Id == deviceId && model.Device.UserId == userId ).Select(model => model.Device).FirstOrDefaultAsync();
+
+            if (device == null)
+            {
+                return NotFound();
+            }
+
+            device.UserId = null;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("{@device} was unbind", device);
+            var deviceDto = _mapper.Map<DeviceDto>(device);
+
+            return Ok(deviceDto);
+        }
+
 
         private bool UserExists(Guid id)
         {
