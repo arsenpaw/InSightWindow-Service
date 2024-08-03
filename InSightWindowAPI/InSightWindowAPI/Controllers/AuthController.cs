@@ -103,11 +103,17 @@ namespace InSightWindowAPI.Controllers
             var oldRefreshTokenObj = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken.ToString());
             
             Guid requestingUser = HttpContext.GetUserIdFromClaims();
+ 
+            _logger.Log(LogLevel.Information, "{requestingUser} user id was retrived from claim ", requestingUser);
             if (oldRefreshTokenObj == null)
             {
-
                 _logger.Log(LogLevel.Warning, "{requestingUser} has provided bad refresh token", requestingUser);
                 return Unauthorized("Invalid refresh token");
+            }
+            else if (requestingUser != oldRefreshTokenObj.UserId)
+            {
+                _logger.Log(LogLevel.Warning, "{requestingUser} has provided other refresh refresh token", requestingUser);
+                return Unauthorized("Invalid operations");
             }
             if (oldRefreshTokenObj.ExpitedDate < DateTime.UtcNow)
             {
