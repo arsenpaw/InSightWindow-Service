@@ -157,7 +157,7 @@ namespace InSightWindowAPI.Controllers
             {
                 Domain = "localhost",
                 IsEssential = true,
-                Expires = refreshToken.ExpitedDate,
+                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
                 Path = "/",
                 SameSite = SameSiteMode.Strict
 

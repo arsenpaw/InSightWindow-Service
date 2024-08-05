@@ -159,7 +159,7 @@ namespace InSightWindowAPI.Controllers
 
             device.UserId = userId;
             await _context.SaveChangesAsync();
-            _logger.LogInformation(" New device binded {@device}", device);
+            _logger.LogInformation(" {userId} have added device {DeviceId}", device.Id, userId);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
             return Ok(deviceDto);
@@ -186,7 +186,7 @@ namespace InSightWindowAPI.Controllers
 
             device.UserId = null;
             await _context.SaveChangesAsync();
-            _logger.LogInformation("{@device} was unbind", device);
+            _logger.LogInformation("{userId} unbind {@device}", device,userId);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
             return Ok(deviceDto);

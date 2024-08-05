@@ -19,7 +19,7 @@ namespace InSightWindowAPI.Controllers
    
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class DevicesDbController : ControllerBase
     {
         private readonly UsersContext _context;
