@@ -101,23 +101,20 @@ namespace InSightWindowAPI.Controllers
                 return BadRequest("Refresh token is missing");
             }
             var oldRefreshTokenObj = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken.ToString());
-            
-            Guid requestingUser = HttpContext.GetUserIdFromClaims();
- 
-            _logger.Log(LogLevel.Information, "{requestingUser} user id was retrived from claim ", requestingUser);
+
             if (oldRefreshTokenObj == null)
             {
-                _logger.Log(LogLevel.Warning, "{requestingUser} has provided bad refresh token", requestingUser);
                 return Unauthorized("Invalid refresh token");
             }
-            else if (requestingUser != oldRefreshTokenObj.UserId)
-            {
-                _logger.Log(LogLevel.Warning, "{requestingUser} has provided other refresh refresh token", requestingUser);
-                return Unauthorized("Invalid operations");
-            }
+
+            Guid requestingUserId = oldRefreshTokenObj.UserId;
+ 
+            _logger.Log(LogLevel.Information, "{requestingUserId} user id was retrived from refresh-token claim ", requestingUserId);
+          
+           
             if (oldRefreshTokenObj.ExpitedDate < DateTime.UtcNow)
             {
-                _logger.Log(LogLevel.Warning, "{requestingUser} token has expired", requestingUser);
+                _logger.Log(LogLevel.Warning, "{requestingUserId} token has expired", requestingUserId);
                 return Unauthorized("Token expired");
             }
 
@@ -128,14 +125,14 @@ namespace InSightWindowAPI.Controllers
                 newRefreshToken = await GenerateRefreshToken();
                 _mapper.Map(newRefreshToken, oldRefreshTokenObj);
                 await _context.SaveChangesAsync();
-                _logger.Log(LogLevel.Information, "{requestingUser} has succesfully update their tokens", requestingUser);
+                _logger.Log(LogLevel.Information, "{requestingUserId} has succesfully update their tokens", requestingUserId);
             }
             else { newRefreshToken = oldRefreshTokenObj; }
             //update default token
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == newRefreshToken.UserId);
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == requestingUserId);
             string token = await GenerateToken(user);
 
-            _logger.Log(LogLevel.Information, "{requestingUser} has succesfully receive tokens", requestingUser);
+            _logger.Log(LogLevel.Information, "{requestingUserId} has succesfully receive tokens", requestingUserId);
             return await CreatResponceWithTokens(token, newRefreshToken);
 
         }
