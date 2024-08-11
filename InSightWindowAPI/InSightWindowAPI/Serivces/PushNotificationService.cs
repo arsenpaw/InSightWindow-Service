@@ -31,7 +31,7 @@ namespace InSightWindowAPI.Serivces
             string token = await _context.FireBaseTokens.Where(x => x.UserId == userId).Select(f => f.Token).FirstOrDefaultAsync();
             if (token == null)
             {
-                _logger.LogInformation("No tokens found for user with id: " + userId);
+                _logger.LogWarning("No tokens found for user with id: " + userId);
                 return;
             }
             try

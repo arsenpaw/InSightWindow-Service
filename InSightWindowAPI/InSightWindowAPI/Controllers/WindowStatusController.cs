@@ -19,7 +19,7 @@ using InSightWindowAPI.Serivces;
 
 namespace InSightWindowAPI.Controllers
 {
-    // this is legacy controller, it will probably will be deleted
+    // this is debricated controller, it will probably will be deleted
     [ApiController]
     [Route("[controller]")]
     public class WindowStatusController : ControllerBase
