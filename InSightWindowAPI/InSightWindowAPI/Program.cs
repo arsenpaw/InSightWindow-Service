@@ -109,7 +109,7 @@ builder.Services.AddFluentValidation(config =>
  });
 
 
-var pathToKeyFile = builder.Configuration["Firebase:KeyFilePath"];
+var pathToKeyFile = $"{Directory.GetCurrentDirectory()}\\{builder.Configuration["Firebase:KeyFilePath"]}";
 
 FirebaseApp.Create(new AppOptions()
 {

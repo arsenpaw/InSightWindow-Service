@@ -10,10 +10,12 @@ RUN dotnet restore
 # copy everything else and build app
 COPY InSightWindowAPI/. ./InSightWindowAPI/
 WORKDIR /source/InSightWindowAPI
-RUN dotnet publish  D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI.sln -c release -o /app --no-restore
+RUN dotnet nuget locals all --clear
+RUN dotnet restore
+RUN dotnet publish -c release -o /app --no-restore
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=build /app ./
-ENTRYPOINT ["dotnet", "aspnetapp.dll"]
+ENTRYPOINT ["dotnet", "InSightWindowAPI.dll"]
