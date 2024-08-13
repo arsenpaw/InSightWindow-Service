@@ -130,7 +130,7 @@ namespace InSightWindowAPI.Controllers
             }
             else { newRefreshToken = oldRefreshTokenObj; }
             //update default token
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Id == requestingUserId);
+            var user = await _context.Users.Include(user => user.Role).FirstOrDefaultAsync(x => x.Id == requestingUserId);
             string token = await GenerateToken(user);
 
             _logger.Log(LogLevel.Information, "{requestingUserId} has succesfully receive tokens", requestingUserId);
