@@ -182,7 +182,7 @@ namespace InSightWindowAPI.Controllers
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),        
                 new Claim(ClaimTypes.Role, user.Role.RoleName),
 
             };

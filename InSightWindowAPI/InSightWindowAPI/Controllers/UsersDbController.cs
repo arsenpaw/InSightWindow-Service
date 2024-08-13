@@ -26,6 +26,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.AspNetCore.Identity;
 using InSightWindowAPI.Filters;
 using InSightWindowAPI.Serivces;
+using InSightWindowAPI.Models.DeviceModel;
 
 
 namespace InSightWindowAPI.Controllers
@@ -57,6 +58,14 @@ namespace InSightWindowAPI.Controllers
             _logger = logger;
       
         }
+
+        [HttpGet("test")]
+        public async Task<ActionResult> Test()
+        {
+            _logger.LogInformation("Test sucesfull !!!");   
+            return Ok("Test sucesfull !!!");
+        }
+
         // GET: api/UsersDb
         [HttpGet]
         [Authorize(Roles = UserRole.ADMIN)]
@@ -163,6 +172,21 @@ namespace InSightWindowAPI.Controllers
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
             return Ok(deviceDto);
+        }
+        [HttpPost("makeAdmin")]
+        [AllowAnonymous]
+      //  [Authorize(Roles = UserRole.ADMIN)]
+        public async Task<IActionResult> MakeAdmin([FromQuery] Guid targetUserId)
+        {
+
+            Guid userId = HttpContext.GetUserIdFromClaims();
+
+            _context.Roles.Where(Role => Role.UserId == targetUserId).FirstOrDefault().RoleName = UserRole.ADMIN;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation(" {userId} have update {targetUserId} status: Admin", userId, targetUserId);
+        
+
+            return Ok();
         }
         [HttpPost("UnbindFrom")]
         public async Task<IActionResult> UnbindDevice([FromQuery] Guid deviceId)

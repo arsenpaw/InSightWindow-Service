@@ -96,7 +96,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myCorses, builder =>
     {
-        builder.WithOrigins("http://localhost:3000", "http://192.168.0.188:3000")
+        builder.WithOrigins("http://localhost:3000", "http://192.168.0.188:3000", "http://localhost:5026 ")
                .AllowAnyMethod()
                .AllowAnyHeader()
                .AllowCredentials();
@@ -109,7 +109,7 @@ builder.Services.AddFluentValidation(config =>
  });
 
 
-var pathToKeyFile = $"{Directory.GetCurrentDirectory()}\\{builder.Configuration["Firebase:KeyFilePath"]}";
+var pathToKeyFile = $"{Directory.GetCurrentDirectory()}//{builder.Configuration["Firebase:KeyFilePath"]}";
 
 FirebaseApp.Create(new AppOptions()
 {
