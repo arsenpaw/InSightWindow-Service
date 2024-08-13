@@ -74,7 +74,8 @@ namespace InSightWindowAPI.Controllers
         public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
         {
             _logger.LogWarning(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt"));
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == userLogin.Email);
+
+            var user = await _context.Users.Include(user => user.Role).FirstOrDefaultAsync(u => u.Email == userLogin.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
             {

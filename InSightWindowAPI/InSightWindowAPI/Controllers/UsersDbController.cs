@@ -173,9 +173,9 @@ namespace InSightWindowAPI.Controllers
 
             return Ok(deviceDto);
         }
+        //letter move to admin controller
         [HttpPost("makeAdmin")]
-        [AllowAnonymous]
-      //  [Authorize(Roles = UserRole.ADMIN)]
+        [Authorize(Roles = UserRole.ADMIN)]
         public async Task<IActionResult> MakeAdmin([FromQuery] Guid targetUserId)
         {
 
