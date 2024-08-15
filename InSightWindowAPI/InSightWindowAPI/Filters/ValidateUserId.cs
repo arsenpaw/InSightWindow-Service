@@ -1,9 +1,8 @@
-﻿using InSightWindowAPI.Controllers;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Diagnostics;
-using InSightWindowAPI.Controllers;
+using InSightWindowAPI.Extensions;
 
 namespace InSightWindowAPI.Filters
 {
@@ -20,6 +19,7 @@ namespace InSightWindowAPI.Filters
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {   
             //before
+            
             Guid userId = context.HttpContext.GetUserIdFromClaims(); 
             if (userId == Guid.Empty)
             {

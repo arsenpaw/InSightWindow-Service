@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using InSightWindowAPI.Extensions;
 
 namespace InSightWindowAPI.Controllers
 {

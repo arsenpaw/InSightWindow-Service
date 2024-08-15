@@ -13,10 +13,11 @@ using Microsoft.AspNetCore.Authorization;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindow.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
+using InSightWindowAPI.Extensions;
 
 namespace InSightWindowAPI.Controllers
 {
-   
+
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
@@ -150,7 +151,6 @@ namespace InSightWindowAPI.Controllers
                 {
                     var devices = userWithDevices.Devices.ToList();
                     var deviceList = _mapper.Map<List<DeviceDto>>(devices);
-
                     return Ok(deviceList);
                 }
                 else

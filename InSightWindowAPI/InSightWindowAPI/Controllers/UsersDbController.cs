@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Identity;
 using InSightWindowAPI.Filters;
 using InSightWindowAPI.Serivces;
 using InSightWindowAPI.Models.DeviceModel;
+using InSightWindowAPI.Extensions;
 
 
 namespace InSightWindowAPI.Controllers
@@ -173,21 +174,7 @@ namespace InSightWindowAPI.Controllers
 
             return Ok(deviceDto);
         }
-        //letter move to admin controller
-        [HttpPost("makeAdmin")]
-        [Authorize(Roles = UserRole.ADMIN)]
-        public async Task<IActionResult> MakeAdmin([FromQuery] Guid targetUserId)
-        {
 
-            Guid userId = HttpContext.GetUserIdFromClaims();
-
-            _context.Roles.Where(Role => Role.UserId == targetUserId).FirstOrDefault().RoleName = UserRole.ADMIN;
-            await _context.SaveChangesAsync();
-            _logger.LogInformation(" {userId} have update {targetUserId} status: Admin", userId, targetUserId);
-        
-
-            return Ok();
-        }
         [HttpPost("UnbindFrom")]
         public async Task<IActionResult> UnbindDevice([FromQuery] Guid deviceId)
         {

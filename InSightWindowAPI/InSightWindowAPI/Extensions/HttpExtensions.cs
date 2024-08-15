@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace InSightWindowAPI.Controllers
+namespace InSightWindowAPI.Extensions
 {
     public static class HttpExtensions
     {
@@ -8,7 +8,7 @@ namespace InSightWindowAPI.Controllers
         {
 
             var identity = httpContext.User.Identity as ClaimsIdentity;
-            if (identity == null) 
+            if (identity == null)
                 return Guid.Empty;
 
             IEnumerable<Claim> claim = identity.Claims;
