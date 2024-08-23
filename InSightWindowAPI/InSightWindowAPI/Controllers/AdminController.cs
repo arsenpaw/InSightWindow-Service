@@ -27,7 +27,7 @@ namespace InSightWindowAPI.Controllers
         public async Task<IActionResult> MakeAdmin([FromQuery] Guid targetUserId)
         {
             Guid userId = HttpContext.GetUserIdFromClaims();
-            _context.Roles.Where(Role => Role.UserId == targetUserId).FirstOrDefault().RoleName = UserRole.ADMIN;
+             _context.Roles.Where(Role => Role.UserId == targetUserId).FirstOrDefault().RoleName = UserRole.ADMIN;
             await _context.SaveChangesAsync();
             _logger.LogInformation(" {userId} have update {targetUserId} status: Admin", userId, targetUserId);
 

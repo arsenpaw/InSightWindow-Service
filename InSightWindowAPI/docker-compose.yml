@@ -4,9 +4,11 @@ version: '3.8'
 services:
   docker-api:
     container_name: web-api
-    image: windowapi:latest
+    image: vafelka/windowapi:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
     ports:
-      - "8081:80"
+      - "8081:80"  
     depends_on:
       - docker-sqlserver    
   docker-sqlserver:
