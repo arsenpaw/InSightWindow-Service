@@ -61,7 +61,11 @@ builder.Services.AddDbContext<UsersContext>(options =>
 builder.Services.AddTransient<UsersDbController>();
 builder.Services.AddTransient<DevicesDbController>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
-
+builder.Services.AddHttpsRedirection(opt =>
+{
+    opt.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
+    opt.HttpsPort = 443;
+});
 builder.Host.UseSerilog((context, config) =>
 {
     var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt");
@@ -129,7 +133,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+if (app.Environment.EnvironmentName == "IIS")
+{
+    app.UseHttpsRedirection();
+}
 app.UseCors(myCorses);
 
 app.UseHttpsRedirection();
