@@ -26,33 +26,6 @@ namespace InSightWindowAPI.Controllers
         }
 
 
-
-        // PUT: api/FireBaseTokens/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutFireBaseToken(Guid id, FireBaseToken fireBaseToken)
-        { 
-            _context.Entry(fireBaseToken).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (true)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
         // POST: api/FireBaseTokens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{token}")]

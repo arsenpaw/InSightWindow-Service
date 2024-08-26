@@ -1,10 +1,10 @@
-
 version: '3.8'
+
 
 services:
   docker-api:
     container_name: web-api
-    image: vafelka/windowapi:latest
+    image: vafelka/windowapi:v1.0 
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
@@ -13,7 +13,7 @@ services:
       - docker-sqlserver    
   docker-sqlserver:
     container_name: mssql-database
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: vafelka/mssql:v1.0
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=AXProduct2024
