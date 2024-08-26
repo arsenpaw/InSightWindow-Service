@@ -8,12 +8,16 @@ This is an API part which allow you to log/sign in and grab/send data to window
 1. Pull this repo
 2. Install docker
 3. Build docker container 
-4. Run docker compose 
 <strong>OR</strong>
-1. Go to that url
-2. Pull all docker images
-3 Run them using docker-compose file (locate here).
+1. Go to that url [Docker hub][api-docs]. 
+[api-docs]: https://hub.docker.com/repositories/vafelka
+3. Pull `windowapi` and `mssql`  docker image
+Then:
+- Create account with permisions in youre sql env.
+- Change connection string in `appsettings.{ENV}.json`
+- Run them using docker-compose file (locate in this repo).</br>
 
+📌You can use another sql server but you should configure it manualy.📌
 📌The difference that when you downlod it from github you will have and avalibility to source code.📌
 
 
