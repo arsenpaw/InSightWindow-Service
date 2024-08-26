@@ -7,23 +7,20 @@ This is an API part which allow you to log/sign in and grab/send data to window
 ⬇️<strong>Installiation</strong>⬇️
 1. Pull this repo
 2. Install docker
-3. Build docker container 
+3. Build docker container </br>
 <strong>OR</strong>
-1. Go to that url [Docker hub][api-docs]. 
-[api-docs]: https://hub.docker.com/repositories/vafelka
-3. Pull `windowapi` and `mssql`  docker image
+1. Go to [docker hub][docker]
+2. Pull `windowapi` and `mssql`  docker image
 Then:
 - Create account with permisions in youre sql env.
 - Change connection string in `appsettings.{ENV}.json`
 - Run them using docker-compose file (locate in this repo).</br>
 
-📌You can use another sql server but you should configure it manualy.📌
-📌The difference that when you downlod it from github you will have and avalibility to source code.📌
-
+📌You can use another sql server but you should configure it manualy.📌</br>
 
 📑<strong>[Here is some API docs for developers][api-docs]</strong>.📑<br>
 
 [api-docs]: https://github.com/arsenpaw/InSightWindow-Service/blob/main/API-DOCS.md
-
+[docker]: https://hub.docker.com/repositories/vafelka
 
 
