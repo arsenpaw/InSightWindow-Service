@@ -57,17 +57,17 @@ So there will be written only `{CONTROLLER_NAME}/{ENDPOINT_NAME}` part
   "deviceId": "guid",
 ```
 ### 3. DeviceDb
-  1. GET/DELETE `DeviceDb` - delete or get user.
+  1. GET/DELETE `DeviceDb{id}` - delete or get device.
      
-  2. POST  `DeviceDb/{id}`</br>
-  Accept ID in URL and body json </br>
+  2. POST  `DeviceDb/`</br>
+  Accept body json </br>
  ❗`"deviceType"`must be supported by an api because this type represent an object in TPH sql db ❗
 ```json
 {
   "deviceType": "Window"
 }
 ```
-  3. POST `DeviceDb/DeviceOfUser` </br>
+  3. GET `DeviceDb/DeviceOfUser` </br>
    Return an list of  user`s devices
 ```json
   [{
@@ -80,3 +80,29 @@ So there will be written only `{CONTROLLER_NAME}/{ENDPOINT_NAME}` part
   1. POST  `FireBaseTokens/{token}`</br>
   Accept TOKEN in URL </br>
  ❗`"{token}"`must be represent and firebase client device id, so it make an subscription to accept and push notofocation❗
+
+### 4. SignalRHub  
+  1.   `SendWidnowStatusToClient`</br>
+❗ Accept JSON as string in body ❗ </br>
+ ```json
+  {
+  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "isOpen": true,
+  "isAlarm": true,
+  "isProtected": true,
+  "temparature": 0,
+  "humidity": 0,
+  "isRain": true
+} 
+// all that have to be a string
+```
+  2. `SendUserInputToTargetDevice`</br>
+❗ Accept JSON  in body ❗ </br>
+ ```json
+{
+  "deviceId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "isProtectedButton": true,
+  "isOpenButton": true
+} 
+```
