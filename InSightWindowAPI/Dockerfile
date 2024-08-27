@@ -14,9 +14,14 @@ RUN dotnet nuget locals all --clear
 RUN dotnet restore
 RUN dotnet publish -c release -o /app --no-restore
 
+RUN mkdir -p app/certificates
+COPY Certificates/aspnetapp.pfx /app/certificates/
+
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 EXPOSE 80
+EXPOSE 443
 COPY --from=build /app ./
+
 ENTRYPOINT ["dotnet", "InSightWindowAPI.dll"]
