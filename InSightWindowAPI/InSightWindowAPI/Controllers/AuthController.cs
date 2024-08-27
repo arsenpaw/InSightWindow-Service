@@ -16,7 +16,7 @@ namespace InSightWindowAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [AllowAnonymous]
-    [RequireHttps]
+  //  [RequireHttps]
     public class AuthController : ControllerBase
     {
         private readonly UsersContext _context;

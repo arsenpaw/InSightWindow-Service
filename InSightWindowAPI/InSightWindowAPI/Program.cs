@@ -52,7 +52,8 @@ builder.Services.AddSwaggerGen(options =>
         Type = SecuritySchemeType.ApiKey
     });
     options.OperationFilter<SecurityRequirementsOperationFilter>();
-});
+}); 
+
 builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
@@ -66,11 +67,13 @@ builder.Services.AddHttpsRedirection(opt =>
     opt.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
     opt.HttpsPort = 443;
 });
+
 builder.Host.UseSerilog((context, config) =>
 {
-    var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt");
+    var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
     config.WriteTo.Console()
         .WriteTo.Debug()
+        .WriteTo.AzureApp()
         .WriteTo.File(logFilePath, LogEventLevel.Warning)
         .MinimumLevel.Information();
     
@@ -103,10 +106,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: myCorses, builder =>
     {
-        builder.WithOrigins("http://localhost:3000", "http://192.168.0.188:3000", "https://localhost:7009")
+        builder.AllowAnyOrigin()
                .AllowAnyMethod()
-               .AllowAnyHeader()
-               .AllowCredentials();
+               .AllowAnyHeader();
+              // .AllowCredentials(); need speific origin
     });
 });
 
@@ -133,13 +136,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-if (app.Environment.EnvironmentName == "IIS")
+if (!app.Environment.IsProduction())
 {
-    app.UseHttpsRedirection();
+     app.UseHttpsRedirection(); //azure not work with it
 }
-app.UseCors(myCorses);
 
-app.UseHttpsRedirection();
+
+
+
+
+app.UseCors(myCorses);
 app.UseAuthentication();
 app.UseAuthorization();
 
