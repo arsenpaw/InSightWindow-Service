@@ -16,13 +16,13 @@ namespace InSightWindowAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [AllowAnonymous]
-  //  [RequireHttps]
+    //  [RequireHttps]
     public class AuthController : ControllerBase
     {
         private readonly UsersContext _context;
         private readonly IMapper _mapper;
         private readonly JwtSettings _jwtSettings;
-        private readonly ILogger<AuthController> _logger;   
+        private readonly ILogger<AuthController> _logger;
         public AuthController(UsersContext context, IMapper mapper, JwtSettings jwtSettings, ILogger<AuthController> logger)
         {
             _context = context;
@@ -30,27 +30,16 @@ namespace InSightWindowAPI.Controllers
             _jwtSettings = jwtSettings;
             _logger = logger;
         }
+
         [HttpGet("test")]
-        public async Task<IActionResult> TestQuery()
-        {
-            var t =  _context.Users.GroupJoin(_context.FireBaseTokens,
-                 user => user.Id,
-                 device => device.UserId,
-                 (user, devices) => new
-                 {
-                     User = user,
-                     Devices = devices
-                 })
-                 .Where(model => model.Devices.Count() != 0).ToList();
-
-
-            return Ok(t);
+        public async Task<IActionResult> TestQuery () {
+            return Ok("Test query");
         }
+
         [HttpPost("create")]
         public async Task<ActionResult> CreateUser(UserDto user)
         {
             
-
             if (_context.Users == null)
             {
                 return Problem("Entity set 'UsersContext.Users' is null.");

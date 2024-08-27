@@ -21,10 +21,12 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Microsoft.VisualBasic;
 using FirebaseAdmin.Messaging;
-string myCorses = "AllowAllOrigins";
+using InSightWindowAPI.Middlewares;
+using System.Configuration;
 
+var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
-
+var allowedCredentials = builder.Configuration.GetConnectionString("AllowedOrigin");
 builder.Configuration.AddEnvironmentVariables();
 
 
@@ -104,12 +106,13 @@ builder.Services.AddAuthentication(options =>
 // Configure CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: myCorses, builder =>
+    options.AddPolicy(myCors, builder =>
     {
         builder.AllowAnyOrigin()
+                 .WithOrigins(allowedCredentials)
+                 .AllowCredentials()
                .AllowAnyMethod()
                .AllowAnyHeader();
-              // .AllowCredentials(); need speific origin
     });
 });
 
@@ -127,9 +130,7 @@ FirebaseApp.Create(new AppOptions()
 });
 
 
-
 var app = builder.Build();
-
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -138,14 +139,11 @@ if (app.Environment.IsDevelopment())
 }
 if (!app.Environment.IsProduction())
 {
-     app.UseHttpsRedirection(); //azure not work with it
+    app.UseHttpsRedirection(); //azure not work with it
 }
 
+app.UseCors(myCors);
 
-
-
-
-app.UseCors(myCorses);
 app.UseAuthentication();
 app.UseAuthorization();
 
