@@ -21,12 +21,12 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Microsoft.VisualBasic;
 using FirebaseAdmin.Messaging;
-using InSightWindowAPI.Middlewares;
 using System.Configuration;
+using Microsoft.Extensions.Configuration;
 
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
-var allowedCredentials = builder.Configuration.GetConnectionString("AllowedOrigin");
+var allowedCredentials = builder.Configuration.GetSection("AllowedOrigin").Value;
 builder.Configuration.AddEnvironmentVariables();
 
 
@@ -137,7 +137,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-if (!app.Environment.IsProduction())
+else if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection(); //azure not work with it
 }
