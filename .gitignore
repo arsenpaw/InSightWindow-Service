@@ -397,3 +397,8 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 InSightWindowAPI/InSightWindowAPI/firebase-admin.json
+InSightWindowAPI/docker-compose.nodb.yml
+InSightWindowAPI/docker-compose.yml
+InSightWindowAPI/Dockerfile
+InSightWindowAPI/docker-compose.yml
+InSightWindowAPI/InSightWindowAPI/appsettings.Production.json
