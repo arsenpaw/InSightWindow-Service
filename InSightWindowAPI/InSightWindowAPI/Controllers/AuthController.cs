@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 namespace InSightWindowAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -32,14 +33,14 @@ namespace InSightWindowAPI.Controllers
         }
 
         [HttpGet("test")]
-        public async Task<IActionResult> TestQuery () {
+        public async Task<IActionResult> TestQuery() {
             return Ok("Test query");
         }
 
         [HttpPost("create")]
         public async Task<ActionResult> CreateUser(UserDto user)
         {
-            
+
             if (_context.Users == null)
             {
                 return Problem("Entity set 'UsersContext.Users' is null.");
@@ -55,10 +56,12 @@ namespace InSightWindowAPI.Controllers
             userEntity.RefreshToken = await GenerateRefreshToken();
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
-       
+
             _logger.LogInformation("User with {Email} has registered in ", user.Email);
             return Ok();
         }
+
+
 
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
@@ -145,8 +148,10 @@ namespace InSightWindowAPI.Controllers
                 Expires = refreshToken.ExpitedDate,
                 IsEssential = true,
                   Path = "/",
-                  SameSite = SameSiteMode.Strict
-                  
+                 SameSite  = SameSiteMode.None,
+                 Secure = true
+
+
 
             });
             Response.Cookies.Append("token", token.ToString(), new CookieOptions
@@ -155,7 +160,8 @@ namespace InSightWindowAPI.Controllers
                 IsEssential = true,
                 Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
                 Path = "/",
-                SameSite = SameSiteMode.Strict
+                SameSite = SameSiteMode.None,
+                Secure = true
 
 
             });

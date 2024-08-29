@@ -23,10 +23,10 @@ using Microsoft.VisualBasic;
 using FirebaseAdmin.Messaging;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
-
+using InSightWindowAPI.Middlewares;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
-var allowedCredentials = builder.Configuration.GetSection("AllowedOrigin").Value;
+
 builder.Configuration.AddEnvironmentVariables();
 
 
@@ -73,12 +73,13 @@ builder.Services.AddHttpsRedirection(opt =>
 builder.Host.UseSerilog((context, config) =>
 {
     var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
-    config.WriteTo.Console()
-        .WriteTo.Debug()
-        .WriteTo.AzureApp()
-        .WriteTo.File(logFilePath, LogEventLevel.Warning)
-        .MinimumLevel.Information();
-    
+    config.WriteTo.Console(LogEventLevel.Information)
+     .WriteTo.Debug(LogEventLevel.Information)
+     .WriteTo.AzureApp(LogEventLevel.Information)
+     .WriteTo.File(logFilePath, LogEventLevel.Warning)
+     .MinimumLevel.Information();
+
+
 });
 // Configure authentication
 builder.Services.AddAuthentication(options =>
@@ -108,12 +109,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(myCors, builder =>
     {
-        builder.AllowAnyOrigin()
-                 .WithOrigins(allowedCredentials)
-                 .AllowCredentials()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        builder.SetIsOriginAllowed(origin => true) // Allow all origins
+             .AllowAnyMethod()
+             .AllowAnyHeader()
+             .AllowCredentials(); // Allow credentials if the origin is allowed
     });
+
 });
 
 builder.Services.AddFluentValidation(config =>
@@ -132,6 +133,9 @@ FirebaseApp.Create(new AppOptions()
 
 var app = builder.Build();
 // Configure the HTTP request pipeline
+app.UseCors(myCors);
+app.UseAllowCredentialsToSite();    
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -142,8 +146,8 @@ else if (!app.Environment.IsProduction())
     app.UseHttpsRedirection(); //azure not work with it
 }
 
-app.UseCors(myCors);
 
+app.UseRouting();   
 app.UseAuthentication();
 app.UseAuthorization();
 
