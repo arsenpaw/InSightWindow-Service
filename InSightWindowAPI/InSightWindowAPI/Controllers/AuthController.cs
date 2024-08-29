@@ -57,24 +57,29 @@ namespace InSightWindowAPI.Controllers
             await _context.SaveChangesAsync();
        
             _logger.LogInformation("User with {Email} has registered in ", user.Email);
-            return Ok(user);
+            return Ok();
         }
 
         [HttpPost("login")]
         public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
         {
-            _logger.LogWarning(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt"));
+            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+            _logger.LogInformation(ipAddress);
+          
+            // _logger.LogWarning(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt"));
 
-            var user = await _context.Users.Include(user => user.Role).FirstOrDefaultAsync(u => u.Email == userLogin.Email);
+            var user = await _context.Users.Include(user => user.Role)
+                .Include(user => user.RefreshToken)
+                .FirstOrDefaultAsync(u => u.Email == userLogin.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
             {
                 return Unauthorized("Invalid email or password.");
             }
             var token = await GenerateToken(user);
-            var refreshToken = await _context.RefreshTokens.FirstOrDefaultAsync(u => u.UserId == user.Id);
+            var refreshToken = user.RefreshToken;
 
-            if (refreshToken.ExpitedDate < DateTime.UtcNow)
+            if (refreshToken.ExpitedDate < DateTime.UtcNow.AddMonths(2))
             {
                 var newRefreshToken = await GenerateRefreshToken();
                 _mapper.Map(newRefreshToken, refreshToken);

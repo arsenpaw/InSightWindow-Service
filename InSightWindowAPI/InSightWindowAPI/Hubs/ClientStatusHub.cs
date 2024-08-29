@@ -37,37 +37,38 @@ namespace InSightWindowAPI.Hubs
             return base.OnConnectedAsync();
         }
 
-        public async Task<Guid> GetTargetUserIdOrDefault(Guid deviceId)
+        private async Task<Guid> GetTargetUserIdOrDefault(Guid deviceId)
         {
             var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
-            if (foundDevice != null) 
+            if (foundDevice != null)
             {
-                return (Guid)foundDevice.UserId;  
+                return (Guid)foundDevice.UserId;
             }
             return Guid.Empty;
         }
- 
-        public void Test(string deviceId) 
+
+        public void Test(string deviceId)
         {
             _logger.Log(LogLevel.Information, "Test method invoked");
-            Debug.WriteLine(deviceId);  
+            Debug.WriteLine(deviceId);
         }
 
         public async Task<string> SendUserInputToTargetDevice(UserInputStatus userInputStatus)
         {
-            if (userInputStatus == null || userInputStatus.DeviceId == Guid.Empty)  { _logger.Log(LogLevel.Information, "Null data received"); return "415 Unsuported Media Type"; }
+            if (userInputStatus == null || userInputStatus.DeviceId == Guid.Empty) { _logger.Log(LogLevel.Information, "Null data received"); return "415 Unsuported Media Type"; }
             _logger.Log(LogLevel.Information, "Try to send data to device from hub");
 
             try
             {
                 Guid userJWTId = new Guid(Context.UserIdentifier);
+                //ffix this go to db later
                 var subscribedUserId = await _context.Devices.Where(device => device.UserId == userJWTId && device.Id == userInputStatus.DeviceId).Select(colum => colum.Id).FirstOrDefaultAsync();
                 if (subscribedUserId == userJWTId)
                 {
                     // send data to microcontroller}
 
-                    await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput",userInputStatus);
-                    _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",userJWTId,userInputStatus.DeviceId);
+                    await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
+                    _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}", userJWTId, userInputStatus.DeviceId);
                     return "200 OK";
                 }
                 else
@@ -83,6 +84,7 @@ namespace InSightWindowAPI.Hubs
             }
         }
 
+        [AllowAnonymous]//temporary
         public async Task<string> SendWidnowStatusToClient(string json)
         {
             _logger.Log(LogLevel.Information, "Data sending to user from hub");
@@ -92,7 +94,7 @@ namespace InSightWindowAPI.Hubs
             try
             {
                 var userId = await GetTargetUserIdOrDefault(windowStatus.Id);
-                if (userId.Equals(Guid.Empty))
+                if (!userId.Equals(Guid.Empty))
                 {
                   if (windowStatus.isAlarm)
                     {
