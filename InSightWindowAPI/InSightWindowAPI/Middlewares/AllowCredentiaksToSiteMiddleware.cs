@@ -15,12 +15,16 @@ namespace InSightWindowAPI.Middlewares
 
         public async Task InvokeAsync(HttpContext context)
         {
-            var allowedCredentials = _configuration["AllowedOrigin"];
+
+            var allowOriginsSection = _configuration.GetSection("AllowedOrigin");
+            var allowOrigins = allowOriginsSection.Exists()
+                ? allowOriginsSection.Get<string[]>()?.ToList()
+                : new List<string>();
             var requestOrigin = context.Request.Headers["Origin"].ToString();
 
-            if (requestOrigin == allowedCredentials)
+            if (allowOrigins.Contains(requestOrigin))
             {
-                context.Response.Headers["Access-Control-Allow-Origin"] = allowedCredentials;
+                context.Response.Headers["Access-Control-Allow-Origin"] = requestOrigin;
                 context.Response.Headers["Access-Control-Allow-Credentials"] = "true";
             }
             else
