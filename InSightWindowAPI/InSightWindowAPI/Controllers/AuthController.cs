@@ -142,31 +142,31 @@ namespace InSightWindowAPI.Controllers
             Response.Headers.Add("Access-Control-Expose-Headers", "token,refresh-token");
             Response.Headers.Add("token", token);
             Response.Headers.Add("refresh-token", refreshToken.Token);
-            Response.Cookies.Append("refresh-token", refreshToken.Token, new CookieOptions
-            {
-              //  Domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName,
-              Domain = "localhost",
-                 Expires = refreshToken.ExpitedDate,
-                IsEssential = true,
-                  Path = "/",
-                 SameSite  = SameSiteMode.None,
-                 Secure = true
+            //Response.Cookies.Append("refresh-token", refreshToken.Token, new CookieOptions
+            //{
+            //  //  Domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName,
+            //  Domain = "localhost",
+            //     Expires = refreshToken.ExpitedDate,
+            //    IsEssential = true,
+            //      Path = "/",
+            //     SameSite  = SameSiteMode.None,
+            //     Secure = true
 
 
 
-            });
-            Response.Cookies.Append("token", token.ToString(), new CookieOptions
-            {
-               // Domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName,
-                Domain = "localhost",
-                IsEssential = true,
-                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
-                Path = "/",
-                SameSite = SameSiteMode.None,
-                Secure = true
+            //});
+            //Response.Cookies.Append("token", token.ToString(), new CookieOptions
+            //{
+            //   // Domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName,
+            //    Domain = "localhost",
+            //    IsEssential = true,
+            //    Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
+            //    Path = "/",
+            //    SameSite = SameSiteMode.None,
+            //    Secure = true
 
 
-            });
+            //});
             
             return result;
         }
