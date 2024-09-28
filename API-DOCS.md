@@ -81,13 +81,13 @@ So there will be written only `{CONTROLLER_NAME}/{ENDPOINT_NAME}` part
   Accept TOKEN in URL </br>
  ❗`"{token}"`must be represent and firebase client device id, so it make an subscription to accept and push notofocation❗
 
-### 4. SignalRHub  
+### 4. SignalRHub 
+  Route: `{URL}/client-hub`
   1.   `SendWidnowStatusToClient`</br>
 ❗ Accept JSON as string in body ❗ </br>
  ```json
   {
   "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
   "isOpen": true,
   "isAlarm": true,
   "isProtected": true,
