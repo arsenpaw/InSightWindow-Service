@@ -13,7 +13,7 @@ using InSightWindowAPI.Serivces;
 
 namespace InSightWindowAPI.Hubs
 {
-    [Authorize]
+
     public class ClientStatusHub : Hub
     {
         private readonly UsersContext _context;
@@ -33,26 +33,23 @@ namespace InSightWindowAPI.Hubs
         public override Task OnConnectedAsync()
         {
             var userId = Context.UserIdentifier;
+            if (userId == null)
+            {
+                _logger.Log(LogLevel.Information, "User connected to hub without JWT token, some method could be unavalible");
+                return base.OnConnectedAsync();
+            }
             _logger.Log(LogLevel.Information, $"User {userId} connected to hub", userId);
             return base.OnConnectedAsync();
         }
 
-        private async Task<Guid> GetTargetUserIdOrDefault(Guid deviceId)
-        {
-            var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
-            if (foundDevice != null)
-            {
-                return (Guid)foundDevice.UserId;
-            }
-            return Guid.Empty;
-        }
+
 
         public void Test(string deviceId)
         {
             _logger.Log(LogLevel.Information, "Test method invoked");
             Debug.WriteLine(deviceId);
         }
-
+        [Authorize]
         public async Task<string> SendUserInputToTargetDevice(UserInputStatus userInputStatus)
         {
             if (userInputStatus == null || userInputStatus.DeviceId == Guid.Empty) { _logger.Log(LogLevel.Information, "Null data received"); return "415 Unsuported Media Type"; }
@@ -83,13 +80,26 @@ namespace InSightWindowAPI.Hubs
                 return "500 Internal Server Error ";
             }
         }
+        private async Task<Guid> GetTargetUserIdOrDefault(Guid deviceId)
+        {
+            var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
+            if (foundDevice == null)
+                return Guid.Empty;
+            return foundDevice.UserId.Value;
 
+
+        }
         [AllowAnonymous]//temporary
         public async Task<string> SendWidnowStatusToClient(string json)
         {
             _logger.Log(LogLevel.Information, "Data sending to user from hub");
-            AllWindowDataDto windowStatus = JsonConvert.DeserializeObject<AllWindowDataDto>(json);
-            if (windowStatus == null) { _logger.Log(LogLevel.Information, "Bad data achived while parse to WindowStatus in HUb"); return "415 Unsuported Media Type"; }
+            var windowStatus = JsonConvert.DeserializeObject<AllWindowDataDto>(json);
+            if (windowStatus == null)
+            {
+                _logger.Log(LogLevel.Information, "Bad data achived while parse to WindowStatus in HUb");
+                return "415 Unsuported Media Type"; 
+            }
+
             _logger.Log(LogLevel.Information, $"Data after convert");
             try
             {

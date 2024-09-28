@@ -24,6 +24,7 @@ namespace InSightWindowAPI.Models
             modelBuilder.Entity<User>()
                .HasIndex(u => u.Email)
                .IsUnique();
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.FireBaseToken)
                 .WithOne(f => f.User)
@@ -31,18 +32,22 @@ namespace InSightWindowAPI.Models
             modelBuilder.Entity<FireBaseToken>()
                .HasIndex(u => u.UserId)
                .IsUnique();
+
             modelBuilder.Entity<User>()
              .HasMany(u => u.Devices)
              .WithOne(d => d.User)
              .HasForeignKey(d => d.UserId);
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.Role)
                 .WithOne(x => x.User)
                 .HasForeignKey<Role>(x => x.UserId);
+
             modelBuilder.Entity<User>()
                 .HasOne(u => u.RefreshToken)
                 .WithOne(x => x.User)
                 .HasForeignKey<RefreshToken>(x => x.UserId);
+
             modelBuilder.Entity<Device>()
                 .UseTphMappingStrategy()
                 .HasDiscriminator<string>("DeviceType"); 
