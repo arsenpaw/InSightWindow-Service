@@ -69,15 +69,15 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb
         [HttpGet]
-        [Authorize(Roles = UserRole.ADMIN)]
-        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        [Authorize(Roles = UserRoles.ADMIN)]
+        public async Task<ActionResult<IEnumerable<UserRegisterDto>>> GetUsers()
         {
             if (_context.Users == null)
             {
                 return NotFound();
             }
             var users = await _context.Users.ToListAsync();
-            var dtoUsers = _mapper.Map<List<UserDto>>(users);
+            var dtoUsers = _mapper.Map<List<UserRegisterDto>>(users);
 
             return Ok(dtoUsers);
         }
@@ -86,7 +86,7 @@ namespace InSightWindowAPI.Controllers
         [HttpGet]
         [Route("concreteUser")]
        
-        public async Task<ActionResult<UserDto>> GetUser()
+        public async Task<ActionResult<UserRegisterDto>> GetUser()
         {
             Guid id = HttpContext.GetUserIdFromClaims();    
             var user = await _context.Users.FindAsync(id);
@@ -95,7 +95,7 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
-            var userDto = _mapper.Map<UserDto>(user);
+            var userDto = _mapper.Map<UserRegisterDto>(user);
 
             return Ok(userDto);
         }
@@ -103,7 +103,7 @@ namespace InSightWindowAPI.Controllers
         // PUT: api/UsersDb/5
         [HttpPut]
         [Route("concreteUser")]
-        public async Task<IActionResult> PutUser( UserDto user)
+        public async Task<IActionResult> PutUser(UserRegisterDto user)
         {
             Guid id = HttpContext.GetUserIdFromClaims();
             var foundUser = await _context.Users.FindAsync(id);
@@ -111,8 +111,8 @@ namespace InSightWindowAPI.Controllers
             {
                 return NotFound();
             }
-            var oldUserToCompare = _mapper.Map<UserDto>(foundUser);
-            var newUserToCompare = _mapper.Map<UserDto>(user);
+            var oldUserToCompare = _mapper.Map<UserRegisterDto>(foundUser);
+            var newUserToCompare = _mapper.Map<UserRegisterDto>(user);
 
             if (oldUserToCompare.Equals(newUserToCompare))
             {

@@ -35,25 +35,19 @@ namespace InSightWindowAPI.Controllers
             try
             {
                 var userId = HttpContext.GetUserIdFromClaims();
-                var oldUserTokens = await _context.FireBaseTokens.FirstOrDefaultAsync(x => x.UserId == userId);
-                if (oldUserTokens != null && oldUserTokens.Token == token)
+                var oldUserTokens = await _context.UserFireBaseTokens.Where(x => x.UserId.Equals(userId))
+                    .Select(x => x.FireBaseToken).ToListAsync();
+                if (oldUserTokens != null)
                 {
-                    return Ok();
-                }
-                else if (oldUserTokens != null && oldUserTokens.Token != null)
-                {
-                    oldUserTokens.Token = token;
-                    await _context.SaveChangesAsync();
                     return Ok();
                 }
                 else
                 {
                     FireBaseToken fireBaseToken = new FireBaseToken
                     {
-                        UserId = userId,
                         Token = token
                     };
-                    _context.FireBaseTokens.Add(fireBaseToken);
+                    oldUserTokens.Add(fireBaseToken);
                     await _context.SaveChangesAsync();
 
                     return Ok();

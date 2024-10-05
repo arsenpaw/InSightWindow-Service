@@ -24,6 +24,15 @@ using FirebaseAdmin.Messaging;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using InSightWindowAPI.Middlewares;
+using Microsoft.AspNetCore.Identity;
+using System;
+
+using Azure.Core.Pipeline;
+using System.Xml.Linq;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Google;
+using InSightWindowAPI.Services;
+using InSightWindowAPI.Enums;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,18 +54,36 @@ builder.Services.AddControllers()
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
+builder.Services.AddSwaggerGen(opt =>
 {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
+        Description = "Please enter token",
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
     });
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-}); 
 
-builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
+    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+builder.Services.AddScoped<ITokenService, TokenService>();
+//builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UsersContext>(options =>
@@ -81,7 +108,13 @@ builder.Host.UseSerilog((context, config) =>
 
 
 });
-// Configure authentication
+
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<UsersContext>() 
+    .AddDefaultTokenProviders();
+
+
+
 builder.Services.AddAuthentication(options =>
 {
     
@@ -103,7 +136,12 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
     };
 });
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+    // Add more policies as needed
+});
 // Configure CORS
 builder.Services.AddCors(options =>
 {
@@ -117,10 +155,7 @@ builder.Services.AddCors(options =>
 
 });
 
-builder.Services.AddFluentValidation(config =>
-{
-    config.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
- });
+
 
 
 var pathToKeyFile = $"{Directory.GetCurrentDirectory()}//{builder.Configuration["Firebase:KeyFilePath"]}";
@@ -132,6 +167,11 @@ FirebaseApp.Create(new AppOptions()
 
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RoleSeeder.SeedRolesAsync(services);
+}
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
 app.UseAllowCredentialsToSite();    

@@ -15,18 +15,18 @@ namespace InSightWindowAPI
                 .ForMember(
                 dest => dest.Id,
                 opt => opt.Ignore());
-            CreateMap<User, UserDto>();        
-            CreateMap<UserDto, UserDto>();
-            CreateMap<UserDto, User>();
+            CreateMap<User, UserRegisterDto>();        
+            CreateMap<UserRegisterDto, UserRegisterDto>();
+            CreateMap<UserRegisterDto, User>();
             CreateMap<Device, DeviceDto>();
                   
-         //   CreateMap<List<Device>,List<DeviceDto>>();
-            CreateMap<DeviceDto, Device>()
-                 .ForMember(dest => dest.Id, opt => opt.Ignore());
-            CreateMap<RefreshToken, RefreshToken>()
-                .ForMember( dest => dest.UserId, opt => opt.Ignore())
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.User, opt => opt.Ignore()); 
+         ////   CreateMap<List<Device>,List<DeviceDto>>();
+         //   CreateMap<DeviceDto, Device>()
+         //        .ForMember(dest => dest.Id, opt => opt.Ignore());
+         //   CreateMap<RefreshToken, RefreshToken>()
+         //       .ForMember( dest => dest.UserId, opt => opt.Ignore())
+         //       .ForMember(dest => dest.Id, opt => opt.Ignore())
+         //       .ForMember(dest => dest.User, opt => opt.Ignore()); 
             ;
         }
     }

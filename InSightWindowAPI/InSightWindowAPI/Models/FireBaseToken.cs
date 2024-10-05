@@ -9,10 +9,11 @@ namespace InSightWindowAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; private set; }
 
-        public Guid UserId { get; set; }
-        [Required]
-        public User User { get; set; }
         [Required]
         public string Token { get; set; }
+
+        public ICollection<User> Users { get; }
+
+        public ICollection<UserFireBaseTokens> UserFireBaseTokens { get; }
     }
 }

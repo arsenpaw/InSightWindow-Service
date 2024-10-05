@@ -1,210 +1,183 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using InSightWindowAPI.Models;
+using InSightWindowAPI;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using InSightWindowAPI.JwtSetting;
+using System.Threading.Tasks;
 using InSightWindowAPI.Models.Dto;
-using InSightWindowAPI.Models;
-using Microsoft.AspNetCore.Authorization;
+using InSightWindowAPI.JwtSetting;
+using InSightWindowAPI.Services;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using AutoMapper;
-using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using InSightWindowAPI.Serivces;
+using NuGet.Common;
+
 namespace InSightWindowAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
-    //  [RequireHttps]
     public class AuthController : ControllerBase
     {
-        private readonly UsersContext _context;
-        private readonly IMapper _mapper;
-        private readonly JwtSettings _jwtSettings;
-        private readonly ILogger<AuthController> _logger;
-        public AuthController(UsersContext context, IMapper mapper, JwtSettings jwtSettings, ILogger<AuthController> logger)
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly IConfiguration _configuration;
+        private readonly ITokenService _tokenService;
+
+        public AuthController(
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            IConfiguration configuration,
+            ITokenService tokenService)
         {
-            _context = context;
-            _mapper = mapper;
-            _jwtSettings = jwtSettings;
-            _logger = logger;
-        }
-
-        [HttpGet("test")]
-        public async Task<IActionResult> TestQuery() {
-            return Ok("Test query");
-        }
-
-        [HttpPost("create")]
-        public async Task<ActionResult> CreateUser(UserDto user)
-        {
-
-            if (_context.Users == null)
-            {
-                return Problem("Entity set 'UsersContext.Users' is null.");
-            }
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == user.Email);
-
-            if (existingUser != null)
-            {
-                return Conflict("This email has already been used.");
-            }
-            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
-            var userEntity = _mapper.Map<User>(user);
-            userEntity.RefreshToken = await GenerateRefreshToken();
-            _context.Users.Add(userEntity);
-            await _context.SaveChangesAsync();
-
-            _logger.LogInformation("User with {Email} has registered in ", user.Email);
-            return Ok();
-        }
-
-
-
-        [HttpPost("login")]
-        public async Task<ActionResult> LoginUser(UserLoginDto userLogin)
-        {
-            var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
-            _logger.LogInformation(ipAddress);
-          
-            // _logger.LogWarning(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "LOGS.txt"));
-
-            var user = await _context.Users.Include(user => user.Role)
-                .Include(user => user.RefreshToken)
-                .FirstOrDefaultAsync(u => u.Email == userLogin.Email);
-
-            if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.Password))
-            {
-                return Unauthorized("Invalid email or password.");
-            }
-            var token = await GenerateToken(user);
-            var refreshToken = user.RefreshToken;
-
-            if (refreshToken.ExpitedDate < DateTime.UtcNow.AddMonths(2))
-            {
-                var newRefreshToken = await GenerateRefreshToken();
-                _mapper.Map(newRefreshToken, refreshToken);
-            }
-
-            await _context.SaveChangesAsync();
-            _logger.LogInformation("User with enail: {Email} has logged in ", user.Email);
-            return await CreatResponceWithTokens(token, refreshToken);
-        }
-        [HttpPost("refresh-tokens")]
-        public async Task<ActionResult<string>> RefreshTokens()
-        {
-            if (!Request.Headers.TryGetValue("refresh-token", out var refreshToken))
-            {
-                return BadRequest("Refresh token is missing");
-            }
-            var oldRefreshTokenObj = await _context.RefreshTokens.FirstOrDefaultAsync(x => x.Token == refreshToken.ToString());
-
-            if (oldRefreshTokenObj == null)
-            {
-                return Unauthorized("Invalid refresh token");
-            }
-
-            Guid requestingUserId = oldRefreshTokenObj.UserId;
- 
-            _logger.Log(LogLevel.Information, "{requestingUserId} user id was retrived from refresh-token claim ", requestingUserId);
-          
-           
-            if (oldRefreshTokenObj.ExpitedDate < DateTime.UtcNow)
-            {
-                _logger.Log(LogLevel.Warning, "{requestingUserId} token has expired", requestingUserId);
-                return Unauthorized("Token expired");
-            }
-
-            //update refresh token
-            RefreshToken newRefreshToken;
-            if (oldRefreshTokenObj.ExpitedDate < DateTime.UtcNow.AddMonths(2))
-            {
-                newRefreshToken = await GenerateRefreshToken();
-                _mapper.Map(newRefreshToken, oldRefreshTokenObj);
-                await _context.SaveChangesAsync();
-                _logger.Log(LogLevel.Information, "{requestingUserId} has succesfully update their tokens", requestingUserId);
-            }
-            else { newRefreshToken = oldRefreshTokenObj; }
-            //update default token
-            var user = await _context.Users.Include(user => user.Role).FirstOrDefaultAsync(x => x.Id == requestingUserId);
-            string token = await GenerateToken(user);
-
-            _logger.Log(LogLevel.Information, "{requestingUserId} has succesfully receive tokens", requestingUserId);
-            return await CreatResponceWithTokens(token, newRefreshToken);
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _configuration = configuration;
+            _tokenService = tokenService;
 
         }
 
-        private async Task<ObjectResult> CreatResponceWithTokens(string token, RefreshToken refreshToken)
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        /// <param name="model">Registration details.</param>
+        /// <returns>Action result.</returns>
+        [HttpPost("Register")]
+        public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
         {
-            var result = new ObjectResult(Ok());
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var userExists = await _userManager.FindByEmailAsync(model.Email);
+            if (userExists != null)
+                return Conflict(new { message = "User already exists!" });
+
+            var user = new User
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            // Assign the "User" role to the newly registered user
+            await _userManager.AddToRoleAsync(user, "User");
+
+            return Ok(new { message = "User registered successfully!" });
+        }
+
+        /// <summary>
+        /// Logs in a user and returns a JWT token along with a refresh token.
+        /// </summary>
+        /// <param name="model">Login details.</param>
+        /// <returns>Access token and refresh token.</returns>
+        [HttpPost("Login")]
+        public async Task<ActionResult<TokenResponse>> Login([FromBody] UserLoginDto model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+                return Unauthorized(new { message = "Invalid credentials." });
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
+            if (!result.Succeeded)
+                return Unauthorized(new { message = "Invalid credentials." });
+
+            var accessToken = await _tokenService.GenerateAccessTokenAsync(user);
+            var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
+
+            var response = new TokenResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken.Token
+            };
             Response.Headers.Add("Access-Control-Expose-Headers", "token,refresh-token");
-            Response.Headers.Add("token", token);
+            Response.Headers.Add("token", accessToken);
             Response.Headers.Add("refresh-token", refreshToken.Token);
-            //Response.Cookies.Append("refresh-token", refreshToken.Token, new CookieOptions
-            //{
-            //  //  Domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName,
-            //  Domain = "localhost",
-            //     Expires = refreshToken.ExpitedDate,
-            //    IsEssential = true,
-            //      Path = "/",
-            //     SameSite  = SameSiteMode.None,
-            //     Secure = true
-
-
-
-            //});
-            //Response.Cookies.Append("token", token.ToString(), new CookieOptions
-            //{
-            //   // Domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName,
-            //    Domain = "localhost",
-            //    IsEssential = true,
-            //    Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
-            //    Path = "/",
-            //    SameSite = SameSiteMode.None,
-            //    Secure = true
-
-
-            //});
-            
-            return result;
+            return response;
         }
 
-        private async Task<RefreshToken> GenerateRefreshToken()
+        /// <summary>
+        /// Refreshes an access token using a valid refresh token.
+        /// </summary>
+        /// <param name="model">Refresh token request.</param>
+        /// <returns>New access token and refresh token.</returns>
+        [HttpPost("RefreshToken")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest model)
         {
-            var refreshToken = new RefreshToken
-            {
-                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                ExpitedDate = DateTime.UtcNow.AddMonths(6),
-               
-            };
-            return refreshToken;
-        }
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-        private async Task<string> GenerateToken(User user)
-        {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.NameId, user.Id.ToString()),        
-                new Claim(ClaimTypes.Role, user.Role.RoleName),
+            // Validate the access token (optional, based on your security requirements)
+            var principal = GetPrincipalFromExpiredToken(model.AccessToken);
+            if (principal == null)
+                return BadRequest(new { message = "Invalid access token or refresh token." });
 
+            var userId = Guid.Parse(principal.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                return BadRequest(new { message = "Invalid access token or refresh token." });
+
+            var refreshToken = await _tokenService.GetRefreshTokenAsync(model.RefreshToken);
+            if (refreshToken == null || refreshToken.UserId != user.Id || !refreshToken.IsActive)
+                return BadRequest(new { message = "Invalid refresh token." });
+
+            // Revoke the used refresh token
+            await _tokenService.RevokeRefreshTokenAsync(refreshToken);
+
+            // Generate new tokens
+            var newAccessToken = await _tokenService.GenerateAccessTokenAsync(user);
+            var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
+
+            var response = new TokenResponse
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken.Token
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(response);
         }
+
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var jwtSettings = new JwtSettings();
+            _configuration.GetSection("JwtSettings").Bind(jwtSettings);
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(jwtSettings.SecretKey);
+
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    ValidateLifetime = false, 
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                }, out var validatedToken);
+
+
+                return validatedToken as JwtSecurityToken != null
+                    ? new ClaimsPrincipal(new ClaimsIdentity(((JwtSecurityToken)validatedToken).Claims))
+                    : null;
+            }
+            catch
+            {
+                return null; 
+            }
+        }
+
     }
-
-
 }
