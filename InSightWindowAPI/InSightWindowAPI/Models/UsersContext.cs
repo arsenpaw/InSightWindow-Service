@@ -30,6 +30,9 @@ namespace InSightWindowAPI.Models
              .WithMany(u => u.RefreshTokens)
              .HasForeignKey(rt => rt.UserId);
 
+           
+
+
             modelBuilder.Entity<User>()
                 .HasMany(e => e.FireBaseTokens)
                 .WithMany(e => e.Users)

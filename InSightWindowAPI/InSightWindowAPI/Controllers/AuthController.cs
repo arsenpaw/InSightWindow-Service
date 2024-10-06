@@ -118,9 +118,9 @@ namespace InSightWindowAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Validate the access token (optional, based on your security requirements)
+
             var principal = GetPrincipalFromExpiredToken(model.AccessToken);
-            if (principal == null)
+             if (principal == null)
                 return BadRequest(new { message = "Invalid access token or refresh token." });
 
             var userId = Guid.Parse(principal.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
@@ -133,10 +133,10 @@ namespace InSightWindowAPI.Controllers
             if (refreshToken == null || refreshToken.UserId != user.Id || !refreshToken.IsActive)
                 return BadRequest(new { message = "Invalid refresh token." });
 
-            // Revoke the used refresh token
+
             await _tokenService.RevokeRefreshTokenAsync(refreshToken);
 
-            // Generate new tokens
+
             var newAccessToken = await _tokenService.GenerateAccessTokenAsync(user);
             var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
 

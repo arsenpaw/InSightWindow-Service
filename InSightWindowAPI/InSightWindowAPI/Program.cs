@@ -33,6 +33,7 @@ using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Google;
 using InSightWindowAPI.Services;
 using InSightWindowAPI.Enums;
+using InSightWindowAPI.Extensions;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,36 +55,9 @@ builder.Services.AddControllers()
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(opt =>
-{
-    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "MyAPI", Version = "v1" });
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "bearer"
-    });
-
-    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
-                }
-            },
-            new string[]{}
-        }
-    });
-});
+builder.Services.AddSwaggerDocs();
 builder.Services.AddScoped<ITokenService, TokenService>();
-//builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
+builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UsersContext>(options =>
@@ -138,8 +112,8 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("RequireUserRole", policy => policy.RequireRole("User"));
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole(UserRoles.ADMIN));
+    options.AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.USER));
     // Add more policies as needed
 });
 // Configure CORS
