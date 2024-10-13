@@ -24,6 +24,16 @@ using FirebaseAdmin.Messaging;
 using System.Configuration;
 using Microsoft.Extensions.Configuration;
 using InSightWindowAPI.Middlewares;
+using Microsoft.AspNetCore.Identity;
+using System;
+
+using Azure.Core.Pipeline;
+using System.Xml.Linq;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Google;
+using InSightWindowAPI.Services;
+using InSightWindowAPI.Enums;
+using InSightWindowAPI.Extensions;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,17 +55,8 @@ builder.Services.AddControllers()
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey
-    });
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-}); 
-
+builder.Services.AddSwaggerDocs();
+builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
@@ -81,7 +82,13 @@ builder.Host.UseSerilog((context, config) =>
 
 
 });
-// Configure authentication
+
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<UsersContext>() 
+    .AddDefaultTokenProviders();
+
+
+
 builder.Services.AddAuthentication(options =>
 {
     
@@ -103,7 +110,12 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
     };
 });
-
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdminRole", policy => policy.RequireRole(UserRoles.ADMIN));
+    options.AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.USER));
+    // Add more policies as needed
+});
 // Configure CORS
 builder.Services.AddCors(options =>
 {
@@ -117,10 +129,7 @@ builder.Services.AddCors(options =>
 
 });
 
-builder.Services.AddFluentValidation(config =>
-{
-    config.RegisterValidatorsFromAssembly(typeof(Program).Assembly);
- });
+
 
 
 var pathToKeyFile = $"{Directory.GetCurrentDirectory()}//{builder.Configuration["Firebase:KeyFilePath"]}";
@@ -132,6 +141,11 @@ FirebaseApp.Create(new AppOptions()
 
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await RoleSeeder.SeedRolesAsync(services);
+}
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
 app.UseAllowCredentialsToSite();    
@@ -146,7 +160,7 @@ else if (!app.Environment.IsProduction())
     app.UseHttpsRedirection(); //azure not work with it
 }
 
-
+app.UseExceptionMiddleware();
 app.UseRouting();   
 app.UseAuthentication();
 app.UseAuthorization();

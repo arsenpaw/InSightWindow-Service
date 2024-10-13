@@ -2,13 +2,12 @@
 
 namespace InSightWindowAPI.Models.Dto
 {
-    public class UserLoginDto
+    public class RefreshTokenRequest
     {
         [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        public string AccessToken { get; set; }
 
         [Required]
-        public string Password { get; set; }
+        public string RefreshToken { get; set; }
     }
 }
