@@ -1,0 +1,23 @@
+services:
+  docker-api:
+    container_name: web-api
+    image: vafelka/windowapi:v1.0.1
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTPS_PORT=443
+      - ASPNETCORE_URLS=https://+;http://+
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=AXProduct2024
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
+    ports:
+      - "443:443"
+      - "80:80"
+    depends_on:
+      - docker-sqlserver
+  docker-sqlserver:
+    container_name: mssql-database
+    image: vafelka/mssql:v1.0
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=AXProduct2024
+    ports:
+      - "1401:1433"
