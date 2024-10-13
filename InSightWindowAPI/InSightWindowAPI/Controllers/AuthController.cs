@@ -46,7 +46,7 @@ namespace InSightWindowAPI.Controllers
         /// </summary>
         /// <param name="model">Registration details.</param>
         /// <returns>Action result.</returns>
-        [HttpPost("Register")]
+        [HttpPost("create")]
         public async Task<IActionResult> Register([FromBody] UserRegisterDto model)
         {
             if (!ModelState.IsValid)
@@ -92,8 +92,9 @@ namespace InSightWindowAPI.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (!result.Succeeded)
                 return Unauthorized(new { message = "Invalid credentials." });
-
-            var accessToken = await _tokenService.GenerateAccessTokenAsync(user);
+            
+            var userRole = await _userManager.GetRolesAsync(user);
+            var accessToken = await _tokenService.GenerateAccessTokenAsync(user,userRole);
             var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
 
             var response = new TokenResponse
@@ -136,8 +137,8 @@ namespace InSightWindowAPI.Controllers
 
             await _tokenService.RevokeRefreshTokenAsync(refreshToken);
 
-
-            var newAccessToken = await _tokenService.GenerateAccessTokenAsync(user);
+            var userRole = await _userManager.GetRolesAsync(user);
+            var newAccessToken = await _tokenService.GenerateAccessTokenAsync(user,userRole);
             var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
 
             var response = new TokenResponse

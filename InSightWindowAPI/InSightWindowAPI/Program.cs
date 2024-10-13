@@ -160,7 +160,7 @@ else if (!app.Environment.IsProduction())
     app.UseHttpsRedirection(); //azure not work with it
 }
 
-
+app.UseExceptionMiddleware();
 app.UseRouting();   
 app.UseAuthentication();
 app.UseAuthorization();

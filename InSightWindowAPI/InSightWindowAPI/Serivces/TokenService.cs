@@ -9,6 +9,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using InSightWindowAPI.Enums;
+using NuGet.Packaging;
 
 namespace InSightWindowAPI.Services
 {
@@ -23,20 +25,24 @@ namespace InSightWindowAPI.Services
             _context = context;
         }
 
-        public async Task<string> GenerateAccessTokenAsync(User user)
+        public async Task<string> GenerateAccessTokenAsync(User user,IEnumerable<string> role)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["SecretKey"];
             var issuer = jwtSettings["Issuer"];
             var audience = jwtSettings["Audience"];
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName)
-                // Add more claims if needed
+                new Claim(ClaimTypes.Name, user.UserName),
+                
             };
+            foreach (var r in role)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, r));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
