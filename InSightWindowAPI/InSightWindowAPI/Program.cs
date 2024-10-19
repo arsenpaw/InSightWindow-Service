@@ -148,7 +148,7 @@ using (var scope = app.Services.CreateScope())
 }
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
-app.UseAllowCredentialsToSite();    
+//app.UseAllowCredentialsToSite();    
 
 if (app.Environment.IsDevelopment())
 {

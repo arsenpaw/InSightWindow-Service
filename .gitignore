@@ -404,3 +404,4 @@ InSightWindowAPI/docker-compose.yml
 InSightWindowAPI/InSightWindowAPI/appsettings.Production.json
 InSightWindowAPI/Dockerfile
 InSightWindowAPI/docker-compose.yml
+/InSightWindowAPI/.idea

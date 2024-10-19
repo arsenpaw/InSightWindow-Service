@@ -15,12 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Middlewares/ExecptionMiddleware.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/ITokenService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/ITokenService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/TokenService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/TokenService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/appsettings.Development.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,24 +29,24 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "arsenpaw"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;arsenpaw&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/arsenpaw/InSightWindow-Service.git",
-    "accountId": "c72a889c-7cfd-4ff5-bccd-31b7b8b63a19"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/arsenpaw/InSightWindow-Service.git&quot;,
+    &quot;accountId&quot;: &quot;c72a889c-7cfd-4ff5-bccd-31b7b8b63a19&quot;
   }
-}]]></component>
+}</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/946d6a0391cc43a8b8cecafb3ddc3abd1e38a0/53/e6f38556/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2nOgyRWg08hJmWUj4LHGWLFRosP" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -58,13 +54,15 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Debug",
-    "git-widget-placeholder": "change-database-structure",
+    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Run",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "RiderNuGetOptionsPageId"
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "RiderNuGetOptionsPageId",
+    "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
     "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
@@ -147,7 +145,10 @@
       <method v="2" />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
-      <deployment type="dockerfile" />
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
   </component>
@@ -160,6 +161,9 @@
       <option name="presentableId" value="Default" />
       <updated>1728849791586</updated>
       <workItem from="1728849794097" duration="2865000" />
+      <workItem from="1728931284493" duration="52000" />
+      <workItem from="1728932952515" duration="518000" />
+      <workItem from="1729010042435" duration="1393000" />
     </task>
     <servers />
   </component>
@@ -188,19 +192,6 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs</url>
-          <line>84</line>
-          <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Controllers\AuthController.cs" containingFunctionPresentation="Method 'Login'">
-            <startOffsets>
-              <option value="2934" />
-            </startOffsets>
-            <endOffsets>
-              <option value="2958" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs</url>
           <line>118</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Controllers\AuthController.cs" containingFunctionPresentation="Method 'RefreshToken'">
             <startOffsets>
@@ -224,6 +215,19 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Middlewares/AllowCredentiaksToSiteMiddleware.cs</url>
+          <line>22</line>
+          <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Middlewares\AllowCredentiaksToSiteMiddleware.cs" containingFunctionPresentation="Method 'InvokeAsync'">
+            <startOffsets>
+              <option value="762" />
+            </startOffsets>
+            <endOffsets>
+              <option value="827" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

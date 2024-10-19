@@ -13,7 +13,7 @@ using InSightWindowAPI.Serivces;
 
 namespace InSightWindowAPI.Hubs
 {
-
+    [AllowAnonymous]
     public class ClientStatusHub : Hub
     {
         private readonly UsersContext _context;
@@ -89,7 +89,6 @@ namespace InSightWindowAPI.Hubs
 
 
         }
-        [AllowAnonymous]//temporary
         public async Task<string> SendWidnowStatusToClient(string json)
         {
             _logger.Log(LogLevel.Information, "Data sending to user from hub");
