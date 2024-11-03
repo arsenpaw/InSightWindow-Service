@@ -37,7 +37,13 @@ namespace InSightWindowAPI.Hubs
 
         public override Task OnConnectedAsync()
         {
-            if (DeviceId == null)
+            Task.Delay(500);
+            foreach (var item in Context?.User?.Claims)
+            {
+                _logger.Log(LogLevel.Information, "Calim {i}", item?.Value);
+            }
+            Task.Delay(500);
+            if (DeviceId == Guid.Empty)
             {
                 _logger.Log(LogLevel.Information, "User connected to hub without JWT token, some method could be unavalible");
                 return base.OnConnectedAsync();

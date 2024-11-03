@@ -10,6 +10,7 @@ namespace InSightWindowAPI.Serivces
 
         public AesService(string key, string iv)
         {
+            Aes = Aes.Create();
             Aes.Key = _getProperByteData(key);
             Aes.IV = _getProperByteData(iv);
             Aes.Mode = CipherMode.CBC;
