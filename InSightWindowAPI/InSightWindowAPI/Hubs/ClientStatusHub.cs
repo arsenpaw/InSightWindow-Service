@@ -14,7 +14,7 @@ using InSightWindowAPI.Serivces;
 namespace InSightWindowAPI.Hubs
 {
     [AllowAnonymous]
-    public class ClientStatusHub : Hub
+    public class ClientStatusHub : BaseHub
     {
         private readonly UsersContext _context;
         private IMemoryCache _cache;
@@ -22,7 +22,12 @@ namespace InSightWindowAPI.Hubs
         private readonly IPushNotificationService _pusher;
 
 
-        public ClientStatusHub(UsersContext context, IMemoryCache memoryCache, ILogger<ClientStatusHub> logger, IPushNotificationService pusher)
+        public ClientStatusHub(
+       UsersContext context,
+       IMemoryCache memoryCache,
+       ILogger<ClientStatusHub> logger,
+       IPushNotificationService pusher,
+       IAesService aesService) : base(aesService)
         {
             _context = context;
             _cache = memoryCache;
@@ -32,53 +37,40 @@ namespace InSightWindowAPI.Hubs
 
         public override Task OnConnectedAsync()
         {
-            var userId = Context.UserIdentifier;
-            if (userId == null)
+            if (DeviceId == null)
             {
                 _logger.Log(LogLevel.Information, "User connected to hub without JWT token, some method could be unavalible");
                 return base.OnConnectedAsync();
             }
-            _logger.Log(LogLevel.Information, $"User {userId} connected to hub", userId);
+            _logger.Log(LogLevel.Information, "Device {i} connected to hub", DeviceId);
             return base.OnConnectedAsync();
         }
 
 
-
-        public void Test(string deviceId)
+        public async Task<int> ReceiveDataFromEsp32(byte[] sensorDataByte)
         {
-            _logger.Log(LogLevel.Information, "Test method invoked");
-            Debug.WriteLine(deviceId);
-        }
-        [Authorize]
-        public async Task<string> SendUserInputToTargetDevice(UserInputStatus userInputStatus)
-        {
-            if (userInputStatus == null || userInputStatus.DeviceId == Guid.Empty) { _logger.Log(LogLevel.Information, "Null data received"); return "415 Unsuported Media Type"; }
-            _logger.Log(LogLevel.Information, "Try to send data to device from hub");
-
-            try
+            string jsonData = AesService.DecryptStringFromBytes_Aes(sensorDataByte);
+            _logger.Log(LogLevel.Information, jsonData);
+            var sensorDataDto = JsonConvert.DeserializeObject<SensorDataDto>(jsonData);
+            if (sensorDataDto == null || DeviceId == null)
             {
-                Guid userJWTId = new Guid(Context.UserIdentifier);
-                //ffix this go to db later
-                var subscribedUserId = await _context.Devices.Where(device => device.UserId == userJWTId && device.Id == userInputStatus.DeviceId).Select(colum => colum.Id).FirstOrDefaultAsync();
-                if (subscribedUserId == userJWTId)
-                {
-                    // send data to microcontroller}
+                _logger.Log(LogLevel.Critical,
+                    "No all credentials have detected while receive data from esp32, Data: {sdata}, DeviceId {uId}",sensorDataDto,DeviceId);
+            }
 
-                    await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
-                    _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}", userJWTId, userInputStatus.DeviceId);
-                    return "200 OK";
-                }
-                else
-                {
-                    _logger.Log(LogLevel.Warning, "Suspicious activity detected from user  {userJWTId}", userJWTId);
-                    return "401 Unauthorized ";
-                }
-            }
-            catch (Exception ex)
+
+            var subscribedUserId = await _context.Devices
+                .Where(device => device.UserId == DeviceId)
+                .Select(colum => colum.Id).FirstOrDefaultAsync();
+
+            if (subscribedUserId == null)
             {
-                _logger.Log(LogLevel.Critical, ex.Message);
-                return "500 Internal Server Error ";
+                return 401;
             }
+            // await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
+            _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",
+                subscribedUserId, DeviceId);
+             return 200;
         }
         private async Task<Guid> GetTargetUserIdOrDefault(Guid deviceId)
         {

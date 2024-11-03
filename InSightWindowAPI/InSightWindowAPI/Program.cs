@@ -34,6 +34,7 @@ using Google;
 using InSightWindowAPI.Services;
 using InSightWindowAPI.Enums;
 using InSightWindowAPI.Extensions;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
+builder.Services.AddSingleton<IAesService>(provider =>
+        new AesService("AXProduct2024", "AXProduct2024"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UsersContext>(options =>
