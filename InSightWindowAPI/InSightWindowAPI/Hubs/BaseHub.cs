@@ -19,8 +19,8 @@ namespace InSightWindowAPI.Hubs
         {
             get
             {
-                var userIdClaim = Context.User.FindFirst(ClaimTypes.NameIdentifier);
-                return userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId)
+                var userIdClaim = Context.GetHttpContext().Request.Headers["DeviceId"].ToString(); 
+                return userIdClaim != null && Guid.TryParse(userIdClaim, out var userId)
                     ? userId
                     : Guid.Empty;
             }
