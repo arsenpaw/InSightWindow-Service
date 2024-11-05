@@ -11,9 +11,13 @@ namespace InSightWindowAPI.Serivces
         public AesService(string key, string iv)
         {
             Aes = Aes.Create();
-            Aes.Key = _getProperByteData(key);
             Aes.IV = _getProperByteData(iv);
+            Aes.Key = _getProperByteData(iv);
+
             Aes.Mode = CipherMode.CBC;
+            Aes.BlockSize = 128;
+            Aes.Padding = PaddingMode.Zeros;
+            
         }
         public byte[] EncryptStringToBytes_Aes(string plainText)
         {
@@ -29,6 +33,7 @@ namespace InSightWindowAPI.Serivces
                     using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                     {
                         //Write all data to the stream.
+
                         swEncrypt.Write(plainText);
                     }
                 }
@@ -51,6 +56,10 @@ namespace InSightWindowAPI.Serivces
             // with the specified key and IV.
 
             // Create a decryptor to perform the stream transform.
+            Aes.IV = new byte[]
+{
+    49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 65, 66, 67, 68, 69, 70
+};
             ICryptoTransform decryptor = Aes.CreateDecryptor(Aes.Key, Aes.IV);
 
             // Create the streams used for decryption.
@@ -61,7 +70,7 @@ namespace InSightWindowAPI.Serivces
                     using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                     {
 
-                        // Read the decrypted bytes from the decrypting stream
+                        // Read the decrypted bytes     from the decrypting stream
                         // and place them in a string.
                         plaintext = srDecrypt.ReadToEnd();
                     }

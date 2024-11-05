@@ -60,7 +60,7 @@ builder.Services.AddSwaggerDocs();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
 builder.Services.AddSingleton<IAesService>(provider =>
-        new AesService("AXProduct2024", "AXProduct2024"));
+        new AesService("1234567890ABCDEF", "1234567890ABCDEF"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddDbContext<UsersContext>(options =>

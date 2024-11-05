@@ -10,6 +10,7 @@ using InSightWindowAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Serivces;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace InSightWindowAPI.Hubs
 {
@@ -33,30 +34,28 @@ namespace InSightWindowAPI.Hubs
             _cache = memoryCache;
             _logger = logger;
             _pusher = pusher;
+         
         }
 
         public override Task OnConnectedAsync()
         {
-            Task.Delay(500);
-            var t = DeviceId;
-            Console.WriteLine(t.ToString());
-            foreach (var item in Context?.User?.Claims)
-            {
-                _logger.Log(LogLevel.Information, "Calim {i}", item?.Value);
-            }
-            Task.Delay(500);
             if (DeviceId == Guid.Empty)
             {
-                _logger.Log(LogLevel.Information, "User connected to hub without JWT token, some method could be unavalible");
+                _logger.Log(LogLevel.Information, "User connected to hub without Id");
                 return base.OnConnectedAsync();
             }
             _logger.Log(LogLevel.Information, "Device {i} connected to hub", DeviceId);
+            Clients.User(DeviceId.ToString());
             return base.OnConnectedAsync();
         }
 
+        
 
-        public async Task<int> ReceiveDataFromEsp32(byte[] sensorDataByte)
-        {
+        public async Task<int> ReceiveDataFromEsp32(string sensorData)
+        {   
+            byte[] sensorDataByte = Convert.FromBase64String(sensorData);
+            Console.WriteLine(DeviceId);
+            var t = "/GJ/HLzVQooIIcGIHKeRF++JWTcgFMrIzeTpHD5sdrFn3O8mJ3zb04Zoo4FWZViGcBiH1yD8u5za8ERDcZ2Xg4suZ+j4T4IxTG3hlNmH2L/2zkKKcQfjBm5AqH3kMQY1";
             string jsonData = AesService.DecryptStringFromBytes_Aes(sensorDataByte);
             _logger.Log(LogLevel.Information, jsonData);
             var sensorDataDto = JsonConvert.DeserializeObject<SensorDataDto>(jsonData);
