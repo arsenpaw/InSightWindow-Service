@@ -14,7 +14,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="" />
+    <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,7 +54,11 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;.NET Launch Settings Profile.InSightWindowAPI: https.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;Attach to Process.23308:w3wp.executor&quot;: &quot;Debug&quot;,
+    &quot;Attach to Process.26404:JetBrains.ProcessEnumerator.Worker32.executor&quot;: &quot;Debug&quot;,
+    &quot;Attach to Process.37544:w3wp.executor&quot;: &quot;Debug&quot;,
+    &quot;Publish to IIS.InSightWindowAPI: IISPUB.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;add-workable-connection-in-signalr&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -67,7 +73,12 @@
     ]
   }
 }</component>
-  <component name="RunManager" selected=".NET Launch Settings Profile.InSightWindowAPI: https">
+  <component name="RecentsManager">
+    <key name="CidrLocalAttachDebugger.recentlyUsed">
+      <recent name="com.jetbrains.rider.cpp.debugger.RiderCppLLDBDriverConfiguration" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Publish to IIS.InSightWindowAPI: IISPUB">
     <configuration name="InSightWindowAPI: FolderProfile" type="DotNetMsBuildPublish" factoryName="Publish to IIS">
       <riderPublish configuration="Release" platform="Any CPU" publish_profile="FolderProfile.pubxml" pubxml_path="$PROJECT_DIR$/InSightWindowAPI/Properties/PublishProfiles/FolderProfile.pubxml" uuid_high="-8945743639286887004" uuid_low="-4785951963627367719" />
       <method v="2" />
@@ -148,6 +159,16 @@
       <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="false" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue=".NET Launch Settings Profile.InSightWindowAPI: http" />
+      <item itemvalue=".NET Launch Settings Profile.InSightWindowAPI: https" />
+      <item itemvalue=".NET Launch Settings Profile.InSightWindowAPI: IIS Express" />
+      <item itemvalue="Docker.InSightWindowAPI/Dockerfile" />
+      <item itemvalue="Publish to IIS.InSightWindowAPI: FolderProfile" />
+      <item itemvalue="Publish to IIS.InSightWindowAPI: FolderProfile2" />
+      <item itemvalue="Publish to IIS.InSightWindowAPI: IISPUB" />
+      <item itemvalue="Publish to IIS.InSightWindowAPI: To Production" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -162,6 +183,15 @@
       <workItem from="1728932952515" duration="518000" />
       <workItem from="1729010042435" duration="1393000" />
       <workItem from="1729342826365" duration="1232000" />
+      <workItem from="1731155584247" duration="33000" />
+      <workItem from="1731155637267" duration="24000" />
+      <workItem from="1731155981585" duration="55000" />
+      <workItem from="1731156075591" duration="76000" />
+      <workItem from="1731156181791" duration="468000" />
+      <workItem from="1731157079709" duration="87000" />
+      <workItem from="1731157182396" duration="282000" />
+      <workItem from="1731157490458" duration="10000" />
+      <workItem from="1731157513114" duration="32000" />
     </task>
     <servers />
   </component>
@@ -226,6 +256,32 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs</url>
+          <line>41</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\ClientStatusHub.cs" containingFunctionPresentation="Method 'OnConnectedAsync'">
+            <startOffsets>
+              <option value="1232" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1259" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs</url>
+          <line>55</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\ClientStatusHub.cs" containingFunctionPresentation="Method 'ReceiveDataFromEsp32'">
+            <startOffsets>
+              <option value="1719" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1780" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

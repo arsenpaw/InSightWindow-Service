@@ -8,10 +8,12 @@ namespace InSightWindowAPI.Serivces
     {
         public Aes Aes { get; set; }
 
+        public byte[] IV { get; set; }
+
         public AesService(string key, string iv)
         {
             Aes = Aes.Create();
-            Aes.IV = _getProperByteData(iv);
+            IV = _getProperByteData(iv);
             Aes.Key = _getProperByteData(iv);
 
             Aes.Mode = CipherMode.CBC;
@@ -56,10 +58,7 @@ namespace InSightWindowAPI.Serivces
             // with the specified key and IV.
 
             // Create a decryptor to perform the stream transform.
-            Aes.IV = new byte[]
-{
-    49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 65, 66, 67, 68, 69, 70
-};
+            Aes.IV =IV;
             ICryptoTransform decryptor = Aes.CreateDecryptor(Aes.Key, Aes.IV);
 
             // Create the streams used for decryption.

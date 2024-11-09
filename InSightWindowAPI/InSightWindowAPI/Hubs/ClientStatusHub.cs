@@ -55,7 +55,6 @@ namespace InSightWindowAPI.Hubs
         {   
             byte[] sensorDataByte = Convert.FromBase64String(sensorData);
             Console.WriteLine(DeviceId);
-            var t = "/GJ/HLzVQooIIcGIHKeRF++JWTcgFMrIzeTpHD5sdrFn3O8mJ3zb04Zoo4FWZViGcBiH1yD8u5za8ERDcZ2Xg4suZ+j4T4IxTG3hlNmH2L/2zkKKcQfjBm5AqH3kMQY1";
             string jsonData = AesService.DecryptStringFromBytes_Aes(sensorDataByte);
             _logger.Log(LogLevel.Information, jsonData);
             var sensorDataDto = JsonConvert.DeserializeObject<SensorDataDto>(jsonData);
@@ -64,14 +63,16 @@ namespace InSightWindowAPI.Hubs
                 _logger.Log(LogLevel.Information, "test");
                 _logger.Log(LogLevel.Critical,
                     "No all credentials have detected while receive data from esp32, Data: {sdata}, DeviceId {uId}",sensorDataDto,DeviceId);
+                return 405;
             }
 
 
             var subscribedUserId = await _context.Devices
-                .Where(device => device.UserId == DeviceId)
-                .Select(colum => colum.Id).FirstOrDefaultAsync();
+                .Where(x => x.Id == DeviceId)
+                .Select(x => x.UserId)
+                .FirstOrDefaultAsync();
 
-            if (subscribedUserId == null)
+            if (subscribedUserId == Guid.Empty || subscribedUserId == null)
             {
                 return 401;
             }
