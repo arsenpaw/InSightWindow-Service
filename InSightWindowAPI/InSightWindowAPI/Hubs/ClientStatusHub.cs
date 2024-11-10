@@ -60,7 +60,6 @@ namespace InSightWindowAPI.Hubs
             var sensorDataDto = JsonConvert.DeserializeObject<SensorDataDto>(jsonData);
             if (sensorDataDto == null || DeviceId == Guid.Empty)
             {
-                _logger.Log(LogLevel.Information, "test");
                 _logger.Log(LogLevel.Critical,
                     "No all credentials have detected while receive data from esp32, Data: {sdata}, DeviceId {uId}",sensorDataDto,DeviceId);
                 return 405;
