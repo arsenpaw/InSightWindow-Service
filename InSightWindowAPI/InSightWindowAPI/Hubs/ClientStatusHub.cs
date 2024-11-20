@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Serivces;
 using System.Runtime.Serialization.Formatters.Binary;
+using InSightWindowAPI.Models.Command;
+using InSightWindowAPI.Hubs.ConnectionMapper;
 
 namespace InSightWindowAPI.Hubs
 {
@@ -21,7 +23,8 @@ namespace InSightWindowAPI.Hubs
         private IMemoryCache _cache;
         private ILogger<ClientStatusHub> _logger;
         private readonly IPushNotificationService _pusher;
-
+        private readonly static ConnectionMapping<Guid> _connectionMapping =
+           new ConnectionMapping<Guid>();
 
         public ClientStatusHub(
        UsersContext context,
@@ -41,15 +44,23 @@ namespace InSightWindowAPI.Hubs
         {
             if (DeviceId == Guid.Empty)
             {
-                _logger.Log(LogLevel.Information, "User connected to hub without Id");
+                _logger.Log(LogLevel.Information, "No device was connected to hub");
                 return base.OnConnectedAsync();
             }
             _logger.Log(LogLevel.Information, "Device {i} connected to hub", DeviceId);
-            Clients.User(DeviceId.ToString());
+            _connectionMapping.Add(DeviceId, Context.ConnectionId);
             return base.OnConnectedAsync();
         }
+        public override Task OnDisconnectedAsync(Exception? exception)
+        {
+            foreach (var deviceId in _connectionMapping.GetConnections(DeviceId))
+            {
+                _connectionMapping.Remove(DeviceId, Context.ConnectionId);
+            }
 
-        
+            return base.OnDisconnectedAsync(exception);
+        }
+
 
         public async Task<int> ReceiveDataFromEsp32(string sensorData)
         {   
@@ -65,60 +76,44 @@ namespace InSightWindowAPI.Hubs
                 return 405;
             }
 
-
             var subscribedUserId = await _context.Devices
                 .Where(x => x.Id == DeviceId)
                 .Select(x => x.UserId)
                 .FirstOrDefaultAsync();
 
-            if (subscribedUserId == Guid.Empty || subscribedUserId == null)
-            {
-                return 401;
-            }
+            if (!subscribedUserId.HasValue)
+                return 401; 
+            
+            _connectionMapping.Add(subscribedUserId.Value, Context.ConnectionId);
             // await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
             _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",
                 subscribedUserId, DeviceId);
              return 200;
         }
-        private async Task<Guid> GetTargetUserIdOrDefault(Guid deviceId)
+        
+        //[Authorize]
+        //public async Task<int> SendCommandToEsp32(Guid deviceId, CommandDto command)
+         public async Task<int> SendCommandToEsp32()
         {
-            var foundDevice = await _context.Devices.FirstOrDefaultAsync(x => x.Id == deviceId);
-            if (foundDevice == null)
-                return Guid.Empty;
-            return foundDevice.UserId.Value;
+            Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
+           var  command = new CommandDto { Command = CommandEnum.Open };
 
-
-        }
-        public async Task<string> SendWidnowStatusToClient(string json)
-        {
             _logger.Log(LogLevel.Information, "Data sending to user from hub");
-            var windowStatus = JsonConvert.DeserializeObject<AllWindowDataDto>(json);
-            if (windowStatus == null)
-            {
-                _logger.Log(LogLevel.Information, "Bad data achived while parse to WindowStatus in HUb");
-                return "415 Unsuported Media Type"; 
-            }
-
-            _logger.Log(LogLevel.Information, $"Data after convert");
             try
             {
-                var userId = await GetTargetUserIdOrDefault(windowStatus.Id);
-                if (!userId.Equals(Guid.Empty))
+                var connectionID = _connectionMapping.GetConnections(deviceId).FirstOrDefault();
+                if (connectionID == null)
                 {
-                  if (windowStatus.isAlarm)
-                    {
-                        await _pusher.SendNotificationToUser(userId, "Alarm", "Alarm was triggered");
-                    }
-                    await Clients.User(userId.ToString()).SendAsync("ReceiveWindowStatus", windowStatus);
-                    return "200 OK";
+                    _logger.Log(LogLevel.Warning, "No connection found for device {deviceId}", deviceId);
+                    return 404;
                 }
-                else
-                    return "202  No user subscribed";
+                await Clients.Client(connectionID).SendAsync("ReceiveCommand", JsonConvert.SerializeObject(command));
+                return 200;
             }
             catch (Exception ex)
             {
                 _logger.Log(LogLevel.Critical, ex.Message);
-                return "500 Internal Server Error ";
+                return 500;
             }
         }
 

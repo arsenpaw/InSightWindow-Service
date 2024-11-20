@@ -35,6 +35,7 @@ using InSightWindowAPI.Services;
 using InSightWindowAPI.Enums;
 using InSightWindowAPI.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using InSightWindowAPI.Hubs.ConnectionMapper;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
 
