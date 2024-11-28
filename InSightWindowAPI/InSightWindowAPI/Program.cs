@@ -91,7 +91,11 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<UsersContext>() 
     .AddDefaultTokenProviders();
 
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.RequireUniqueEmail = true;
 
+});
 
 builder.Services.AddAuthentication(options =>
 {

@@ -1,10 +1,12 @@
 ﻿using InSightWindowAPI.Models.DeviceModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace InSightWindowAPI.Models
 {
+    [Index(nameof(Email), IsUnique = true)]
     public class User : IdentityUser<Guid>
     {
         [Required]
