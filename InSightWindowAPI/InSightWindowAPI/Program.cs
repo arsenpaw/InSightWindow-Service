@@ -36,8 +36,10 @@ using InSightWindowAPI.Enums;
 using InSightWindowAPI.Extensions;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using InSightWindowAPI.Hubs.ConnectionMapper;
+using InSightWindowAPI.EntityFramework;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
+
 
 builder.Configuration.AddEnvironmentVariables();
 
@@ -149,11 +151,7 @@ FirebaseApp.Create(new AppOptions()
 
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await RoleSeeder.SeedRolesAsync(services);
-}
+app.MigrateDatabase<UsersContext>();
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
 //app.UseAllowCredentialsToSite();    

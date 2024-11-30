@@ -129,9 +129,7 @@ namespace InSightWindowAPI.Controllers
 
             Guid userId = HttpContext.GetUserIdFromClaims();
             if (_context.Devices == null)
-            {
                 return Problem("Entity set 'UsersContext.Devices' is null.");
-            }
 
             var userWithDevices = await _context.Users
             .GroupJoin(_context.Devices,
@@ -145,22 +143,15 @@ namespace InSightWindowAPI.Controllers
             .Where(userGroup => userGroup.User.Id == userId)
             .FirstOrDefaultAsync();
 
-            if (userWithDevices != null)
+            if (userWithDevices != null || !userWithDevices.Devices.Any())
             {
-                if (userWithDevices.Devices.Any())
-                {
-                    var devices = userWithDevices.Devices.ToList();
-                    var deviceList = _mapper.Map<List<DeviceDto>>(devices);
-                    return Ok(deviceList);
-                }
-                else
-                {
-                    return NoContent();
-                }
+                return new List<DeviceDto>();
             }
             else
             {
-                return NotFound("User not exist");
+                var devices = userWithDevices.Devices.ToList();
+                var deviceList = _mapper.Map<List<DeviceDto>>(devices);
+                return deviceList;
             }
 
         }

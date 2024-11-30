@@ -13,7 +13,7 @@ namespace InSightWindowAPI.Enums
       
         private static readonly string[] Roles = new[] { UserRoles.ADMIN, UserRoles.USER };
 
-        public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
+        public static async Task SeedRolesAsync(this IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
 
