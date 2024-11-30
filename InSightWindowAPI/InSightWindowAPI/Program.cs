@@ -152,6 +152,7 @@ FirebaseApp.Create(new AppOptions()
 
 var app = builder.Build();
 app.MigrateDatabase<UsersContext>();
+
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
 //app.UseAllowCredentialsToSite();    

@@ -131,26 +131,19 @@ namespace InSightWindowAPI.Controllers
             if (_context.Devices == null)
                 return Problem("Entity set 'UsersContext.Devices' is null.");
 
-            var userWithDevices = await _context.Users
-            .GroupJoin(_context.Devices,
-               user => user.Id,
-               device => device.UserId,
-               (user, devices) => new
-               {
-                   User = user,
-                   Devices = devices
-               })
-            .Where(userGroup => userGroup.User.Id == userId)
+            var userDevice = await _context.Users
+            .Include(x => x.Devices)
+            .Where(x => x.Id == userId)
+            .Select(x => x.Devices)
             .FirstOrDefaultAsync();
 
-            if (userWithDevices != null || !userWithDevices.Devices.Any())
+            if (userDevice != null || !userDevice.Any())
             {
                 return new List<DeviceDto>();
             }
             else
             {
-                var devices = userWithDevices.Devices.ToList();
-                var deviceList = _mapper.Map<List<DeviceDto>>(devices);
+                var deviceList = _mapper.Map<List<DeviceDto>>(userDevice);
                 return deviceList;
             }
 
