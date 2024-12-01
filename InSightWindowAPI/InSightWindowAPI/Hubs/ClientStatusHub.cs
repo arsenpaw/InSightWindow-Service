@@ -13,6 +13,7 @@ using InSightWindowAPI.Serivces;
 using System.Runtime.Serialization.Formatters.Binary;
 using InSightWindowAPI.Models.Command;
 using InSightWindowAPI.Hubs.ConnectionMapper;
+using System.Net;
 
 namespace InSightWindowAPI.Hubs
 {
@@ -62,7 +63,7 @@ namespace InSightWindowAPI.Hubs
         }
 
 
-        public async Task<int> ReceiveDataFromEsp32(string sensorData)
+        public async Task<HttpStatusCode> ReceiveDataFromEsp32(string sensorData)
         {   
             byte[] sensorDataByte = Convert.FromBase64String(sensorData);
             Console.WriteLine(DeviceId);
@@ -73,7 +74,7 @@ namespace InSightWindowAPI.Hubs
             {
                 _logger.Log(LogLevel.Critical,
                     "No all credentials have detected while receive data from esp32, Data: {sdata}, DeviceId {uId}",sensorDataDto,DeviceId);
-                return 405;
+                return HttpStatusCode.Unauthorized;
             }
 
             var subscribedUserId = await _context.Devices
@@ -82,38 +83,39 @@ namespace InSightWindowAPI.Hubs
                 .FirstOrDefaultAsync();
 
             if (!subscribedUserId.HasValue)
-                return 401; 
+                return HttpStatusCode.NotFound; 
             
             _connectionMapping.Add(subscribedUserId.Value, Context.ConnectionId);
             // await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
             _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",
                 subscribedUserId, DeviceId);
-             return 200;
+             return HttpStatusCode.OK;
         }
         
         //[Authorize]
         //public async Task<int> SendCommandToEsp32(Guid deviceId, CommandDto command)
-         public async Task<int> SendCommandToEsp32()
+         public async Task<HttpStatusCode> SendCommandToEsp32()
         {
             Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
-           var  command = new CommandDto { Command = CommandEnum.Open };
+           var  command = new CommandDto { Command = CommandEnum.Close };
 
-            _logger.Log(LogLevel.Information, "Data sending to user from hub");
             try
             {
                 var connectionID = _connectionMapping.GetConnections(deviceId).FirstOrDefault();
                 if (connectionID == null)
                 {
                     _logger.Log(LogLevel.Warning, "No connection found for device {deviceId}", deviceId);
-                    return 404;
+                    return HttpStatusCode.NotFound;
                 }
-                await Clients.Client(connectionID).SendAsync("ReceiveCommand", JsonConvert.SerializeObject(command));
-                return 200;
+                var encryptedCommand = AesService.EncryptStringToBytes_Aes(JsonConvert.SerializeObject(command));
+                var str = Convert.ToBase64String(encryptedCommand);
+                await Clients.Client(connectionID).SendAsync("ReceiveCommand", str);
+                return HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
                 _logger.Log(LogLevel.Critical, ex.Message);
-                return 500;
+                return HttpStatusCode.InternalServerError;
             }
         }
 
