@@ -66,8 +66,17 @@ builder.Services.AddSingleton<IAesService>(provider =>
         new AesService("1234567890ABCDEF", "1234567890ABCDEF"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
-builder.Services.AddDbContext<UsersContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<UsersContext>((options) =>
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 3,
+                maxRetryDelay: TimeSpan.FromSeconds(10), 
+                errorNumbersToAdd: null 
+            );
+        });
+    });
 builder.Services.AddTransient<UsersDbController>();
 builder.Services.AddTransient<DevicesDbController>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

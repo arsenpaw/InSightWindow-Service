@@ -137,15 +137,14 @@ namespace InSightWindowAPI.Controllers
             .Select(x => x.Devices)
             .FirstOrDefaultAsync();
 
-            if (userDevice != null || !userDevice.Any())
+            if (userDevice is null)
             {
                 return new List<DeviceDto>();
             }
-            else
-            {
-                var deviceList = _mapper.Map<List<DeviceDto>>(userDevice);
-                return deviceList;
-            }
+
+            var deviceList = _mapper.Map<List<DeviceDto>>(userDevice);
+            return deviceList;
+            
 
         }
 

@@ -92,12 +92,12 @@ namespace InSightWindowAPI.Hubs
              return HttpStatusCode.OK;
         }
         
-        //[Authorize]
-        //public async Task<int> SendCommandToEsp32(Guid deviceId, CommandDto command)
-         public async Task<HttpStatusCode> SendCommandToEsp32()
+        [Authorize]
+        public async Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
+        // public async Task<HttpStatusCode> SendCommandToEsp32()
         {
-            Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
-           var  command = new CommandDto { Command = CommandEnum.Close };
+           // Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
+           //var  command = new CommandDto { Command = CommandEnum.Close };
 
             try
             {
@@ -108,8 +108,7 @@ namespace InSightWindowAPI.Hubs
                     return HttpStatusCode.NotFound;
                 }
                 var encryptedCommand = AesService.EncryptStringToBytes_Aes(JsonConvert.SerializeObject(command));
-                var str = Convert.ToBase64String(encryptedCommand);
-                await Clients.Client(connectionID).SendAsync("ReceiveCommand", str);
+                await Clients.Client(connectionID).SendAsync("ReceiveCommand", Convert.ToBase64String(encryptedCommand));
                 return HttpStatusCode.OK;
             }
             catch (Exception ex)

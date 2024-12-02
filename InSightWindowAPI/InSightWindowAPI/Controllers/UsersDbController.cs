@@ -148,31 +148,22 @@ namespace InSightWindowAPI.Controllers
         }
 
         [HttpPost("BindTo")]
-        public async Task<IActionResult> BindDevice([FromQuery] Guid deviceId)
+        public async Task<ActionResult<DeviceDto>> BindDevice([FromQuery] Guid deviceId)
         {
 
             Guid userId = HttpContext.GetUserIdFromClaims();
-            
-            var device = await _context.Devices.GroupJoin(_context.Users,
-                            device => device.UserId,
-                            user => user.Id,
-                            (device, users) => new
-                            {
-                                Device = device,
-                                Users = users
-                            }).Where(model => model.Device.Id == deviceId && model.Device.UserId == null).Select(model => model.Device).FirstOrDefaultAsync();
+
+            var device = await _context.Devices.Where(x => x.Id == deviceId).FirstOrDefaultAsync();
 
             if (device == null)
-            {
-                return NotFound();
-            }
+                return NotFound("Devce Not Exist");
 
             device.UserId = userId;
             await _context.SaveChangesAsync();
             _logger.LogInformation(" {userId} have added device {DeviceId}", device.Id, userId);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
-            return Ok(deviceDto);
+            return deviceDto;
         }
 
         [HttpPost("UnbindFrom")]
@@ -181,14 +172,7 @@ namespace InSightWindowAPI.Controllers
 
             Guid userId = HttpContext.GetUserIdFromClaims();
 
-            var device = await _context.Devices.GroupJoin(_context.Users,
-                            device => device.UserId,
-                            user => user.Id,
-                            (device, users) => new
-                            {
-                                Device = device,
-                                Users = users
-                            }).Where(model => model.Device.Id == deviceId && model.Device.UserId == userId ).Select(model => model.Device).FirstOrDefaultAsync();
+            var device = await _context.Devices.Where(x => x.Id == deviceId).FirstOrDefaultAsync();
 
             if (device == null)
             {
@@ -200,7 +184,7 @@ namespace InSightWindowAPI.Controllers
             _logger.LogInformation("{userId} unbind {@device}", device,userId);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
-            return Ok(deviceDto);
+            return Ok();
         }
 
 
