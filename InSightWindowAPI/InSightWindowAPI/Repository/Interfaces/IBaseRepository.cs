@@ -1,6 +1,11 @@
-﻿namespace InSightWindowAPI.Repository.Interfaces
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace InSightWindowAPI.Repository.Interfaces
 {
-    public class IBaseRepository
+    public interface IBaseRepository 
     {
+        public Task<int> SaveAsync();
+
+        public int Save();
     }
 }

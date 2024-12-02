@@ -1,6 +1,6 @@
 ﻿namespace InSightWindowAPI.Repository.Interfaces
 {
-    public class IDeviceRepository
+    interface IDeviceRepository
     {
     }
 }
