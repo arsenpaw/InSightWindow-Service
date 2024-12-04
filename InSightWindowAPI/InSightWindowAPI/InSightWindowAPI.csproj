@@ -46,6 +46,7 @@
     <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0" />
     <PackageReference Include="Serilog.Sinks.AzureAnalytics" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.AzureApp" Version="3.1.0" />
+    <PackageReference Include="SignalRSwaggerGen" Version="4.7.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="7.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.2" />

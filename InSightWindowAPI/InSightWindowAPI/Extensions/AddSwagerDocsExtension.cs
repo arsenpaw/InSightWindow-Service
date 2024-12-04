@@ -8,6 +8,7 @@ namespace InSightWindowAPI.Extensions
         {
             services.AddSwaggerGen(c =>
             {
+                c.AddSignalRSwaggerGen();
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "InSightWindowAPI", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
