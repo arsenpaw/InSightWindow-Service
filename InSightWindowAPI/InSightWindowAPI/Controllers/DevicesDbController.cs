@@ -14,6 +14,7 @@ using InSightWindowAPI.Models.DeviceModel;
 using InSightWindow.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using InSightWindowAPI.Extensions;
+using InSightWindowAPI.Serivces;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -24,133 +25,76 @@ namespace InSightWindowAPI.Controllers
     public class DevicesDbController : ControllerBase
     {
         private readonly UsersContext _context;
-
         private readonly IMapper _mapper;  
-
         private readonly ILogger<DevicesDbController> _logger;
+        private readonly IDeviceService _deviceService;  
 
-        public DevicesDbController(ILogger<DevicesDbController> logger,UsersContext context,IMapper mapper)
+        public DevicesDbController(ILogger<DevicesDbController> logger,UsersContext context,IMapper mapper, IDeviceService deviceService)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _deviceService = deviceService;
         }
 
       
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDevices()
-        {
-          if (_context.Devices == null)
-          {
-              return NotFound();
-          }
-            List<Device> allDevices = await _context.Devices.ToListAsync<Device>();
-             return _mapper.Map<List<DeviceDto>>(allDevices);
-        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<DeviceDto>> GetDevice(Guid id)
         {
-          if (_context.Devices == null)
-          {
-              return NotFound();
-          }
-            var device = _mapper.Map<DeviceDto>(await _context.Devices.FindAsync(id));
-
-            if (device == null)
-            {
-                return NotFound();
-            }
-
+            var device = await _deviceService.GetDeviceById(id);
             return device;
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDevice(Guid id, DeviceDto device)
         {
-            var deviceToChange = await _context.Devices.FirstOrDefaultAsync(x => x.Id == id);
+           //TODO
+           return Ok();
 
-            if (deviceToChange == null ) { return NotFound();}
-            
-            try
-            {
-                _mapper.Map(device, deviceToChange);
-                await _context.SaveChangesAsync();
-                return Ok(device);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return StatusCode(500, "An error occurred while saving the changes.");
-            }
-
-          
         }
         [HttpPost]
         public async Task<ActionResult<DeviceDto>> PostDevice(DeviceDto device)
         {
-
-            _context.Devices.Add(_mapper.Map<Device>(device));
-            await _context.SaveChangesAsync();
-
-            return Ok(device);
+            var deviceDto = await _deviceService.CreateDevice(device);
+            return deviceDto;
         }
-
-     
+   
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDevice(Guid id)
         {
-            if (_context.Devices == null)
-            {
-                return NotFound();
-            }
-            var device = await _context.Devices.FindAsync(id);
-
-            if (device == null)
-            {
-                return NotFound();
-            }
-            try
-            {
-                _context.Devices.Remove(device);
-                await _context.SaveChangesAsync();
-                return Ok();
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine($"Failed to delete device {id}");
-                return StatusCode(500, "Error, in deleting ");
-            }
-            
+            await _deviceService.DeleteDevice(id);
+            return Ok();
         }
-        
+
         [HttpGet("DeviceOfUser")]
         public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDeviceList()
         {
-
             Guid userId = HttpContext.GetUserIdFromClaims();
-            if (_context.Devices == null)
-                return Problem("Entity set 'UsersContext.Devices' is null.");
-
-            var userDevice = await _context.Users
-            .Include(x => x.Devices)
-            .Where(x => x.Id == userId)
-            .Select(x => x.Devices)
-            .FirstOrDefaultAsync();
-
-            if (userDevice is null)
-            {
-                return new List<DeviceDto>();
-            }
-
-            var deviceList = _mapper.Map<List<DeviceDto>>(userDevice);
-            return deviceList;
-            
+            var deviceList = await _deviceService.GetUserDevices(userId);
+            return deviceList.ToList();
 
         }
 
-        private bool DeviceExists(Guid id)
+        [HttpPost("Bind/{deviceId}")]
+        public async Task<IActionResult> BindDevice([FromRoute] Guid deviceId)
         {
-            return (_context.Devices?.Any(e => e.Id == id)).GetValueOrDefault();
+            Guid userId = HttpContext.GetUserIdFromClaims();
+
+            await _deviceService.AddDeviceToUser(userId, deviceId);
+
+            return Ok();
+        }
+
+
+        [HttpPost("Unbind/{deviceId}")]
+        public async Task<IActionResult> UnbindDevice([FromRoute] Guid deviceId)
+        {
+            Guid userId = HttpContext.GetUserIdFromClaims();
+
+            await _deviceService.RemoveDeviceFromUser(userId, deviceId);
+
+            return Ok();
         }
     }
 }

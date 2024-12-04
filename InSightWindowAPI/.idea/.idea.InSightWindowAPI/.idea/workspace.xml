@@ -15,10 +15,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Models/Command/CommandDto.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Models/Command/CommandEnum.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/DevicesDbController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/DevicesDbController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/TestController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/TestController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/UsersDbController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/UsersDbController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/WindowStatusController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/WindowStatusController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/MappingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/MappingProfile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Middlewares/ExecptionMiddleware.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Middlewares/ExecptionMiddleware.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Repository/DeviceRespository.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Repository/Interfaces/IDeviceRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Repository/Interfaces/IDeviceRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/AesService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/AesService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/IAesService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/IPushNotificationService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/ITokenService.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/PushNotificationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/PushNotificationService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/TokenService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/TokenService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,12 +72,12 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Run",
+    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Debug",
     "Attach to Process.23308:w3wp.executor": "Debug",
     "Attach to Process.26404:JetBrains.ProcessEnumerator.Worker32.executor": "Debug",
     "Attach to Process.37544:w3wp.executor": "Debug",
     "Publish to IIS.InSightWindowAPI: IISPUB.executor": "Run",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "feat/repository-pattern",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -81,7 +97,7 @@
       <recent name="com.jetbrains.rider.cpp.debugger.RiderCppLLDBDriverConfiguration" />
     </key>
   </component>
-  <component name="RunManager" selected="Publish to IIS.InSightWindowAPI: IISPUB">
+  <component name="RunManager" selected=".NET Launch Settings Profile.InSightWindowAPI: https">
     <configuration name="InSightWindowAPI: FolderProfile" type="DotNetMsBuildPublish" factoryName="Publish to IIS">
       <riderPublish configuration="Release" platform="Any CPU" publish_profile="FolderProfile.pubxml" pubxml_path="$PROJECT_DIR$/InSightWindowAPI/Properties/PublishProfiles/FolderProfile.pubxml" uuid_high="-8945743639286887004" uuid_low="-4785951963627367719" />
       <method v="2" />
@@ -196,6 +212,7 @@
       <workItem from="1731157490458" duration="10000" />
       <workItem from="1731157513114" duration="32000" />
       <workItem from="1732135710461" duration="894000" />
+      <workItem from="1733309330095" duration="291000" />
     </task>
     <servers />
   </component>
@@ -214,10 +231,10 @@
           <line>51</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Controllers\AuthController.cs" containingFunctionPresentation="Method 'Register'">
             <startOffsets>
-              <option value="1681" />
+              <option value="1692" />
             </startOffsets>
             <endOffsets>
-              <option value="1705" />
+              <option value="1716" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="1" />
@@ -227,10 +244,10 @@
           <line>118</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Controllers\AuthController.cs" containingFunctionPresentation="Method 'RefreshToken'">
             <startOffsets>
-              <option value="4476" />
+              <option value="4487" />
             </startOffsets>
             <endOffsets>
-              <option value="4500" />
+              <option value="4511" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="3" />
@@ -240,10 +257,10 @@
           <line>29</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Serivces\TokenService.cs" containingFunctionPresentation="Method 'GenerateAccessTokenAsync'">
             <startOffsets>
-              <option value="892" />
+              <option value="903" />
             </startOffsets>
             <endOffsets>
-              <option value="951" />
+              <option value="962" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="4" />
@@ -264,15 +281,54 @@
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs</url>
           <line>91</line>
-          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\ClientStatusHub.cs" containingFunctionPresentation="Method 'SendCommandToEsp32'">
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\ClientStatusHub.cs" containingFunctionPresentation="Method 'ReceiveDataFromEsp32'">
             <startOffsets>
-              <option value="3401" />
+              <option value="3653" />
             </startOffsets>
             <endOffsets>
-              <option value="3478" />
+              <option value="3678" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="8" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs</url>
+          <line>49</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Serivces\DeviceService.cs" containingFunctionPresentation="Method 'RemoveDeviceFromUser'">
+            <startOffsets>
+              <option value="1597" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1649" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs</url>
+          <line>74</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Serivces\DeviceService.cs" containingFunctionPresentation="Method '_getUserDevices'">
+            <startOffsets>
+              <option value="2497" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2569" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs</url>
+          <line>79</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Serivces\DeviceService.cs" containingFunctionPresentation="Method '_getUserDevice'">
+            <startOffsets>
+              <option value="2708" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2871" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

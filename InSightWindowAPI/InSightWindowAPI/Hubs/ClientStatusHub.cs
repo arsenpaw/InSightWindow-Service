@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Authorization;
 using InSightWindowAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using InSightWindowAPI.Models.DeviceModel;
-using InSightWindowAPI.Serivces;
 using System.Runtime.Serialization.Formatters.Binary;
 using InSightWindowAPI.Models.Command;
 using InSightWindowAPI.Hubs.ConnectionMapper;
 using System.Net;
+using InSightWindowAPI.Serivces.Interfaces;
 
 namespace InSightWindowAPI.Hubs
 {

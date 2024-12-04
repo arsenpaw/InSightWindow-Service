@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InSightWindowAPI.Serivces
 {
-    public class DeviceService
+    public class DeviceService : IDeviceService
     {
         private readonly IDeviceRepository _deviceRepository;
         private readonly IMapper _mapper;
@@ -17,12 +17,31 @@ namespace InSightWindowAPI.Serivces
         public DeviceService(IDeviceRepository deviceRepository, IMapper mapper)
         {
             _mapper = mapper;
-            _deviceRepository = deviceRepository;   
+            _deviceRepository = deviceRepository;
+        }
+
+
+        public async Task<DeviceDto> CreateDevice(DeviceDto deviceDto)
+        {
+            var device = _mapper.Map<Device>(deviceDto);
+            await _deviceRepository.AddAsync(device);
+            await _deviceRepository.SaveAsync();
+            return _mapper.Map<DeviceDto>(device);
+        }
+        public async Task DeleteDevice(Guid deviceId)
+        {
+            var device = await _getDevice(deviceId);
+            if (device.UserId is not null)
+            {
+                throw new AppException(ExceptionMessages.DeviceOccupied);
+            }
+            _deviceRepository.RemoveAsync(device);
+            await _deviceRepository.SaveAsync();
         }
 
         public async Task<DeviceDto> GetDeviceById(Guid deviceId)
         {
-            var device = _getDevice(deviceId);
+            var device = await _getDevice(deviceId);
             return _mapper.Map<DeviceDto>(device);
         }
 
@@ -34,14 +53,13 @@ namespace InSightWindowAPI.Serivces
             return _mapper.Map<DeviceDto>(device);
         }
 
-        public async Task AddDeviceToUser(Guid userId, Guid deviceId) 
+        public async Task AddDeviceToUser(Guid userId, Guid deviceId)
         {
-            //get user
-            var device =await  _getDevice(deviceId);
+            var device = await _getDevice(deviceId);
             if (device.UserId is not null)
             {
                 throw new AppException(ExceptionMessages.DeviceOccupied);
-            }    
+            }
             device.UserId = userId;
             await _deviceRepository.SaveAsync();
         }
@@ -49,14 +67,12 @@ namespace InSightWindowAPI.Serivces
         public async Task<IEnumerable<DeviceDto>> GetUserDevices(Guid userId)
         {
             var userDevices = await _getUserDevices(userId);
-             return  _mapper.Map<IEnumerable<DeviceDto>>(userDevices);
+            return _mapper.Map<IEnumerable<DeviceDto>>(userDevices);
         }
 
         private async Task<IEnumerable<Device>> _getUserDevices(Guid userId)
         {
             var devices = await _deviceRepository.GetByUserId(userId).ToListAsync();
-            if (devices is null)
-               return new List<Device>();
             return devices;
         }
         private async Task<Device> _getUserDevice(Guid deviceId, Guid userId)
@@ -65,7 +81,7 @@ namespace InSightWindowAPI.Serivces
                 .GetByUserId(userId)
                 .Where(x => x.Id == deviceId)
                 .FirstOrDefaultAsync();
-            if(userDevice is null)
+            if (userDevice is null)
             {
                 throw new AppException(ExceptionMessages.NoSuchDeviceExist);
             }
@@ -73,7 +89,7 @@ namespace InSightWindowAPI.Serivces
         }
         private async Task<Device> _getDevice(Guid deviceId)
         {
-            var device = await  _deviceRepository.GetAll()
+            var device = await _deviceRepository.GetAll()
                 .Include(x => x.User)
                 .Where(x => x.Id == deviceId)
                 .FirstOrDefaultAsync();

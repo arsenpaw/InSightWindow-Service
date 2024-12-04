@@ -1,4 +1,4 @@
-﻿namespace InSightWindowAPI.Serivces
+﻿namespace InSightWindowAPI.Serivces.Interfaces
 {
     public interface IPushNotificationService
     {

@@ -43,8 +43,8 @@ namespace InSightWindowAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    [ValidateUserIdAsync("UsersDbController")]
+    [AllowAnonymous]
+
     public class UsersDbController : ControllerBase
     {
         private readonly UsersContext _context;
@@ -69,7 +69,8 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb
         [HttpGet]
-        [Authorize(Roles = UserRoles.ADMIN)]
+        [AllowAnonymous]
+       // [Authorize(Roles = UserRoles.ADMIN)]
         public async Task<ActionResult<IEnumerable<UserRegisterDto>>> GetUsers()
         {
             if (_context.Users == null)
@@ -146,7 +147,7 @@ namespace InSightWindowAPI.Controllers
             _logger.LogInformation("User {@user} delete account", user );
             return Ok();
         }
-
+        //should be deleted in new versions
         [HttpPost("BindTo")]
         public async Task<ActionResult<DeviceDto>> BindDevice([FromQuery] Guid deviceId)
         {
@@ -165,7 +166,7 @@ namespace InSightWindowAPI.Controllers
 
             return deviceDto;
         }
-
+        //should be deleted in new versions
         [HttpPost("UnbindFrom")]
         public async Task<IActionResult> UnbindDevice([FromQuery] Guid deviceId)
         {

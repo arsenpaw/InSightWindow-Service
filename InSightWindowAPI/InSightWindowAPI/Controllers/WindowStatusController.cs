@@ -15,7 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Models;
-using InSightWindowAPI.Serivces;
+using InSightWindowAPI.Serivces.Interfaces;
 
 namespace InSightWindowAPI.Controllers
 {

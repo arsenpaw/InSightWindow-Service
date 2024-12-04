@@ -1,4 +1,4 @@
-﻿using InSightWindowAPI.Serivces;
+﻿using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;

@@ -1,4 +1,4 @@
-﻿using InSightWindowAPI.Serivces;
+﻿using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
