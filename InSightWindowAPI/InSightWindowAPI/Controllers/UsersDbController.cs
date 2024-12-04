@@ -28,6 +28,7 @@ using InSightWindowAPI.Filters;
 using InSightWindowAPI.Serivces;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Extensions;
+using Swashbuckle.AspNetCore.Annotations;
 
 
 namespace InSightWindowAPI.Controllers
@@ -142,10 +143,10 @@ namespace InSightWindowAPI.Controllers
         }
         //should be deleted in new versions
         [HttpPost("BindTo")]
+        [SwaggerIgnore]
         public async Task<ActionResult<DeviceDto>> BindDevice([FromQuery] Guid deviceId)
         {
-
-
+            
             var device = await _context.Devices.Where(x => x.Id == deviceId).FirstOrDefaultAsync();
 
             if (device == null)
@@ -160,6 +161,7 @@ namespace InSightWindowAPI.Controllers
         }
         //should be deleted in new versions
         [HttpPost("UnbindFrom")]
+        [SwaggerIgnore]
         public async Task<IActionResult> UnbindDevice([FromQuery] Guid deviceId)
         {
             var device = await _context.Devices.Where(x => x.Id == deviceId).FirstOrDefaultAsync();

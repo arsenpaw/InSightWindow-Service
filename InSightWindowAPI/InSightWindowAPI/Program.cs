@@ -161,12 +161,14 @@ app.MigrateDatabase<UsersContext>();
 app.UseCors(myCors);
 //app.UseAllowCredentialsToSite();    
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+if (true) //Tempoorary measure
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else if (!app.Environment.IsProduction())
+
+if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection(); //azure not work with it
 }
