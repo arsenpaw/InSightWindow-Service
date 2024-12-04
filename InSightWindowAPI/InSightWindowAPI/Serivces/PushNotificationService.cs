@@ -1,6 +1,7 @@
 ﻿using FirebaseAdmin.Messaging;
 using InSightWindowAPI.Controllers;
 using InSightWindowAPI.Models;
+using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Common;

@@ -14,8 +14,8 @@ using InSightWindowAPI.JwtSetting;
 using InSightWindowAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using InSightWindowAPI.Serivces;
 using NuGet.Common;
+using InSightWindowAPI.Serivces.Interfaces;
 
 namespace InSightWindowAPI.Controllers
 {

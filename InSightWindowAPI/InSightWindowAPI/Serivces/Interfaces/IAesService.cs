@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace InSightWindowAPI.Serivces
+namespace InSightWindowAPI.Serivces.Interfaces
 {
     public interface IAesService
     {

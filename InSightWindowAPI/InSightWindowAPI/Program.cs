@@ -57,15 +57,12 @@ builder.Services.AddControllers()
       
     });
 
-Console.WriteLine(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddTransient<IPushNotificationService, PushNotificationService>();
-builder.Services.AddSingleton<IAesService>(provider =>
-        new AesService("1234567890ABCDEF", "1234567890ABCDEF"));
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
+builder.Services.AddServices();
+builder.Services.AddRepository();
 builder.Services.AddDbContext<UsersContext>((options) =>
     {
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
@@ -77,8 +74,6 @@ builder.Services.AddDbContext<UsersContext>((options) =>
             );
         });
     });
-builder.Services.AddTransient<UsersDbController>();
-builder.Services.AddTransient<DevicesDbController>();
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddHttpsRedirection(opt =>
 {
@@ -166,12 +161,14 @@ app.MigrateDatabase<UsersContext>();
 app.UseCors(myCors);
 //app.UseAllowCredentialsToSite();    
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
+if (true) //Tempoorary measure
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-else if (!app.Environment.IsProduction())
+
+if (!app.Environment.IsProduction())
 {
     app.UseHttpsRedirection(); //azure not work with it
 }

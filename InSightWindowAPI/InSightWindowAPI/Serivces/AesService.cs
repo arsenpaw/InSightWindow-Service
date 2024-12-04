@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using InSightWindowAPI.Serivces.Interfaces;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -24,7 +25,6 @@ namespace InSightWindowAPI.Serivces
         public byte[] EncryptStringToBytes_Aes(string plainText)
         {
 
-            // Create an encryptor to perform the stream transform.
             ICryptoTransform encryptor = Aes.CreateEncryptor(Aes.Key, Aes.IV);
 
             byte[] encrypted;
@@ -34,8 +34,6 @@ namespace InSightWindowAPI.Serivces
                 {
                     using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
                     {
-                        //Write all data to the stream.
-
                         swEncrypt.Write(plainText);
                     }
                 }
@@ -44,20 +42,13 @@ namespace InSightWindowAPI.Serivces
             }
 
 
-            // Return the encrypted bytes from the memory stream.
             return encrypted;
         }
 
         public string DecryptStringFromBytes_Aes(byte[] cipherText)
         {
-            // Check arguments.
 
             string plaintext = null;
-
-            // Create an Aes object
-            // with the specified key and IV.
-
-            // Create a decryptor to perform the stream transform.
             Aes.IV =IV;
             ICryptoTransform decryptor = Aes.CreateDecryptor(Aes.Key, Aes.IV);
 
@@ -69,8 +60,6 @@ namespace InSightWindowAPI.Serivces
                     using (StreamReader srDecrypt = new StreamReader(csDecrypt))
                     {
 
-                        // Read the decrypted bytes     from the decrypting stream
-                        // and place them in a string.
                         plaintext = srDecrypt.ReadToEnd();
                     }
                 }

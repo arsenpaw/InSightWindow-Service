@@ -1,5 +1,4 @@
 ﻿using InSightWindowAPI.Models;
-using InSightWindowAPI.Serivces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -11,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using InSightWindowAPI.Enums;
 using NuGet.Packaging;
+using InSightWindowAPI.Serivces.Interfaces;
 
 namespace InSightWindowAPI.Services
 {
