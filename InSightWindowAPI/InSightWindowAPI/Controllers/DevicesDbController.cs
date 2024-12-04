@@ -22,7 +22,7 @@ namespace InSightWindowAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class DevicesDbController : ControllerBase
+    public class DevicesDbController : BaseController
     {
         private readonly UsersContext _context;
         private readonly IMapper _mapper;  
@@ -70,8 +70,7 @@ namespace InSightWindowAPI.Controllers
         [HttpGet("DeviceOfUser")]
         public async Task<ActionResult<IEnumerable<DeviceDto>>> GetDeviceList()
         {
-            Guid userId = HttpContext.GetUserIdFromClaims();
-            var deviceList = await _deviceService.GetUserDevices(userId);
+            var deviceList = await _deviceService.GetUserDevices(UserId);
             return deviceList.ToList();
 
         }
@@ -79,9 +78,7 @@ namespace InSightWindowAPI.Controllers
         [HttpPost("Bind/{deviceId}")]
         public async Task<IActionResult> BindDevice([FromRoute] Guid deviceId)
         {
-            Guid userId = HttpContext.GetUserIdFromClaims();
-
-            await _deviceService.AddDeviceToUser(userId, deviceId);
+            await _deviceService.AddDeviceToUser(UserId, deviceId);
 
             return Ok();
         }
@@ -90,9 +87,7 @@ namespace InSightWindowAPI.Controllers
         [HttpPost("Unbind/{deviceId}")]
         public async Task<IActionResult> UnbindDevice([FromRoute] Guid deviceId)
         {
-            Guid userId = HttpContext.GetUserIdFromClaims();
-
-            await _deviceService.RemoveDeviceFromUser(userId, deviceId);
+            await _deviceService.RemoveDeviceFromUser(UserId, deviceId);
 
             return Ok();
         }

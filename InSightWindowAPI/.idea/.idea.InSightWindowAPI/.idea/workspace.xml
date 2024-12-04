@@ -15,7 +15,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/BaseController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/DevicesDbController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/DevicesDbController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/FireBaseTokensController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/FireBaseTokensController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/UsersDbController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/UsersDbController.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +62,7 @@
     "Attach to Process.26404:JetBrains.ProcessEnumerator.Worker32.executor": "Debug",
     "Attach to Process.37544:w3wp.executor": "Debug",
     "Publish to IIS.InSightWindowAPI: IISPUB.executor": "Run",
+    "XThreadsFramesViewSplitterKey": "0.63188976",
     "git-widget-placeholder": "feat/repository-pattern",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -193,7 +198,7 @@
       <workItem from="1731157490458" duration="10000" />
       <workItem from="1731157513114" duration="32000" />
       <workItem from="1732135710461" duration="894000" />
-      <workItem from="1733309330095" duration="2195000" />
+      <workItem from="1733309330095" duration="5260000" />
     </task>
     <servers />
   </component>

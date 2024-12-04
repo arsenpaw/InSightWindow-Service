@@ -43,9 +43,7 @@ namespace InSightWindowAPI.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
-
-    public class UsersDbController : ControllerBase
+    public class UsersDbController : BaseController
     {
         private readonly UsersContext _context;
         private readonly IMapper _mapper;
@@ -87,8 +85,7 @@ namespace InSightWindowAPI.Controllers
         [Route("concreteUser")]
         public async Task<ActionResult<UserRegisterDto>> GetUser()
         {
-            Guid id = HttpContext.GetUserIdFromClaims();    
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(UserId);
 
             if (user == null)
             {
@@ -104,8 +101,7 @@ namespace InSightWindowAPI.Controllers
         [Route("concreteUser")]
         public async Task<IActionResult> PutUser(UserRegisterDto user)
         {
-            Guid id = HttpContext.GetUserIdFromClaims();
-            var foundUser = await _context.Users.FindAsync(id);
+            var foundUser = await _context.Users.FindAsync(UserId);
             if (foundUser == null)
             {
                 return NotFound();
@@ -129,13 +125,12 @@ namespace InSightWindowAPI.Controllers
         [Route("concreteUser")]
         public async Task<IActionResult> DeleteUser()
         {
-            Guid id = HttpContext.GetUserIdFromClaims();
-            var user = await _context.Users.FindAsync(id);
+            var user = await _context.Users.FindAsync(UserId);
             if (user == null)
             {
                 return NotFound();
             }
-            var isUserHasDevices = await _context.Devices.AnyAsync(device => device.UserId == id);
+            var isUserHasDevices = await _context.Devices.AnyAsync(device => device.UserId == UserId);
             if (isUserHasDevices)
             {
                 return Conflict("User has devices, please delete them first");
@@ -150,16 +145,15 @@ namespace InSightWindowAPI.Controllers
         public async Task<ActionResult<DeviceDto>> BindDevice([FromQuery] Guid deviceId)
         {
 
-            Guid userId = HttpContext.GetUserIdFromClaims();
 
             var device = await _context.Devices.Where(x => x.Id == deviceId).FirstOrDefaultAsync();
 
             if (device == null)
                 return NotFound("Devce Not Exist");
 
-            device.UserId = userId;
+            device.UserId = UserId;
             await _context.SaveChangesAsync();
-            _logger.LogInformation(" {userId} have added device {DeviceId}", device.Id, userId);
+            _logger.LogInformation(" {userId} have added device {DeviceId}", device.Id, UserId);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
             return deviceDto;
@@ -168,9 +162,6 @@ namespace InSightWindowAPI.Controllers
         [HttpPost("UnbindFrom")]
         public async Task<IActionResult> UnbindDevice([FromQuery] Guid deviceId)
         {
-
-            Guid userId = HttpContext.GetUserIdFromClaims();
-
             var device = await _context.Devices.Where(x => x.Id == deviceId).FirstOrDefaultAsync();
 
             if (device == null)
@@ -180,7 +171,7 @@ namespace InSightWindowAPI.Controllers
 
             device.UserId = null;
             await _context.SaveChangesAsync();
-            _logger.LogInformation("{userId} unbind {@device}", device,userId);
+            _logger.LogInformation("{userId} unbind {@device}", device, UserId);
             var deviceDto = _mapper.Map<DeviceDto>(device);
 
             return Ok();

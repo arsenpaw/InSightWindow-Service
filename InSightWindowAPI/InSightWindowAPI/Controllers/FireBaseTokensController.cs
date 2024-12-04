@@ -14,7 +14,7 @@ namespace InSightWindowAPI.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class FireBaseTokensController : ControllerBase
+    public class FireBaseTokensController : BaseController
     {
         private readonly ILogger<FireBaseTokensController> _loger;
         private readonly UsersContext _context;
@@ -34,8 +34,7 @@ namespace InSightWindowAPI.Controllers
             _loger.LogInformation("Manage user token");
             try
             {
-                var userId = HttpContext.GetUserIdFromClaims();
-                var oldUserTokens = await _context.UserFireBaseTokens.Where(x => x.UserId.Equals(userId))
+                var oldUserTokens = await _context.UserFireBaseTokens.Where(x => x.UserId.Equals(UserId))
                     .Select(x => x.FireBaseToken).ToListAsync();
                 if (oldUserTokens != null)
                 {
