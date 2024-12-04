@@ -16,25 +16,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/DevicesDbController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/DevicesDbController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/TestController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/TestController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/UsersDbController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/UsersDbController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Controllers/WindowStatusController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Controllers/WindowStatusController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/MappingProfile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/MappingProfile.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Middlewares/ExecptionMiddleware.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Middlewares/ExecptionMiddleware.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Repository/DeviceRespository.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Repository/Interfaces/IDeviceRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Repository/Interfaces/IDeviceRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/AesService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/AesService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/IAesService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/IPushNotificationService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/ITokenService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/PushNotificationService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/PushNotificationService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Serivces/TokenService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Serivces/TokenService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -212,7 +193,7 @@
       <workItem from="1731157490458" duration="10000" />
       <workItem from="1731157513114" duration="32000" />
       <workItem from="1732135710461" duration="894000" />
-      <workItem from="1733309330095" duration="291000" />
+      <workItem from="1733309330095" duration="2195000" />
     </task>
     <servers />
   </component>

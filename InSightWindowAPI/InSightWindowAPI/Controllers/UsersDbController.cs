@@ -69,8 +69,7 @@ namespace InSightWindowAPI.Controllers
 
         // GET: api/UsersDb
         [HttpGet]
-        [AllowAnonymous]
-       // [Authorize(Roles = UserRoles.ADMIN)]
+       [Authorize(Roles = UserRoles.ADMIN)]
         public async Task<ActionResult<IEnumerable<UserRegisterDto>>> GetUsers()
         {
             if (_context.Users == null)
@@ -86,7 +85,6 @@ namespace InSightWindowAPI.Controllers
         // GET: api/UsersDb/5
         [HttpGet]
         [Route("concreteUser")]
-       
         public async Task<ActionResult<UserRegisterDto>> GetUser()
         {
             Guid id = HttpContext.GetUserIdFromClaims();    
