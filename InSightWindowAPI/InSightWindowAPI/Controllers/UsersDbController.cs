@@ -1,33 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using InSightWindow.Models;
+using InSightWindowAPI.Enums;
 using InSightWindowAPI.Models;
-using AutoMapper;
 using InSightWindowAPI.Models.Dto;
 using Microsoft.AspNetCore.Authorization;
-using InSightWindowAPI.JwtSetting;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using InSightWindowAPI.Enums;
-using System.Net;
-using System.Net.Http;
-using System.Web;
-using Azure;
-using System.Security.Cryptography;
-using NuGet.Common;
-using InSightWindow.Models;
-using Microsoft.IdentityModel.JsonWebTokens;
-using Microsoft.AspNetCore.Identity;
-using InSightWindowAPI.Filters;
-using InSightWindowAPI.Serivces;
-using InSightWindowAPI.Models.DeviceModel;
-using InSightWindowAPI.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
 
 
@@ -48,27 +26,27 @@ namespace InSightWindowAPI.Controllers
     {
         private readonly UsersContext _context;
         private readonly IMapper _mapper;
-       
-        private readonly ILogger<UsersDbController> _logger;    
 
-        public UsersDbController(ILogger<UsersDbController> logger,UsersContext context, IMapper mapper)
+        private readonly ILogger<UsersDbController> _logger;
+
+        public UsersDbController(ILogger<UsersDbController> logger, UsersContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
-      
+
         }
 
         [HttpGet("test")]
         public async Task<ActionResult> Test()
         {
-            _logger.LogInformation("Test sucesfull !!!");   
+            _logger.LogInformation("Test sucesfull !!!");
             return Ok("Test sucesfull !!!");
         }
 
         // GET: api/UsersDb
         [HttpGet]
-       [Authorize(Roles = UserRoles.ADMIN)]
+        [Authorize(Roles = UserRoles.ADMIN)]
         public async Task<ActionResult<IEnumerable<UserRegisterDto>>> GetUsers()
         {
             if (_context.Users == null)
@@ -116,9 +94,9 @@ namespace InSightWindowAPI.Controllers
             }
 
             _mapper.Map(user, foundUser);
-             await _context.SaveChangesAsync();
-             _logger.LogInformation("User has updated info from {@oldUserToCompare} to {@newUserToCompare} ", oldUserToCompare, newUserToCompare);
-  
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("User has updated info from {@oldUserToCompare} to {@newUserToCompare} ", oldUserToCompare, newUserToCompare);
+
             return NoContent();
         }
 
@@ -138,7 +116,7 @@ namespace InSightWindowAPI.Controllers
             }
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("User {@user} delete account", user );
+            _logger.LogInformation("User {@user} delete account", user);
             return Ok();
         }
         //should be deleted in new versions
@@ -146,7 +124,7 @@ namespace InSightWindowAPI.Controllers
         [SwaggerIgnore]
         public async Task<ActionResult<DeviceDto>> BindDevice([FromQuery] Guid deviceId)
         {
-            
+
             var device = await _context.Devices.Where(x => x.Id == deviceId).FirstOrDefaultAsync();
 
             if (device == null)

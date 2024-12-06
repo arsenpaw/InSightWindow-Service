@@ -1,21 +1,20 @@
 ﻿using AutoMapper;
-using InSightWindowAPI.Models;
+using InSightWindow.Models;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Models.Dto;
-using System.Diagnostics;
-using InSightWindow.Models;
+using InSightWindowAPI.Models.Entity;
 namespace InSightWindowAPI
 {
-    public class MappingProfile: Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
-          
+
             CreateMap<Device, Device>()
                 .ForMember(
                 dest => dest.Id,
                 opt => opt.Ignore());
-            CreateMap<User, UserRegisterDto>();        
+            CreateMap<User, UserRegisterDto>();
             CreateMap<UserRegisterDto, UserRegisterDto>();
             CreateMap<UserRegisterDto, User>();
             CreateMap<Device, DeviceDto>();

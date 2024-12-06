@@ -3,7 +3,7 @@ using InSightWindowAPI.Repository.Interfaces;
 
 namespace InSightWindowAPI.Repository
 {
-    public abstract class BaseRepository: IBaseRepository
+    public abstract class BaseRepository : IBaseRepository
     {
         protected readonly UsersContext _context;
 

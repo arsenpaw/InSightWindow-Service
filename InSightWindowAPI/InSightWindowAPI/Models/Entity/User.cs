@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace InSightWindowAPI.Models
+namespace InSightWindowAPI.Models.Entity
 {
     [Index(nameof(Email), IsUnique = true)]
     public class User : IdentityUser<Guid>

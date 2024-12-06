@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace InSightWindowAPI.Middlewares
+﻿namespace InSightWindowAPI.Middlewares
 {
     public class AllowCredentiaksToSiteMiddleware
     {
@@ -29,8 +27,8 @@ namespace InSightWindowAPI.Middlewares
             }
             else
             {
-                context.Response.Headers["Access-Control-Allow-Origin"] = "*"; 
-                context.Response.Headers.Remove("Access-Control-Allow-Credentials"); 
+                context.Response.Headers["Access-Control-Allow-Origin"] = "*";
+                context.Response.Headers.Remove("Access-Control-Allow-Credentials");
             }
 
             await _next(context);

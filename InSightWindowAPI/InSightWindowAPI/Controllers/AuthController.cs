@@ -1,21 +1,13 @@
-﻿using InSightWindowAPI.Models;
-using InSightWindowAPI;
+﻿using InSightWindowAPI.JwtSetting;
+using InSightWindowAPI.Models.Dto;
+using InSightWindowAPI.Models.Entity;
+using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using InSightWindowAPI.Models.Dto;
-using InSightWindowAPI.JwtSetting;
-using InSightWindowAPI.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using NuGet.Common;
-using InSightWindowAPI.Serivces.Interfaces;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -92,9 +84,9 @@ namespace InSightWindowAPI.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, model.Password, false);
             if (!result.Succeeded)
                 return Unauthorized(new { message = "Invalid credentials." });
-            
+
             var userRole = await _userManager.GetRolesAsync(user);
-            var accessToken = await _tokenService.GenerateAccessTokenAsync(user,userRole);
+            var accessToken = await _tokenService.GenerateAccessTokenAsync(user, userRole);
             var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
 
             var response = new TokenResponse
@@ -121,7 +113,7 @@ namespace InSightWindowAPI.Controllers
 
 
             var principal = GetPrincipalFromExpiredToken(model.AccessToken);
-             if (principal == null)
+            if (principal == null)
                 return BadRequest(new { message = "Invalid access token or refresh token." });
 
             var userId = Guid.Parse(principal.FindFirst("sub")?.Value ?? Guid.Empty.ToString());
@@ -138,7 +130,7 @@ namespace InSightWindowAPI.Controllers
             await _tokenService.RevokeRefreshTokenAsync(refreshToken);
 
             var userRole = await _userManager.GetRolesAsync(user);
-            var newAccessToken = await _tokenService.GenerateAccessTokenAsync(user,userRole);
+            var newAccessToken = await _tokenService.GenerateAccessTokenAsync(user, userRole);
             var newRefreshToken = await _tokenService.GenerateRefreshTokenAsync(user);
 
             var response = new TokenResponse
@@ -164,7 +156,7 @@ namespace InSightWindowAPI.Controllers
                 {
                     ValidateAudience = false,
                     ValidateIssuer = false,
-                    ValidateLifetime = false, 
+                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 }, out var validatedToken);
@@ -176,7 +168,7 @@ namespace InSightWindowAPI.Controllers
             }
             catch
             {
-                return null; 
+                return null;
             }
         }
 

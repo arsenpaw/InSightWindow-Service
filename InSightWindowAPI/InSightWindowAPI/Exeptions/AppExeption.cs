@@ -16,7 +16,7 @@ namespace InSightWindowAPI.Exeptions
         public AppException(ExceptionMessage msg) : base(msg.Message)
         {
             StatusCode = msg.StatusCode;
-            
+
         }
     }
 

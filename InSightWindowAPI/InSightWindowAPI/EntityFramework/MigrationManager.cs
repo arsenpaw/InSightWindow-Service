@@ -1,8 +1,6 @@
 ﻿using InSightWindowAPI.Enums;
 using Microsoft.ApplicationInsights.Extensibility.Implementation;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Data;
 
 namespace InSightWindowAPI.EntityFramework;
 

@@ -1,12 +1,9 @@
 ﻿using InSightWindowAPI.Serivces.Interfaces;
-using Microsoft.AspNetCore.Authentication.OAuth.Claims;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using System.Security.Claims;
 
 namespace InSightWindowAPI.Hubs
 {
-    public class BaseHub: Hub
+    public class BaseHub : Hub
     {
         public IAesService AesService { get; set; }
 
@@ -19,7 +16,7 @@ namespace InSightWindowAPI.Hubs
         {
             get
             {
-                var userIdClaim = Context.GetHttpContext().Request.Headers["DeviceId"].ToString(); 
+                var userIdClaim = Context.GetHttpContext().Request.Headers["DeviceId"].ToString();
                 return userIdClaim != null && Guid.TryParse(userIdClaim, out var userId)
                     ? userId
                     : Guid.Empty;

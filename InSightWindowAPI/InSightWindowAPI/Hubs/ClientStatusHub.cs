@@ -1,19 +1,14 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.Caching.Memory;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Newtonsoft.Json;
-using Microsoft.AspNetCore.Mvc;
-using InSightWindowAPI.Models.Dto;
-using Microsoft.AspNetCore.Authorization;
+﻿using InSightWindowAPI.Hubs.ConnectionMapper;
 using InSightWindowAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using InSightWindowAPI.Models.DeviceModel;
-using System.Runtime.Serialization.Formatters.Binary;
 using InSightWindowAPI.Models.Command;
-using InSightWindowAPI.Hubs.ConnectionMapper;
-using System.Net;
+using InSightWindowAPI.Models.Dto;
 using InSightWindowAPI.Serivces.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace InSightWindowAPI.Hubs
 {
@@ -38,7 +33,7 @@ namespace InSightWindowAPI.Hubs
             _cache = memoryCache;
             _logger = logger;
             _pusher = pusher;
-         
+
         }
 
         public override Task OnConnectedAsync()
@@ -64,7 +59,7 @@ namespace InSightWindowAPI.Hubs
 
 
         public async Task<HttpStatusCode> ReceiveDataFromEsp32(string sensorData)
-        {   
+        {
             byte[] sensorDataByte = Convert.FromBase64String(sensorData);
             Console.WriteLine(DeviceId);
             string jsonData = AesService.DecryptStringFromBytes_Aes(sensorDataByte);
@@ -73,7 +68,7 @@ namespace InSightWindowAPI.Hubs
             if (sensorDataDto == null || DeviceId == Guid.Empty)
             {
                 _logger.Log(LogLevel.Critical,
-                    "No all credentials have detected while receive data from esp32, Data: {sdata}, DeviceId {uId}",sensorDataDto,DeviceId);
+                    "No all credentials have detected while receive data from esp32, Data: {sdata}, DeviceId {uId}", sensorDataDto, DeviceId);
                 return HttpStatusCode.Unauthorized;
             }
 
@@ -83,21 +78,21 @@ namespace InSightWindowAPI.Hubs
                 .FirstOrDefaultAsync();
 
             if (!subscribedUserId.HasValue)
-                return HttpStatusCode.NotFound; 
-            
+                return HttpStatusCode.NotFound;
+
             _connectionMapping.Add(subscribedUserId.Value, Context.ConnectionId);
             // await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
             _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",
                 subscribedUserId, DeviceId);
-             return HttpStatusCode.OK;
+            return HttpStatusCode.OK;
         }
-        
+
         [Authorize]
         public async Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
         // public async Task<HttpStatusCode> SendCommandToEsp32()
         {
-           // Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
-           //var  command = new CommandDto { Command = CommandEnum.Close };
+            // Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
+            //var  command = new CommandDto { Command = CommandEnum.Close };
 
             try
             {
@@ -118,7 +113,7 @@ namespace InSightWindowAPI.Hubs
             }
         }
 
-      
+
 
     }
 }

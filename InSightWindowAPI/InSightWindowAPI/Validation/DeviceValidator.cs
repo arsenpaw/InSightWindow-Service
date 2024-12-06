@@ -1,11 +1,10 @@
 ﻿using FluentValidation;
 using InSightWindow.Models;
-using InSightWindowAPI.Controllers;
 using InSightWindowAPI.Models.DeviceModel;
 
 namespace InSightWindowAPI.Validation
 {
-    public class DeviceDtoValidator: FluentValidation.AbstractValidator<DeviceDto>
+    public class DeviceDtoValidator : FluentValidation.AbstractValidator<DeviceDto>
     {
         public DeviceDtoValidator()
         {
