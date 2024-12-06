@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
-
-namespace InSightWindowAPI.Hubs.ConnectionMapper
+﻿namespace InSightWindowAPI.Hubs.ConnectionMapper
 {
     public class ConnectionMapping<T>
     {

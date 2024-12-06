@@ -1,7 +1,6 @@
 ﻿using InSightWindowAPI.Models;
 using InSightWindowAPI.Models.DeviceModel;
 using InSightWindowAPI.Repository.Interfaces;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
 
 namespace InSightWindowAPI.Repository
 {

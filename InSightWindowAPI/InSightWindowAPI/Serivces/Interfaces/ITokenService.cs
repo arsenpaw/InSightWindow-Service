@@ -1,5 +1,5 @@
 ﻿using InSightWindowAPI.Enums;
-using InSightWindowAPI.Models;
+using InSightWindowAPI.Models.Entity;
 
 namespace InSightWindowAPI.Serivces.Interfaces
 {

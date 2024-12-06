@@ -1,4 +1,4 @@
-﻿namespace InSightWindowAPI.Models
+﻿namespace InSightWindowAPI.Models.Entity
 {
     public class UserFireBaseTokens
     {
@@ -8,7 +8,7 @@
 
         public FireBaseToken FireBaseToken { get; set; }
 
-        
+
         public User User { get; set; }
     }
 }

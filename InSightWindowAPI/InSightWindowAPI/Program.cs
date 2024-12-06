@@ -1,42 +1,20 @@
-using InSightWindowAPI.Controllers;
-using InSightWindowAPI.Hubs;
-using InSightWindowAPI.Models;
-using Microsoft.EntityFrameworkCore;
-using InSightWindowAPI;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using InSightWindowAPI.JwtSetting;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Filters;
-using Serilog;
-using Serilog.Events;
-using FluentValidation.AspNetCore;
-using InSightWindowAPI.Filters;
-using AutoMapper;
-using InSightWindowAPI.Serivces;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
-using Microsoft.VisualBasic;
-using FirebaseAdmin.Messaging;
-using System.Configuration;
-using Microsoft.Extensions.Configuration;
-using InSightWindowAPI.Middlewares;
-using Microsoft.AspNetCore.Identity;
-using System;
-
-using Azure.Core.Pipeline;
-using System.Xml.Linq;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
-using Google;
-using InSightWindowAPI.Services;
+using InSightWindowAPI;
+using InSightWindowAPI.EntityFramework;
 using InSightWindowAPI.Enums;
 using InSightWindowAPI.Extensions;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using InSightWindowAPI.Hubs.ConnectionMapper;
-using InSightWindowAPI.EntityFramework;
+using InSightWindowAPI.Hubs;
+using InSightWindowAPI.JwtSetting;
+using InSightWindowAPI.Models;
+using InSightWindowAPI.Models.Entity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Serilog;
+using Serilog.Events;
+using System.Text;
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +32,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-      
+
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -69,8 +47,8 @@ builder.Services.AddDbContext<UsersContext>((options) =>
         {
             sqlOptions.EnableRetryOnFailure(
                 maxRetryCount: 3,
-                maxRetryDelay: TimeSpan.FromSeconds(10), 
-                errorNumbersToAdd: null 
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorNumbersToAdd: null
             );
         });
     });
@@ -94,7 +72,7 @@ builder.Host.UseSerilog((context, config) =>
 });
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<UsersContext>() 
+    .AddEntityFrameworkStores<UsersContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.Configure<IdentityOptions>(options =>
@@ -105,14 +83,14 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 builder.Services.AddAuthentication(options =>
 {
-    
+
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    
+
 })
 .AddJwtBearer(options =>
 {
-  
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -174,7 +152,7 @@ if (!app.Environment.IsProduction())
 }
 
 app.UseExceptionMiddleware();
-app.UseRouting();   
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

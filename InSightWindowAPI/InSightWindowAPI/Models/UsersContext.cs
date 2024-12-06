@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using InSightWindowAPI.Models.DeviceModel;
+﻿using InSightWindowAPI.Models.DeviceModel;
+using InSightWindowAPI.Models.Entity;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace InSightWindowAPI.Models
 {
@@ -21,17 +22,12 @@ namespace InSightWindowAPI.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            base.OnModelCreating(modelBuilder); // Ensure Identity-related tables are set up
-
-           
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<RefreshToken>()
              .HasOne(rt => rt.User)
              .WithMany(u => u.RefreshTokens)
              .HasForeignKey(rt => rt.UserId);
-
-           
-
 
             modelBuilder.Entity<User>()
                 .HasMany(e => e.FireBaseTokens)

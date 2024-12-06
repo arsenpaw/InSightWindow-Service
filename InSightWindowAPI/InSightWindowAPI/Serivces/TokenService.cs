@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using InSightWindowAPI.Enums;
 using NuGet.Packaging;
 using InSightWindowAPI.Serivces.Interfaces;
+using InSightWindowAPI.Models.Entity;
 
 namespace InSightWindowAPI.Services
 {

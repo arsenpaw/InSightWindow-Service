@@ -54,4 +54,8 @@
     <PackageReference Include="Websocket.Client" Version="5.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
+
 </Project>

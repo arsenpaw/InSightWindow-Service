@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations; 
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
 using InSightWindowAPI.Models.Dto;
+using InSightWindowAPI.Models.Entity;
 
 namespace InSightWindowAPI.Models.DeviceModel
 {

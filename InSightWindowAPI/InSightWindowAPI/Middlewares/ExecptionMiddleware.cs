@@ -1,10 +1,6 @@
-﻿using System.Net;
+﻿using InSightWindowAPI.Exeptions;
+using System.Net;
 using System.Text.Json;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
-using InSightWindowAPI.Exeptions;
 
 public static class AbstractExceptionHandlerMiddlewareExtensions
 {
@@ -37,7 +33,7 @@ public class AbstractExceptionHandlerMiddleware
             await HandleExceptionAsync(context, ex.StatusCode, ex.Message);
         }
         catch (Exception ex)
-        {    
+        {
             _logger.LogError(ex, "Unhandled exception occurred.");
             await HandleExceptionAsync(context, HttpStatusCode.InternalServerError, ex.Message);
         }
@@ -48,7 +44,7 @@ public class AbstractExceptionHandlerMiddleware
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)statusCode;
 
-        var errorResponse = new 
+        var errorResponse = new
         {
             StatusCode = context.Response.StatusCode,
             Message = message
