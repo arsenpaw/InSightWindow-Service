@@ -1,6 +1,6 @@
 ﻿namespace InSightWindowAPI.Repository.Interfaces
 {
-    public interface IUserRepository
+    public interface IUserRepository: IBaseRepository
     {
     }
 }
