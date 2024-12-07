@@ -6,21 +6,22 @@ using InSightWindowAPI.Services;
 
 namespace InSightWindowAPI.Extensions
 {
-    public static  class IServiceCollectionExtensions
+    public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddServices (this IServiceCollection Services)
+        public static IServiceCollection AddServices(this IServiceCollection Services)
         {
             Services.AddScoped<ITokenService, TokenService>();
             Services.AddScoped<IDeviceService, DeviceService>();
-            Services.AddTransient<IPushNotificationService, PushNotificationService>();
+            Services.AddScoped<IPushNotificationService, PushNotificationService>();
+            Services.AddTransient<IFireBaseTokenService, FireBaseTokenService>();
             Services.AddTransient<IAesService>(provider =>
                                new AesService("1234567890ABCDEF", "1234567890ABCDEF"));
             return Services;
         }
         public static IServiceCollection AddRepository(this IServiceCollection Services)
         {
-            Services.AddTransient<IDeviceRepository, DeviceRepository>();
-            Services.AddTransient<IUserRepository, UserRepository>();   
+            Services.AddScoped<IDeviceRepository, DeviceRepository>();
+            Services.AddScoped<IFireBaseRepository, FireBaseRepository>();
             return Services;
         }
 

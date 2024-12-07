@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InSightWindowAPI.Models.Entity
 {
+    [Index(nameof(Token), IsUnique = true)]
     public class FireBaseToken
     {
         [Key]
