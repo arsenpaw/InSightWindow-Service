@@ -1,6 +1,7 @@
 ﻿
 using InSightWindowAPI.Models;
 using InSightWindowAPI.Models.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace InSightWindowAPI.Repository
 {
@@ -18,7 +19,9 @@ namespace InSightWindowAPI.Repository
 
         public IQueryable<FireBaseToken> GetById(Guid id) => _context.FireBaseTokens.Where(x => x.Id == id);
 
-        public IQueryable<UserFireBaseTokens> GetByUserId(Guid userId) => _context.UserFireBaseTokens.Where(x => x.UserId == userId);
+        public IQueryable<UserFireBaseTokens> GetByUserId(Guid userId) =>
+            _context.UserFireBaseTokens.Where(x => x.UserId == userId)
+            .Include(x => x.FireBaseToken);
 
         public IQueryable<FireBaseToken> GetByToken(string token) => _context.FireBaseTokens.Where(x => x.Token == token);
 
