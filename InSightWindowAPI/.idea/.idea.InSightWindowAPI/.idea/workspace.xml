@@ -14,7 +14,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="" />
+    <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,6 +42,7 @@
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/946d6a0391cc43a8b8cecafb3ddc3abd1e38a0/53/e6f38556/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9bb0e6bbedf35fc571ed74a11a203249a0444c51c17022b495da731f8cedbf/DefaultHubDispatcher.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ca745679749c434b4a82584a6e15d847fb77a7bf45dc540c3b1d63594ede2ee/SwaggerOperationAttribute.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
@@ -50,29 +53,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.InSightWindowAPI: https.executor&quot;: &quot;Debug&quot;,
-    &quot;Attach to Process.23308:w3wp.executor&quot;: &quot;Debug&quot;,
-    &quot;Attach to Process.26404:JetBrains.ProcessEnumerator.Worker32.executor&quot;: &quot;Debug&quot;,
-    &quot;Attach to Process.37544:w3wp.executor&quot;: &quot;Debug&quot;,
-    &quot;Publish to IIS.InSightWindowAPI: IISPUB.executor&quot;: &quot;Run&quot;,
-    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.63188976&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;RiderNuGetOptionsPageId&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Run",
+    "Attach to Process.23308:w3wp.executor": "Debug",
+    "Attach to Process.26404:JetBrains.ProcessEnumerator.Worker32.executor": "Debug",
+    "Attach to Process.37544:w3wp.executor": "Debug",
+    "Publish to IIS.InSightWindowAPI: IISPUB.executor": "Run",
+    "XThreadsFramesViewSplitterKey": "0.63188976",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "RiderNuGetOptionsPageId",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;PLAIN_TEXT&quot;
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "PLAIN_TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CidrLocalAttachDebugger.recentlyUsed">
       <recent name="com.jetbrains.rider.cpp.debugger.RiderCppLLDBDriverConfiguration" />
@@ -194,6 +197,7 @@
       <workItem from="1731157513114" duration="32000" />
       <workItem from="1732135710461" duration="894000" />
       <workItem from="1733309330095" duration="6412000" />
+      <workItem from="1733662566298" duration="415000" />
     </task>
     <servers />
   </component>
@@ -209,68 +213,55 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs</url>
-          <line>51</line>
+          <line>43</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Controllers\AuthController.cs" containingFunctionPresentation="Method 'Register'">
             <startOffsets>
-              <option value="1692" />
+              <option value="1442" />
             </startOffsets>
             <endOffsets>
-              <option value="1716" />
+              <option value="1466" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Controllers/AuthController.cs</url>
-          <line>118</line>
+          <line>110</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Controllers\AuthController.cs" containingFunctionPresentation="Method 'RefreshToken'">
             <startOffsets>
-              <option value="4487" />
+              <option value="4226" />
             </startOffsets>
             <endOffsets>
-              <option value="4511" />
+              <option value="4250" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Serivces/TokenService.cs</url>
-          <line>29</line>
+          <line>30</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Serivces\TokenService.cs" containingFunctionPresentation="Method 'GenerateAccessTokenAsync'">
             <startOffsets>
-              <option value="903" />
+              <option value="941" />
             </startOffsets>
             <endOffsets>
-              <option value="962" />
+              <option value="1000" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Middlewares/AllowCredentiaksToSiteMiddleware.cs</url>
-          <line>22</line>
+          <line>20</line>
           <properties documentPath="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Middlewares\AllowCredentiaksToSiteMiddleware.cs" containingFunctionPresentation="Method 'InvokeAsync'">
             <startOffsets>
-              <option value="762" />
+              <option value="719" />
             </startOffsets>
             <endOffsets>
-              <option value="827" />
+              <option value="784" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs</url>
-          <line>91</line>
-          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\ClientStatusHub.cs" containingFunctionPresentation="Method 'ReceiveDataFromEsp32'">
-            <startOffsets>
-              <option value="3653" />
-            </startOffsets>
-            <endOffsets>
-              <option value="3678" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="8" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Serivces/DeviceService.cs</url>

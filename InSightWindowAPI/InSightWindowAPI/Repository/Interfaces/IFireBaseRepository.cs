@@ -5,7 +5,7 @@ namespace InSightWindowAPI.Repository
 {
     public interface IFireBaseRepository : IBaseRepository
     {
-        
+        public void Rollback();
         public void RemoveManyRelations(UserFireBaseTokens[] userFireBaseTokens);
         public IQueryable<FireBaseToken> GetByToken(string token);
         Task AddAsync(FireBaseToken firebaseToken);

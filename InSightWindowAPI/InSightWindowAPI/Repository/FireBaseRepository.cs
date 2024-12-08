@@ -12,13 +12,14 @@ namespace InSightWindowAPI.Repository
 
         }
 
+        public void Rollback() => _context.Database.RollbackTransaction();
 
         public async Task AddAsync(FireBaseToken firebaseToken) => await _context.FireBaseTokens.AddAsync(firebaseToken);
 
         public IQueryable<FireBaseToken> GetAll() => _context.FireBaseTokens;
 
         public void RemoveRelation(UserFireBaseTokens userFireBaseTokens) => _context.UserFireBaseTokens.Remove(userFireBaseTokens);
-        
+
         public void RemoveManyRelations(UserFireBaseTokens[] userFireBaseTokens) => _context.UserFireBaseTokens.RemoveRange(userFireBaseTokens);
 
         public IQueryable<FireBaseToken> GetById(Guid id) => _context.FireBaseTokens.Where(x => x.Id == id);

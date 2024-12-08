@@ -16,6 +16,8 @@ namespace InSightWindowAPI.Serivces
             _fireBaseRepository = fireBaseRepository;
         }
 
+
+
         public async Task<FireBaseToken> AddNewToken(string token)
         {
             if (_fireBaseRepository.GetAll().Any(x => x.Token == token))
@@ -71,28 +73,46 @@ namespace InSightWindowAPI.Serivces
 
         private async Task AddNewTokenToUserTransaction(string token, Guid userId)
         {
-            var strategy = _fireBaseRepository.CreateExecutionStrategy();
-            await strategy.ExecuteAsync(async () =>
+            try
             {
-                using var transaction = await _fireBaseRepository.BeginTransaction();
-                var newFireBaseToken = await AddNewToken(token);
-                await AddExistingTokenToUser(userId, newFireBaseToken.Id);
-                await transaction.CommitAsync();
-            });
+                var strategy = _fireBaseRepository.CreateExecutionStrategy();
+                await strategy.ExecuteAsync(async () =>
+                {
+                    using var transaction = await _fireBaseRepository.BeginTransaction();
+                    var newFireBaseToken = await AddNewToken(token);
+                    await AddExistingTokenToUser(userId, newFireBaseToken.Id);
+                    await transaction.CommitAsync();
+                });
+            }
+            catch (Exception)
+            {
+                _fireBaseRepository.Rollback();
+                throw;
+            }
+
         }
 
         private async Task BindExistingUserToExistingToken(Guid userId, UserFireBaseTokens token)
         {
-            var strategy = _fireBaseRepository.CreateExecutionStrategy();
-            await strategy.ExecuteAsync(async () =>
+
+            try
             {
-                using var transaction = await _fireBaseRepository.BeginTransaction();
-                _fireBaseRepository.RemoveRelation(token);
-                await _fireBaseRepository.SaveAsync();
-                await AddExistingTokenToUser(userId, token.FireBaseTokenId);
-                await _fireBaseRepository.SaveAsync();
-                await transaction.CommitAsync();
-            });
+                var strategy = _fireBaseRepository.CreateExecutionStrategy();
+                await strategy.ExecuteAsync(async () =>
+                {
+                    using var transaction = await _fireBaseRepository.BeginTransaction();
+                    _fireBaseRepository.RemoveRelation(token);
+                    await _fireBaseRepository.SaveAsync();
+                    await AddExistingTokenToUser(userId, token.FireBaseTokenId);
+                    await _fireBaseRepository.SaveAsync();
+                    await transaction.CommitAsync();
+                });
+            }
+            catch (Exception)
+            {
+                _fireBaseRepository.Rollback();
+                throw;
+            }
         }
     }
 }
