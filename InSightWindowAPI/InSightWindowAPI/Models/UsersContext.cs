@@ -24,6 +24,7 @@ namespace InSightWindowAPI.Models
 
             base.OnModelCreating(modelBuilder);
 
+
             modelBuilder.Entity<RefreshToken>()
              .HasOne(rt => rt.User)
              .WithMany(u => u.RefreshTokens)

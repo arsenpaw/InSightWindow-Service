@@ -6,6 +6,7 @@ namespace InSightWindowAPI.Serivces
     {
         Task<FireBaseToken> AddNewToken(string token);
         Task AddNewTokenToUser(string token, Guid userId);
-        Task AddTokenToUser(Guid userId, Guid tokenId);
+        Task AddExistingTokenToUser(Guid userId, Guid tokenId);
+        Task RemoveDeviceAndUserConnection(Guid userId, string token);
     }
 }
