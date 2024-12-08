@@ -1,8 +1,9 @@
-﻿using InSightWindowAPI.Models;
-using InSightWindowAPI.Models.Entity;
+﻿using FirebaseAdmin.Messaging;
+using InSightWindowAPI.Enums;
+using InSightWindowAPI.Serivces;
+using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace InSightWindowAPI.Controllers
 {
@@ -12,48 +13,55 @@ namespace InSightWindowAPI.Controllers
     public class FireBaseTokensController : BaseController
     {
         private readonly ILogger<FireBaseTokensController> _loger;
-        private readonly UsersContext _context;
+        private readonly IFireBaseTokenService fireBaseTokenService;
+        private readonly IPushNotificationService _pushNotificationService;
 
-        public FireBaseTokensController(UsersContext context, ILogger<FireBaseTokensController> logger)
+        public FireBaseTokensController(IFireBaseTokenService fireBaseRepository, IPushNotificationService pushNotificationService, ILogger<FireBaseTokensController> logger)
         {
-            _context = context;
+            fireBaseTokenService = fireBaseRepository;
+            _pushNotificationService = pushNotificationService;
             _loger = logger;
         }
 
 
+
+        [HttpGet("test/{token}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> SendMessage([FromRoute] string token)
+        {
+            var message = new Message()
+            {
+                Token = token,
+
+                Notification = new FirebaseAdmin.Messaging.Notification()
+                {
+                    ImageUrl = "https://ideogram.ai/assets/publicly-available/image-1.jpg",
+                    Title = "TestTitle",
+                    Body = "TestBody"
+                }
+            };
+            await FirebaseMessaging.DefaultInstance.SendAsync(message);
+            return Ok();
+        }
+
         // POST: api/FireBaseTokens
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("{token}")]
-        public async Task<ActionResult<FireBaseToken>> SetUserToken(string token)
+        public async Task<IActionResult> SetUserToken(string token)
         {
-            _loger.LogInformation("Manage user token");
-            try
-            {
-                var oldUserTokens = await _context.UserFireBaseTokens.Where(x => x.UserId.Equals(UserId))
-                    .Select(x => x.FireBaseToken).ToListAsync();
-                if (oldUserTokens != null)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    FireBaseToken fireBaseToken = new FireBaseToken
-                    {
-                        Token = token
-                    };
-                    oldUserTokens.Add(fireBaseToken);
-                    await _context.SaveChangesAsync();
-
-                    return Ok();
-                }
-            }
-            catch (Exception ex)
-            {
-
-                _loger.LogError(ex.Message);
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
+            await fireBaseTokenService.AddNewTokenToUser(token, UserId);
+            return Ok();
         }
+
+        [HttpPost("send/{userId}")]
+        [Authorize(Roles = UserRoles.ADMIN)]
+        public async Task<IActionResult> SendMessage([FromRoute] Guid userId, [FromBody] Message message)
+        {
+            await _pushNotificationService.SendNotificationToUser(userId, message);
+            return Ok();
+        }
+
+
 
     }
 }

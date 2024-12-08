@@ -4,6 +4,7 @@ using InSightWindowAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InSightWindowAPI.Migrations
 {
     [DbContext(typeof(UsersContext))]
-    partial class UsersContextModelSnapshot : ModelSnapshot
+    [Migration("20241208115751_2Pk")]
+    partial class _2Pk
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,15 +178,15 @@ namespace InSightWindowAPI.Migrations
 
             modelBuilder.Entity("InSightWindowAPI.Models.Entity.UserFireBaseTokens", b =>
                 {
-                    b.Property<Guid>("FireBaseTokenId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("FireBaseTokenId", "UserId");
+                    b.Property<Guid>("FireBaseTokenId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "FireBaseTokenId");
+
+                    b.HasIndex("FireBaseTokenId");
 
                     b.ToTable("UserFireBaseTokens");
                 });
