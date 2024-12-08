@@ -8,6 +8,6 @@ namespace InSightWindowAPI.Serivces.Interfaces
         Task AddNewTokenToUser(string token, Guid userId);
         Task AddExistingTokenToUser(Guid userId, Guid tokenId);
         Task RemoveDeviceAndUserConnection(Guid userId, string token);
-        Task GetUserTokens(Guid userId);
+        Task<IEnumerable<UserFireBaseTokens>> GetUserTokens(Guid userId);
     }
 }

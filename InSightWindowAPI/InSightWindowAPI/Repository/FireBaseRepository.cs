@@ -18,6 +18,8 @@ namespace InSightWindowAPI.Repository
         public IQueryable<FireBaseToken> GetAll() => _context.FireBaseTokens;
 
         public void RemoveRelation(UserFireBaseTokens userFireBaseTokens) => _context.UserFireBaseTokens.Remove(userFireBaseTokens);
+        
+        public void RemoveManyRelations(UserFireBaseTokens[] userFireBaseTokens) => _context.UserFireBaseTokens.RemoveRange(userFireBaseTokens);
 
         public IQueryable<FireBaseToken> GetById(Guid id) => _context.FireBaseTokens.Where(x => x.Id == id);
 

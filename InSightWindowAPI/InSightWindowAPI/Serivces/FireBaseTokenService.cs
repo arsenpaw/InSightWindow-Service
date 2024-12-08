@@ -1,6 +1,7 @@
 ﻿using InSightWindowAPI.Exeptions;
 using InSightWindowAPI.Models.Entity;
 using InSightWindowAPI.Repository;
+using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
@@ -55,6 +56,9 @@ namespace InSightWindowAPI.Serivces
             _fireBaseRepository.RemoveManyRelations(userTokens);
             await _fireBaseRepository.SaveAsync();
         }
+
+        public async Task<IEnumerable<UserFireBaseTokens>> GetUserTokens(Guid userId) =>
+            await _fireBaseRepository.GetByUserId(userId).ToListAsync();
 
         private async Task<UserFireBaseTokens?> GetExistingToken(string token)
         {
