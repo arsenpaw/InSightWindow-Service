@@ -24,7 +24,7 @@ namespace InSightWindowAPI.Serivces
         }
         public byte[] EncryptStringToBytes_Aes(string plainText)
         {
-
+            Aes.IV = IV;
             ICryptoTransform encryptor = Aes.CreateEncryptor(Aes.Key, Aes.IV);
 
             byte[] encrypted;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using InSightWindow.Models;
 using InSightWindowAPI.Models;
+using InSightWindowAPI.Serivces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
