@@ -2,6 +2,9 @@
 using InSightWindowAPI.Models;
 using InSightWindowAPI.Models.Command;
 using InSightWindowAPI.Models.Dto;
+using InSightWindowAPI.Models.Sensors;
+using InSightWindowAPI.Repository.Interfaces;
+using InSightWindowAPI.SensorDataProcessors.Interfaces;
 using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -15,24 +18,27 @@ namespace InSightWindowAPI.Hubs
     [AllowAnonymous]
     public class ClientStatusHub : BaseHub
     {
-        private readonly UsersContext _context;
         private IMemoryCache _cache;
         private ILogger<ClientStatusHub> _logger;
         private readonly IPushNotificationService _pusher;
+        private readonly IDeviceRepository _deviceRepository;
+        private readonly ISensorDataProcessor<AlarmSensor> _alarmDataProcessor;
         private readonly static ConnectionMapping<Guid> _connectionMapping =
            new ConnectionMapping<Guid>();
 
         public ClientStatusHub(
-       UsersContext context,
+            ISensorDataProcessor<AlarmSensor> alarmDataProcessor,
+            IDeviceRepository context,
        IMemoryCache memoryCache,
        ILogger<ClientStatusHub> logger,
        IPushNotificationService pusher,
        IAesService aesService) : base(aesService)
         {
-            _context = context;
+            _deviceRepository = context;
             _cache = memoryCache;
             _logger = logger;
             _pusher = pusher;
+            _alarmDataProcessor = alarmDataProcessor;
 
         }
 
@@ -72,37 +78,43 @@ namespace InSightWindowAPI.Hubs
                 return HttpStatusCode.Unauthorized;
             }
 
-            var subscribedUserId = await _context.Devices
-                .Where(x => x.Id == DeviceId)
-                .Select(x => x.UserId)
+            var targetDevice = await _deviceRepository.GetById(DeviceId)
                 .FirstOrDefaultAsync();
 
-            if (!subscribedUserId.HasValue)
+            if (targetDevice is null || !targetDevice.UserId.HasValue)
+            {
                 return HttpStatusCode.NotFound;
+            }
+            _connectionMapping.Add(targetDevice.UserId.Value, Context.ConnectionId);
 
-            _connectionMapping.Add(subscribedUserId.Value, Context.ConnectionId);
+            await _alarmDataProcessor.ProcessDataAsync(new AlarmSensor{IsAlarm = sensorDataDto.IsAlarm},
+                targetDevice.UserId.Value, DeviceId);
+            
             // await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
             _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",
-                subscribedUserId, DeviceId);
+                targetDevice.UserId, DeviceId);
             return HttpStatusCode.OK;
         }
 
-        [Authorize]
-        public async Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
-        // public async Task<HttpStatusCode> SendCommandToEsp32()
+        //[Authorize]
+        //public async Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
+        public async Task<HttpStatusCode> SendCommandToEsp32()
         {
-            // Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
-            //var  command = new CommandDto { Command = CommandEnum.Close };
+            Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
+            var command = new CommandDto { Command = CommandEnum.Close };
 
             try
             {
                 var connectionID = _connectionMapping.GetConnections(deviceId).FirstOrDefault();
+
+                var encryptedCommand = AesService.EncryptStringToBytes_Aes(JsonConvert.SerializeObject(command));
                 if (connectionID == null)
                 {
                     _logger.Log(LogLevel.Warning, "No connection found for device {deviceId}", deviceId);
                     return HttpStatusCode.NotFound;
                 }
-                var encryptedCommand = AesService.EncryptStringToBytes_Aes(JsonConvert.SerializeObject(command));
+
+
                 await Clients.Client(connectionID).SendAsync("ReceiveCommand", Convert.ToBase64String(encryptedCommand));
                 return HttpStatusCode.OK;
             }

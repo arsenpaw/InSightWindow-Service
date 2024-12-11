@@ -1,5 +1,8 @@
-﻿using InSightWindowAPI.Repository;
+﻿using InSightWindowAPI.Models.Sensors;
+using InSightWindowAPI.Repository;
 using InSightWindowAPI.Repository.Interfaces;
+using InSightWindowAPI.SensorDataProcessors;
+using InSightWindowAPI.SensorDataProcessors.Interfaces;
 using InSightWindowAPI.Serivces;
 using InSightWindowAPI.Serivces.Interfaces;
 using InSightWindowAPI.Services;
@@ -8,6 +11,12 @@ namespace InSightWindowAPI.Extensions
 {
     public static class IServiceCollectionExtensions
     {
+        public static IServiceCollection AddDataProcessors(this IServiceCollection Services)
+        {
+            Services.AddTransient<ISensorDataProcessor<AlarmSensor>, AlarmDataProcessor>();
+
+            return Services;
+        }
         public static IServiceCollection AddServices(this IServiceCollection Services)
         {
             Services.AddScoped<ITokenService, TokenService>();
