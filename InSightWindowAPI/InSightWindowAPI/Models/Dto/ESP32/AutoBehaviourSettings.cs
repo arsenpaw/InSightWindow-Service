@@ -1,10 +1,10 @@
-﻿namespace IoT_App.Models.Store
+﻿namespace InSightWindowAPI.Models.Dto.ESP32
 {
     public class AutoBehaviourSettings
     {
-        public int MaintainTemp = 25;
+        public int MaintainTemp { get; set; }
 
-        public bool AutoWeatherClose = true;
+        public bool AutoWeatherClose { get; set; }
 
     }
 }

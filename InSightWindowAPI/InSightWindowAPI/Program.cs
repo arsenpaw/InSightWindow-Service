@@ -40,6 +40,7 @@ builder.Services.AddSwaggerDocs();
 builder.Services.AddMemoryCache();
 builder.Services.AddSignalR();
 builder.Services.AddServices();
+builder.Services.AddDataProcessors();
 builder.Services.AddRepository();
 builder.Services.AddDbContext<UsersContext>((options) =>
     {

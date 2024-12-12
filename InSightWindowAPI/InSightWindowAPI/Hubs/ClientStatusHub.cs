@@ -52,7 +52,11 @@ namespace InSightWindowAPI.Hubs
             {
                 _logger.Log(LogLevel.Information, "User {i} connected to hub", DeviceId);
             }
-            _logger.Log(LogLevel.Information, "Unkonwn has connected to hub");
+            else
+            {
+                _logger.Log(LogLevel.Information, "Unkonwn has connected to hub");
+            }
+
             return base.OnConnectedAsync();
         }
 
@@ -73,7 +77,7 @@ namespace InSightWindowAPI.Hubs
             _logger.Log(LogLevel.Information, jsonData);
             var sensorDataDto = JsonConvert.DeserializeObject<SensorDataDto>(jsonData);
 
-            if (sensorDataDto == null || DeviceId == Guid.Empty)
+            if (sensorDataDto is null || DeviceId == Guid.Empty)
             {
                 _logger.Log(LogLevel.Critical,
                     "No all credentials have detected while receive data from esp32, Data: {sdata}, DeviceId {uId}", sensorDataDto, DeviceId);
