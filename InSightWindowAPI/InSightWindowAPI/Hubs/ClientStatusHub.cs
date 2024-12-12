@@ -1,5 +1,4 @@
 ﻿using InSightWindowAPI.Hubs.ConnectionMapper;
-using InSightWindowAPI.Models;
 using InSightWindowAPI.Models.Command;
 using InSightWindowAPI.Models.Dto;
 using InSightWindowAPI.Models.Sensors;
@@ -87,22 +86,18 @@ namespace InSightWindowAPI.Hubs
             }
             _connectionMapping.Add(targetDevice.UserId.Value, Context.ConnectionId);
 
-            await _alarmDataProcessor.ProcessDataAsync(new AlarmSensor{IsAlarm = sensorDataDto.IsAlarm},
+            await _alarmDataProcessor.ProcessDataAsync(new AlarmSensor { IsAlarm = sensorDataDto.IsAlarm },
                 targetDevice.UserId.Value, DeviceId);
-            
-            // await Clients.User(userInputStatus.DeviceId.ToString()).SendAsync("ReceiveUserInput", userInputStatus);
+
+            await Clients.User(targetDevice.UserId.Value.ToString()).SendAsync("ReceiveSensorData", sensorDataDto);
             _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",
                 targetDevice.UserId, DeviceId);
             return HttpStatusCode.OK;
         }
 
-        //[Authorize]
-        //public async Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
-        public async Task<HttpStatusCode> SendCommandToEsp32()
+        [Authorize]
+        public async Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
         {
-            Guid deviceId = Guid.Parse("6c1d08d1-4bac-44da-bdba-3165799c0497");
-            var command = new CommandDto { Command = CommandEnum.Close };
-
             try
             {
                 var connectionID = _connectionMapping.GetConnections(deviceId).FirstOrDefault();
