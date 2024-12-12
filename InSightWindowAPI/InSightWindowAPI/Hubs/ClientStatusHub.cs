@@ -1,11 +1,10 @@
 ﻿using InSightWindowAPI.Hubs.ConnectionMapper;
 using InSightWindowAPI.Models.Command;
-using InSightWindowAPI.Models.Dto;
+using InSightWindowAPI.Models.Dto.ESP32;
 using InSightWindowAPI.Models.Sensors;
 using InSightWindowAPI.Repository.Interfaces;
 using InSightWindowAPI.SensorDataProcessors.Interfaces;
 using InSightWindowAPI.Serivces.Interfaces;
-using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -49,31 +48,31 @@ namespace InSightWindowAPI.Hubs
                 _logger.Log(LogLevel.Information, "Device {i} connected to hub", DeviceId);
                 _connectionMapping.Add(DeviceId, Context.ConnectionId);
             }
-            else if(UserId != Guid.Empty)
+            else if (UserId != Guid.Empty)
             {
                 _logger.Log(LogLevel.Information, "User {i} connected to hub", DeviceId);
             }
-            _logger.Log(LogLevel.Information, "Unkonwn has connected to hub");   
+            _logger.Log(LogLevel.Information, "Unkonwn has connected to hub");
             return base.OnConnectedAsync();
         }
+
         public override Task OnDisconnectedAsync(Exception? exception)
         {
             foreach (var deviceId in _connectionMapping.GetConnections(DeviceId))
             {
                 _connectionMapping.Remove(DeviceId, Context.ConnectionId);
             }
-
             return base.OnDisconnectedAsync(exception);
         }
-
 
         public async Task<HttpStatusCode> ReceiveDataFromEsp32(string sensorData)
         {
             byte[] sensorDataByte = Convert.FromBase64String(sensorData);
-            Console.WriteLine(DeviceId);
             string jsonData = AesService.DecryptStringFromBytes_Aes(sensorDataByte);
+
             _logger.Log(LogLevel.Information, jsonData);
             var sensorDataDto = JsonConvert.DeserializeObject<SensorDataDto>(jsonData);
+
             if (sensorDataDto == null || DeviceId == Guid.Empty)
             {
                 _logger.Log(LogLevel.Critical,
@@ -88,43 +87,50 @@ namespace InSightWindowAPI.Hubs
             {
                 return HttpStatusCode.NotFound;
             }
-            _connectionMapping.Add(targetDevice.UserId.Value, Context.ConnectionId);
 
+            _connectionMapping.Add(targetDevice.UserId.Value, Context.ConnectionId);
             await _alarmDataProcessor.ProcessDataAsync(new AlarmSensor { IsAlarm = sensorDataDto.IsAlarm },
                 targetDevice.UserId.Value, DeviceId);
 
             await Clients.User(targetDevice.UserId.Value.ToString()).SendAsync("ReceiveSensorData", sensorDataDto);
             _logger.Log(LogLevel.Information, "Data was sucesfully send from user{userJWTId} to gadget {userInputStatus.DeviceId}",
                 targetDevice.UserId, DeviceId);
+
             return HttpStatusCode.OK;
         }
 
-        [Authorize]
-        public async Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
+        private async Task<HttpStatusCode> SendDataToDeviceAsync<T>(Guid deviceId, string eventName, T data)
         {
             try
             {
                 var connectionID = _connectionMapping.GetConnections(deviceId).FirstOrDefault();
-
-                var encryptedCommand = AesService.EncryptStringToBytes_Aes(JsonConvert.SerializeObject(command));
                 if (connectionID == null)
                 {
-                    _logger.Log(LogLevel.Warning, "No connection found for device {deviceId}", deviceId);
+                    _logger.LogWarning("No connection found for device {DeviceId}", deviceId);
                     return HttpStatusCode.NotFound;
                 }
 
-
-                await Clients.Client(connectionID).SendAsync("ReceiveCommand", Convert.ToBase64String(encryptedCommand));
+                var encryptedData = AesService.EncryptStringToBytes_Aes(JsonConvert.SerializeObject(data));
+                await Clients.Client(connectionID).SendAsync(eventName, Convert.ToBase64String(encryptedData));
                 return HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Critical, ex.Message);
+                _logger.LogCritical(ex, "An error occurred while sending data to device {DeviceId}", deviceId);
                 return HttpStatusCode.InternalServerError;
             }
         }
 
+        [Authorize]
+        public Task<HttpStatusCode> SetSettingsOnEsp32(Guid deviceId, UserSettings userSettings)
+        {
+            return SendDataToDeviceAsync(deviceId, "Settings", userSettings);
+        }
 
-
+        [Authorize]
+        public Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
+        {
+            return SendDataToDeviceAsync(deviceId, "ReceiveCommand", command);
+        }
     }
 }
