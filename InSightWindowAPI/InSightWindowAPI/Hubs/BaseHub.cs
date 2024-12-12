@@ -11,6 +11,7 @@ namespace InSightWindowAPI.Hubs
         {
             AesService = aesService;
         }
+        public Guid UserId => Guid.TryParse(Context?.User?.Identity?.Name, out var userId) ? userId : Guid.Empty;
 
         public Guid DeviceId
         {

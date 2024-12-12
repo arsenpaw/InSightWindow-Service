@@ -5,6 +5,7 @@ using InSightWindowAPI.Models.Sensors;
 using InSightWindowAPI.Repository.Interfaces;
 using InSightWindowAPI.SensorDataProcessors.Interfaces;
 using InSightWindowAPI.Serivces.Interfaces;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -43,13 +44,16 @@ namespace InSightWindowAPI.Hubs
 
         public override Task OnConnectedAsync()
         {
-            if (DeviceId == Guid.Empty)
+            if (DeviceId != Guid.Empty)
             {
-                _logger.Log(LogLevel.Information, "No device was connected to hub");
-                return base.OnConnectedAsync();
+                _logger.Log(LogLevel.Information, "Device {i} connected to hub", DeviceId);
+                _connectionMapping.Add(DeviceId, Context.ConnectionId);
             }
-            _logger.Log(LogLevel.Information, "Device {i} connected to hub", DeviceId);
-            _connectionMapping.Add(DeviceId, Context.ConnectionId);
+            else if(UserId != Guid.Empty)
+            {
+                _logger.Log(LogLevel.Information, "User {i} connected to hub", DeviceId);
+            }
+            _logger.Log(LogLevel.Information, "Unkonwn has connected to hub");   
             return base.OnConnectedAsync();
         }
         public override Task OnDisconnectedAsync(Exception? exception)
