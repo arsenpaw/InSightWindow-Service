@@ -5,11 +5,14 @@ using InSightWindowAPI.EntityFramework;
 using InSightWindowAPI.Enums;
 using InSightWindowAPI.Extensions;
 using InSightWindowAPI.Hubs;
+using InSightWindowAPI.Hubs.ConnectionMapper;
+using InSightWindowAPI.Hubs.Filters;
 using InSightWindowAPI.JwtSetting;
 using InSightWindowAPI.Models;
 using InSightWindowAPI.Models.Entity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -38,7 +41,11 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
 builder.Services.AddMemoryCache();
-builder.Services.AddSignalR();
+builder.Services.AddSingleton<ConnectionMapping<Guid>>();
+builder.Services.AddSignalR(opt =>
+{
+    opt.AddFilter<ErrorHandlingFilter>();
+});
 builder.Services.AddServices();
 builder.Services.AddDataProcessors();
 builder.Services.AddRepository();
@@ -158,6 +165,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHub<ClientStatusHub>("/client-hub");
+app.MapHub<DeviceHub>("/device-hub");
+app.MapHub<UserHub>("/user-hub");
 app.Run();
 

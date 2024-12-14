@@ -5,12 +5,7 @@ namespace InSightWindowAPI.Hubs
 {
     public class BaseHub : Hub
     {
-        public IAesService AesService { get; set; }
-
-        public BaseHub(IAesService aesService)
-        {
-            AesService = aesService;
-        }
+        //Later device will have JWT so only one identifier will be needed
         public Guid UserId => Guid.TryParse(Context?.User?.Identity?.Name, out var userId) ? userId : Guid.Empty;
 
         public Guid DeviceId

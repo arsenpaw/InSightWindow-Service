@@ -14,7 +14,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="" />
+    <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/DeviceHub.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/UserHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/InSightWindowAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/InSightWindowAPI.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,14 +49,19 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/946d6a0391cc43a8b8cecafb3ddc3abd1e38a0/53/e6f38556/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ae7b821dd3ae45b4a8027ef197e5363fb1e910/8e/56f64c3b/AsyncValueTaskMethodBuilder`1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0b37c0e54164b0e89dbb614ddf6d1b748800/17/956a8118/Notification.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0b37c0e54164b0e89dbb614ddf6d1b748800/17/956a8118/Notification.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0b37c0e54164b0e89dbb614ddf6d1b748800/3a/e8ffc09b/Message.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4f163f34e362d1592b89048e9bc4b2d2d7363aaf828a813a9f723ab447bb94f/Hub.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7e476fded74497be5ba8bf3aa73abdf9b6358aa90baab4012e2df9615b5/ObjectMethodExecutorAwaitable.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8e2e3f232b3f74cfc56d24ec307aaea234eb831ec23796f1b454eb7e8fe1/CallSiteVisitor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9bb0e6bbedf35fc571ed74a11a203249a0444c51c17022b495da731f8cedbf/DefaultHubDispatcher.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ca745679749c434b4a82584a6e15d847fb77a7bf45dc540c3b1d63594ede2ee/SwaggerOperationAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/df8d2de02da811df0e4e9b1a7b269a62372eba41e5e3b1a2a8aa863afb3253/DefaultHubActivator.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
 }</component>
@@ -67,7 +80,9 @@
     "Attach to Process.26404:JetBrains.ProcessEnumerator.Worker32.executor": "Debug",
     "Attach to Process.26636:w3wp.executor": "Debug",
     "Attach to Process.37544:w3wp.executor": "Debug",
+    "Docker.InSightWindowAPI/Dockerfile.executor": "Run",
     "Publish to IIS.InSightWindowAPI: IISPUB.executor": "Run",
+    "Publish to IIS.InSightWindowAPI: To Production.executor": "Run",
     "XThreadsFramesViewSplitterKey": "0.30062306",
     "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
@@ -151,11 +166,18 @@
         <option name="Build" />
       </method>
     </configuration>
-    <configuration name="InSightWindowAPI/Dockerfile" type="docker-deploy" factoryName="dockerfile" server-name="Docker">
+    <configuration name="Docker Image" type="docker-deploy" factoryName="docker-image" server-name="Docker">
+      <deployment type="docker-image">
+        <settings>
+          <option name="containerName" value="" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="InSightWindowAPI/Dockerfile" type="docker-deploy" factoryName="dockerfile" singleton="false" server-name="Docker">
       <deployment type="dockerfile">
         <settings>
           <option name="containerName" value="insightwindowapi" />
-          <option name="contextFolderPath" value="D:\InSightWindow Server\InSightWindow-Service\InSightWindowAPI" />
           <option name="publishAllPorts" value="true" />
           <option name="sourceFilePath" value="InSightWindowAPI/Dockerfile" />
         </settings>
@@ -174,6 +196,7 @@
       <item itemvalue=".NET Launch Settings Profile.InSightWindowAPI: http" />
       <item itemvalue=".NET Launch Settings Profile.InSightWindowAPI: https" />
       <item itemvalue=".NET Launch Settings Profile.InSightWindowAPI: IIS Express" />
+      <item itemvalue="Docker.Docker Image" />
       <item itemvalue="Docker.InSightWindowAPI/Dockerfile" />
       <item itemvalue="Publish to IIS.InSightWindowAPI: FolderProfile" />
       <item itemvalue="Publish to IIS.InSightWindowAPI: FolderProfile2" />
@@ -209,6 +232,10 @@
       <workItem from="1733861680206" duration="543000" />
       <workItem from="1733862318582" duration="2204000" />
       <workItem from="1733935907498" duration="4057000" />
+      <workItem from="1734085715023" duration="396000" />
+      <workItem from="1734174158232" duration="662000" />
+      <workItem from="1734175789291" duration="1892000" />
+      <workItem from="1734194790255" duration="2517000" />
     </task>
     <servers />
   </component>
@@ -312,6 +339,71 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="11" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/DeviceHub.cs</url>
+          <line>58</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\ClientStatusHub.cs" containingFunctionPresentation="Method 'OnDisconnectedAsync'">
+            <startOffsets>
+              <option value="1952" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2010" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/DeviceHub.cs</url>
+          <line>71</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\ClientStatusHub.cs" containingFunctionPresentation="Method 'ReceiveDataFromEsp32'">
+            <startOffsets>
+              <option value="2570" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2633" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/Filters/ErrorHandlingPipelineModule.cs</url>
+          <line>21</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\Filters\ErrorHandlingPipelineModule.cs" containingFunctionPresentation="Method 'InvokeMethodAsync'">
+            <startOffsets>
+              <option value="606" />
+            </startOffsets>
+            <endOffsets>
+              <option value="643" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="17" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/Filters/ErrorHandlingPipelineModule.cs</url>
+          <line>28</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\Filters\ErrorHandlingPipelineModule.cs" containingFunctionPresentation="Method 'InvokeMethodAsync'">
+            <startOffsets>
+              <option value="825" />
+            </startOffsets>
+            <endOffsets>
+              <option value="826" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/Filters/ErrorHandlingPipelineModule.cs</url>
+          <line>24</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\Filters\ErrorHandlingPipelineModule.cs" containingFunctionPresentation="Method 'InvokeMethodAsync'">
+            <startOffsets>
+              <option value="716" />
+            </startOffsets>
+            <endOffsets>
+              <option value="717" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="19" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
