@@ -2,24 +2,21 @@ using InSightWindowAPI.Exeptions;
 using InSightWindowAPI.Hubs.ConnectionMapper;
 using InSightWindowAPI.Models.Command;
 using InSightWindowAPI.Models.Dto.ESP32;
-using InSightWindowAPI.Serivces;
 using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Newtonsoft.Json;
 using System.Net;
-using Hub = Microsoft.AspNetCore.SignalR.Hub;
-using ILogger = Microsoft.Owin.Logging.ILogger;
 
 namespace InSightWindowAPI.Hubs
 {
-    [Authorize]
-    public class UserHub: BaseHub
+    [AllowAnonymous]
+    public class UserHub : BaseHub
     {
-        private readonly ILogger<UserHub> _logger;  
+        private readonly ILogger<UserHub> _logger;
         private readonly ConnectionMapping<Guid> _connectionMapping;
         private readonly IAesService AesService;
-        
+
         public UserHub(ConnectionMapping<Guid> connectionMapping, ILogger<UserHub> logger, IAesService aesService)
         {
             AesService = aesService;
@@ -30,7 +27,7 @@ namespace InSightWindowAPI.Hubs
         {
             return SendDataToDeviceAsync(deviceId, "Settings", userSettings);
         }
-        
+
         public Task<HttpStatusCode> SendCommandToEsp32(Guid deviceId, CommandDto command)
         {
             return SendDataToDeviceAsync(deviceId, "ReceiveCommand", command);
@@ -46,6 +43,7 @@ namespace InSightWindowAPI.Hubs
 
             var encryptedData = AesService.EncryptStringToBytes_Aes(JsonConvert.SerializeObject(data));
             await Clients.Client(connectionId).SendAsync(eventName, Convert.ToBase64String(encryptedData));
+            _logger.LogInformation("Sending {EventName} with connection {DeviceId}", deviceId, connectionId);
             return HttpStatusCode.OK;
         }
         [AllowAnonymous]

@@ -15,13 +15,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f39ce199-15ae-44f4-b09a-acea8d992058" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/DeviceHub.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/UserHub.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/BaseHub.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/ClientStatusHub.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/InSightWindowAPI.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/InSightWindowAPI.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/DeviceHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/DeviceHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/Filters/ErrorHandlingPipelineModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/Filters/ErrorHandlingPipelineModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/InSightWindowAPI/Hubs/UserHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/InSightWindowAPI/Hubs/UserHub.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,12 +46,16 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/946d6a0391cc43a8b8cecafb3ddc3abd1e38a0/53/e6f38556/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ae7b821dd3ae45b4a8027ef197e5363fb1e910/8e/56f64c3b/AsyncValueTaskMethodBuilder`1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ae7b821dd3ae45b4a8027ef197e5363fb1e910/a0/5e08df88/AsyncTaskMethodBuilder`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0b37c0e54164b0e89dbb614ddf6d1b748800/17/956a8118/Notification.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c0b37c0e54164b0e89dbb614ddf6d1b748800/3a/e8ffc09b/Message.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/47e66611cdcd66acd08352f24cfdf29b34417a6498c5a18f125b1bcaa2fecea9/HubConnectionHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4f163f34e362d1592b89048e9bc4b2d2d7363aaf828a813a9f723ab447bb94f/Hub.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7e476fded74497be5ba8bf3aa73abdf9b6358aa90baab4012e2df9615b5/ObjectMethodExecutorAwaitable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7f2081ecc4eb28a8b74ef842bd96fbdea04da8adca65a029c2777c21c7433e5/AuthorizeAttribute.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8e2e3f232b3f74cfc56d24ec307aaea234eb831ec23796f1b454eb7e8fe1/CallSiteVisitor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9bb0e6bbedf35fc571ed74a11a203249a0444c51c17022b495da731f8cedbf/DefaultHubDispatcher.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a35830f4425a9b11fe3290238072e1642897754e9c409cb2b88b11c9ea8af2e5/HubFilterFactory.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ca745679749c434b4a82584a6e15d847fb77a7bf45dc540c3b1d63594ede2ee/SwaggerOperationAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/df8d2de02da811df0e4e9b1a7b269a62372eba41e5e3b1a2a8aa863afb3253/DefaultHubActivator.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -72,7 +73,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Debug",
+    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Run",
     "Attach to Process.11132:w3wp.executor": "Debug",
     "Attach to Process.21100:w3wp.executor": "Debug",
     "Attach to Process.23308:w3wp.executor": "Debug",
@@ -84,7 +85,7 @@
     "Publish to IIS.InSightWindowAPI: IISPUB.executor": "Run",
     "Publish to IIS.InSightWindowAPI: To Production.executor": "Run",
     "XThreadsFramesViewSplitterKey": "0.30062306",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "fix/singlar",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -235,7 +236,7 @@
       <workItem from="1734085715023" duration="396000" />
       <workItem from="1734174158232" duration="662000" />
       <workItem from="1734175789291" duration="1892000" />
-      <workItem from="1734194790255" duration="2517000" />
+      <workItem from="1734194790255" duration="7483000" />
     </task>
     <servers />
   </component>
@@ -381,13 +382,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/InSightWindowAPI/Hubs/Filters/ErrorHandlingPipelineModule.cs</url>
-          <line>28</line>
+          <line>29</line>
           <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\InSightWindowAPI\Hubs\Filters\ErrorHandlingPipelineModule.cs" containingFunctionPresentation="Method 'InvokeMethodAsync'">
             <startOffsets>
-              <option value="825" />
+              <option value="923" />
             </startOffsets>
             <endOffsets>
-              <option value="826" />
+              <option value="924" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="18" />

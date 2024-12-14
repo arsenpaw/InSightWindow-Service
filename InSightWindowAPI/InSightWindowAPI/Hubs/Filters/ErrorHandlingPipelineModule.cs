@@ -23,12 +23,13 @@ namespace InSightWindowAPI.Hubs.Filters
             }
             catch (AppException appException)
             {
+                _logger.LogInformation("=> An error occurred in hub method: {ex}", appException);
                 return appException.StatusCode;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "=> An error occurred in hub method: {ex}", ex);
-                return HttpStatusCode.InternalServerError;
+                return null;
             }
         }
     }

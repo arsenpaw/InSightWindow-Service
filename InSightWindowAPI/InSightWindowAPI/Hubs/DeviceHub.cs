@@ -1,6 +1,4 @@
-﻿using InSightWindowAPI.Exeptions;
-using InSightWindowAPI.Hubs.ConnectionMapper;
-using InSightWindowAPI.Models.Command;
+﻿using InSightWindowAPI.Hubs.ConnectionMapper;
 using InSightWindowAPI.Models.Dto.ESP32;
 using InSightWindowAPI.Models.Sensors;
 using InSightWindowAPI.Repository.Interfaces;
@@ -9,7 +7,6 @@ using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -29,7 +26,7 @@ namespace InSightWindowAPI.Hubs
             IDeviceRepository context,
             ConnectionMapping<Guid> connectionMapping,
             ILogger<DeviceHub> logger,
-            IAesService aesService) 
+            IAesService aesService)
         {
             _connectionMapping = connectionMapping;
             _deviceRepository = context;
@@ -41,11 +38,6 @@ namespace InSightWindowAPI.Hubs
 
         public override Task OnConnectedAsync()
         {
-            if (DeviceId == Guid.Empty)
-            {
-                Context.Abort();
-                return Task.CompletedTask;
-            }
             _logger.Log(LogLevel.Information, "Device {i} connected to hub", DeviceId);
             _connectionMapping.Add(DeviceId, Context.ConnectionId);
             return base.OnConnectedAsync();
@@ -53,20 +45,27 @@ namespace InSightWindowAPI.Hubs
 
         public override Task OnDisconnectedAsync(Exception? exception)
         {
+
+            _logger.LogInformation(exception, "Device disconected");
             _connectionMapping.Remove(DeviceId, Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
 
-        private T _decryptRequest<T>(string cryptedBase64)
+        private T? _decryptRequest<T>(string cryptedBase64)
         {
             byte[] sensorDataByte = Convert.FromBase64String(cryptedBase64);
             string jsonData = AesService.DecryptStringFromBytes_Aes(sensorDataByte);
-            return JsonConvert.DeserializeObject<T>(jsonData) ?? throw new AppException("Invalid deserialize object", HttpStatusCode.BadRequest);
+            return JsonConvert.DeserializeObject<T>(jsonData);
         }
 
         public async Task<HttpStatusCode> ReceiveDataFromEsp32(string sensorData)
         {
             var sensorDataDto = _decryptRequest<SensorDataDto>(sensorData);
+            _logger.Log(LogLevel.Information, "Data was received from device {DeviceId}", DeviceId);
+            if (sensorDataDto is null)
+            {
+                return HttpStatusCode.Unauthorized;
+            }
 
             var targetDevice = await _deviceRepository.GetById(DeviceId)
                 .FirstOrDefaultAsync();
@@ -75,12 +74,12 @@ namespace InSightWindowAPI.Hubs
             {
                 return HttpStatusCode.NotFound;
             }
-            
+
             await _alarmDataProcessor.ProcessDataAsync(new AlarmSensor { IsAlarm = sensorDataDto.IsAlarm },
                 targetDevice.UserId.Value, DeviceId);
 
             await Clients.User(targetDevice.UserId.Value.ToString()).SendAsync("ReceiveSensorData", sensorDataDto);
-            _logger.Log(LogLevel.Information, 
+            _logger.Log(LogLevel.Information,
                 "Data was send from user {userJWTId} to gadget {userInputStatus.DeviceId}",
                         targetDevice.UserId, DeviceId);
 
@@ -88,6 +87,6 @@ namespace InSightWindowAPI.Hubs
         }
 
 
-        
+
     }
 }
