@@ -200,14 +200,14 @@ namespace InSightWindowAPI.Controllers
             {
                 var newRefreshToken = await GenerateRefreshToken();  
                 _mapper.Map(newRefreshToken,refreshToken);
-                await _context.SaveChangesAsync();
+               // тут бага
                
             }
             // при новому логіні ревшер токен новий чи нє 
             await SetRefreshToken(refreshToken);
             var result = new ObjectResult(Ok());
             Response.Headers.Add("Bearer", token.ToString());
-
+            await _context.SaveChangesAsync();
             return result;
         }
         [HttpPost("refresh-tokens")]
@@ -248,10 +248,13 @@ namespace InSightWindowAPI.Controllers
             var cookieOption = new CookieOptions
             {
                 HttpOnly = true,
+                IsEssential = true,
                 Expires = refreshToken.ExpitedDate,
+                Secure = true,
+                SameSite = SameSiteMode.None
 
             };
-            Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOption);
+            HttpContext.Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOption);
         }
 
         private async Task<RefreshToken> GenerateRefreshToken()
