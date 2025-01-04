@@ -1,31 +1,27 @@
-﻿using InSightWindowAPI.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Domain.IRepository;
+using InSightWindowAPI.Models.Entity;
+using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using NuGet.Packaging;
-using InSightWindowAPI.Serivces.Interfaces;
-using InSightWindowAPI.Models.Entity;
 
-namespace InSightWindowAPI.Services
+namespace Application.Serivces
 {
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
-        private readonly UsersContext _context;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
 
-        public TokenService(IConfiguration configuration, UsersContext context)
+        public TokenService(IConfiguration configuration, IRefreshTokenRepository refreshTokenRepository)
         {
             _configuration = configuration;
-            _context = context;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
-        public async Task<string> GenerateAccessTokenAsync(User user,IEnumerable<string> role)
+        public async Task<string> GenerateAccessTokenAsync(User user, IEnumerable<string> role)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var secretKey = jwtSettings["SecretKey"];
@@ -37,8 +33,8 @@ namespace InSightWindowAPI.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.UserName),
-                
             };
+
             foreach (var r in role)
             {
                 claims.Add(new Claim(ClaimTypes.Role, r));
@@ -71,8 +67,8 @@ namespace InSightWindowAPI.Services
                 UserId = user.Id
             };
 
-            _context.RefreshTokens.Add(refreshToken);
-            await _context.SaveChangesAsync();
+            await _refreshTokenRepository.AddRefreshTokenAsync(refreshToken);
+            await _refreshTokenRepository.SaveChangesAsync();
 
             return refreshToken;
         }
@@ -87,15 +83,14 @@ namespace InSightWindowAPI.Services
 
         public async Task<RefreshToken> GetRefreshTokenAsync(string token)
         {
-            return await _context.RefreshTokens
-                .FirstOrDefaultAsync(rt => rt.Token == token);
+            return await _refreshTokenRepository.GetRefreshTokenAsync(token);
         }
 
         public async Task RevokeRefreshTokenAsync(RefreshToken token)
         {
             token.Revoked = DateTime.UtcNow;
-            _context.RefreshTokens.Update(token);
-            await _context.SaveChangesAsync();
+            await _refreshTokenRepository.UpdateRefreshTokenAsync(token);
+            await _refreshTokenRepository.SaveChangesAsync();
         }
     }
 }

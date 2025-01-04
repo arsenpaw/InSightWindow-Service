@@ -1,4 +1,5 @@
 using Domain.Entity.Enums;
+using Domain.EntityFramework;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Infrastructure.Data;

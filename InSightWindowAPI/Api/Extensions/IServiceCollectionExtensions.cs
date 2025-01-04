@@ -1,11 +1,13 @@
-﻿using InSightWindowAPI.Models.Sensors;
+﻿using Application.Serivces;
+using Domain.IRepository;
+using Infrastructure.Repository;
+using InSightWindowAPI.Models.Sensors;
 using InSightWindowAPI.Repository;
 using InSightWindowAPI.Repository.Interfaces;
 using InSightWindowAPI.SensorDataProcessors;
 using InSightWindowAPI.SensorDataProcessors.Interfaces;
 using InSightWindowAPI.Serivces;
 using InSightWindowAPI.Serivces.Interfaces;
-using InSightWindowAPI.Services;
 
 namespace InSightWindowAPI.Extensions
 {
@@ -30,6 +32,7 @@ namespace InSightWindowAPI.Extensions
         public static IServiceCollection AddRepository(this IServiceCollection Services)
         {
             Services.AddScoped<IDeviceRepository, DeviceRepository>();
+            Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             Services.AddScoped<IFireBaseRepository, FireBaseRepository>();
             return Services;
         }

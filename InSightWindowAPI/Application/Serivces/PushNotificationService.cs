@@ -3,6 +3,7 @@ using InSightWindowAPI.Models;
 using InSightWindowAPI.Repository;
 using InSightWindowAPI.Serivces.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace InSightWindowAPI.Serivces
 {
@@ -10,15 +11,13 @@ namespace InSightWindowAPI.Serivces
     {
 
         private readonly ILogger<PushNotificationService> _logger;
-        private readonly UsersContext _context;
         private readonly IFireBaseRepository _fireBaseRepository;
 
 
 
-        public PushNotificationService(IFireBaseRepository fireBaseRepository, ILogger<PushNotificationService> logger, UsersContext contextFirebase)
+        public PushNotificationService(IFireBaseRepository fireBaseRepository, ILogger<PushNotificationService> logger)
         {
             _logger = logger;
-            _context = contextFirebase;
             _fireBaseRepository = fireBaseRepository;
         }
 
@@ -39,7 +38,7 @@ namespace InSightWindowAPI.Serivces
                 {
                     _fireBaseRepository.Remove(item.FireBaseToken);
                     _logger.LogError("Error while sending notification to user with id: " + userId + " " + ex.Message);
-                    await _context.SaveChangesAsync();
+                    await _fireBaseRepository.SaveAsync();
                 }
             }
         }
