@@ -7,7 +7,6 @@ using InSightWindowAPI;
 using InSightWindowAPI.Extensions;
 using InSightWindowAPI.Hubs;
 using InSightWindowAPI.JwtSetting;
-using InSightWindowAPI.Models;
 using InSightWindowAPI.Models.Entity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -126,7 +125,7 @@ builder.Services.AddCors(options =>
 
 
 
-var pathToKeyFile = $"{Directory.GetCurrentDirectory()}//{builder.Configuration["Firebase:KeyFilePath"]}";
+var pathToKeyFile = $"{Directory.GetParent(Directory.GetCurrentDirectory())}\\{builder.Configuration["Firebase:KeyFilePath"]}";
 
 FirebaseApp.Create(new AppOptions()
 {

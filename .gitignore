@@ -400,5 +400,14 @@ InSightWindowAPI/InSightWindowAPI/firebase-admin.json
 InSightWindowAPI/InSightWindowAPI/appsettings.Production.json
 /InSightWindowAPI/.idea
 /InSightWindowAPI/.idea
+<<<<<<< Updated upstream
 InSightWindowAPI/Api/firebase-admin.json
 /InSightWindowAPI/.idea
+=======
+<<<<<<< Updated upstream
+=======
+InSightWindowAPI/Api/firebase-admin.json
+/InSightWindowAPI/.idea
+InSightWindowAPI/firebase-admin.json
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
