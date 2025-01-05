@@ -4,8 +4,12 @@ WORKDIR /source
 
 # Copy the entire solution and project files to the build context
 COPY . ./
+
+# Inject the Firebase Admin SDK into the build context
 ARG FIREBASE_KEY_PATH
-ENV GOOGLE_APPLICATION_CREDENTIALS=$FIREBASE_KEY_PATH
+COPY $FIREBASE_KEY_PATH /source/firebase-admin-sdk.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/source/firebase-admin-sdk.json
+
 # Restore NuGet packages and build the application
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app
@@ -17,11 +21,9 @@ WORKDIR /app
 # Copy the published output from the build stage
 COPY --from=build /app ./
 
-ARG FIREBASE_KEY_PATH
-COPY --from=build $FIREBASE_KEY_PATH /app/firebase-admin-sdk.json
-
-# Set the environment variable for Firebase
-ENV GOOGLE_APPLICATION_CREDENTIALS /app/firebase-admin-sdk.json
+# Copy the Firebase Admin SDK file
+COPY --from=build /source/firebase-admin-sdk.json /app/firebase-admin-sdk.json
+ENV GOOGLE_APPLICATION_CREDENTIALS=/app/firebase-admin-sdk.json
 
 # Expose ports for HTTP and HTTPS
 EXPOSE 80
