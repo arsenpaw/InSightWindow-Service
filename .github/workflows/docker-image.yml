@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - production  # Adjust to the branch you want to trigger the workflow
+      - main  # Adjust to the branch you want to trigger the workflow
 
 jobs:
   build-and-push:
@@ -22,12 +22,17 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Inject Firebase Admin SDK into Docker context
+        run: echo "${{ secrets.FIREBASE_ADMIN_SDK }}" > ./InSightWindowAPI/firebase-admin-sdk.json
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./InSightWindowAPI/
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/vafelka/insightwindowapi:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/insightwindowapi:latest
+          build-args:
+            FIREBASE_KEY_PATH=/app/firebase-admin-sdk.json
 
       - name: Log out from Docker Hub
         run: docker logout
