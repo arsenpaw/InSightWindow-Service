@@ -124,13 +124,21 @@ builder.Services.AddCors(options =>
 
 
 
-
-var pathToKeyFile = $"{Directory.GetParent(Directory.GetCurrentDirectory())}\\{builder.Configuration["Firebase:KeyFilePath"]}";
-
-FirebaseApp.Create(new AppOptions()
+var baseDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
+var pathToKeyFile = Path.Combine(baseDirectory.ToString(), builder.Configuration["Firebase:KeyFilePath"]);
+try
 {
-    Credential = GoogleCredential.FromFile(pathToKeyFile),
-});
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile(pathToKeyFile),
+    });
+}
+catch (Exception ex)
+{
+    Log.Error(ex, "FirebaseApp.Create failed");
+}
+
+
 
 
 var app = builder.Build();
