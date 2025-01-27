@@ -1,3 +1,4 @@
+using Application.Configuration;
 using Domain.Entity.Enums;
 using Domain.EntityFramework;
 using FirebaseAdmin;
@@ -15,19 +16,16 @@ using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Serilog.Events;
 using System.Text;
+using System.Text.Json;
+
 var myCors = "AllOriginsWithoutCredentials";
 var builder = WebApplication.CreateBuilder(args);
+var jwtSettings = new JwtSettings();
 
-
+builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
 builder.Configuration.AddEnvironmentVariables();
 
-
-// Configure JWT settings
-var jwtSettings = new JwtSettings();
-builder.Configuration.GetSection("JwtSettings").Bind(jwtSettings);
 builder.Services.AddSingleton(jwtSettings);
-
-// Configure JSON options for controllers
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -121,16 +119,14 @@ builder.Services.AddCors(options =>
     });
 
 });
-
-
-
-var baseDirectory = Directory.GetParent(Directory.GetCurrentDirectory());
-var pathToKeyFile = Path.Combine(baseDirectory.ToString(), builder.Configuration["Firebase:KeyFilePath"]);
+var firebaseSettings = new FirebaseConfig();
+builder.Configuration.GetSection("Firebase").Bind(firebaseSettings);
 try
 {
+    var rawConfig = JsonSerializer.Serialize(firebaseSettings);
     FirebaseApp.Create(new AppOptions()
     {
-        Credential = GoogleCredential.FromFile(pathToKeyFile),
+        Credential = GoogleCredential.FromJson(rawConfig)
     });
 }
 catch (Exception ex)
