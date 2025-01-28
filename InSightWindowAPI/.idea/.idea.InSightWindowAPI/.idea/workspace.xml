@@ -12,7 +12,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42013c67-9dbf-4c99-8b15-9ba72cbe5c93" name="Changes" comment="" />
+    <list default="true" id="42013c67-9dbf-4c99-8b15-9ba72cbe5c93" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Application/Configuration/KeyVault.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Api.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Api/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Application.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Domain/Domain.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Domain/Domain.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure.csproj" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,6 +46,14 @@
     &quot;accountId&quot;: &quot;c72a889c-7cfd-4ff5-bccd-31b7b8b63a19&quot;
   }
 }</component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8a03fcac5714437e83949a44ecf2e771c90920/b4/bdbd0e61/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/8a03fcac5714437e83949a44ecf2e771c90920/bd/53502abc/Convert.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f51fff052f5f4c27b67d864b7bddc5ac1f4920/e2/49a092b2/X509KeyStorageFlags.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1ae89a46f0a63cba7160eb1e3ad9bb75ff91ca67712ebd8bed45c1a63295ffe/OptionsFactory.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/58fc515ee783b1426a2d77346b664b891edebd29b32b4a18863e580baa8413e/X509Certificate2.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/64cb1fc525db628814504f08348c56bba4e967c99658abf4c914db16bc809e/CertificateClient.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 6
@@ -47,7 +65,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Run",
+    ".NET Launch Settings Profile.InSightWindowAPI: https.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
@@ -155,5 +173,37 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs</url>
+          <line>16</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\Api\Extensions\WebHostExtensions.cs" containingFunctionPresentation="Method 'AddVaultCertificate'">
+            <startOffsets>
+              <option value="556" />
+            </startOffsets>
+            <endOffsets>
+              <option value="602" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="14" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Api/Program.cs</url>
+          <line>122</line>
+          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\Api\Program.cs" containingFunctionPresentation="">
+            <startOffsets>
+              <option value="3943" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4000" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="15" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

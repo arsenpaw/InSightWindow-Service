@@ -33,6 +33,7 @@ builder.Services.AddControllers()
 
     });
 
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerDocs();
 builder.Services.AddMemoryCache();
@@ -57,7 +58,6 @@ builder.Services.AddHttpsRedirection(opt =>
     opt.RedirectStatusCode = StatusCodes.Status307TemporaryRedirect;
     opt.HttpsPort = 443;
 });
-
 builder.Host.UseSerilog((context, config) =>
 {
     var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
@@ -66,8 +66,6 @@ builder.Host.UseSerilog((context, config) =>
      .WriteTo.AzureApp(LogEventLevel.Information)
      .WriteTo.File(logFilePath, LogEventLevel.Warning)
      .MinimumLevel.Information();
-
-
 });
 
 builder.Services.AddIdentity<User, IdentityRole<Guid>>()
@@ -89,7 +87,6 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -119,6 +116,10 @@ builder.Services.AddCors(options =>
     });
 
 });
+if (builder.Environment.EnvironmentName == "Production" )
+{
+    builder.WebHost.AddVaultCertificate(builder.Configuration);
+}
 var firebaseSettings = new FirebaseConfig();
 builder.Configuration.GetSection("Firebase").Bind(firebaseSettings);
 try
@@ -151,10 +152,7 @@ if (true) //Tempoorary measure
     app.UseSwaggerUI();
 }
 
-if (!app.Environment.IsProduction())
-{
-    app.UseHttpsRedirection(); //azure not work with it
-}
+
 
 app.UseExceptionMiddleware();
 app.UseRouting();
