@@ -3,6 +3,7 @@ using Azure.Identity;
 using Azure.Security.KeyVault.Certificates;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore;
+using Serilog;
 using System.Security.Cryptography.X509Certificates;
 
 namespace InSightWindowAPI.Extensions
@@ -13,7 +14,7 @@ namespace InSightWindowAPI.Extensions
         {
             var vaultConfig = new KeyVault();
             configuration.GetSection("KeyVault").Bind(vaultConfig);
-
+            Log.Logger.Information(vaultConfig.Url + vaultConfig.CertificateName);
             var credential = new DefaultAzureCredential();
             var certificateClient = new CertificateClient(new Uri(vaultConfig.Url), credential);
             var secretClient = new SecretClient(new Uri(vaultConfig.Url), credential);

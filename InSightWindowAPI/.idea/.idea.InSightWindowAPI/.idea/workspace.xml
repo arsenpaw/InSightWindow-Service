@@ -13,7 +13,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42013c67-9dbf-4c99-8b15-9ba72cbe5c93" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -166,24 +166,5 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DotNet Breakpoints">
-          <url>file://$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs</url>
-          <line>16</line>
-          <properties documentPath="D:\InSightWindow-Service\InSightWindowAPI\Api\Extensions\WebHostExtensions.cs" containingFunctionPresentation="Method 'AddVaultCertificate'">
-            <startOffsets>
-              <option value="556" />
-            </startOffsets>
-            <endOffsets>
-              <option value="602" />
-            </endOffsets>
-          </properties>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

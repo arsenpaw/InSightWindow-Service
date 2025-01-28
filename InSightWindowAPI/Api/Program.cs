@@ -116,7 +116,7 @@ builder.Services.AddCors(options =>
     });
 
 });
-if (false) //Tempoorary measure
+if (builder.Environment.EnvironmentName == "Production" )
 {
     builder.WebHost.AddVaultCertificate(builder.Configuration);
 }
