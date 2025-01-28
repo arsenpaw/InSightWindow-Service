@@ -116,7 +116,7 @@ builder.Services.AddCors(options =>
     });
 
 });
-if (true )
+if (false )
 {
     builder.WebHost.AddVaultCertificate(builder.Configuration);
 }
