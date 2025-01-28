@@ -15,7 +15,7 @@ namespace InSightWindowAPI.Extensions
             var vaultConfig = new KeyVault();
             configuration.GetSection("KeyVault").Bind(vaultConfig);
             Log.Logger.Information(vaultConfig.Url + vaultConfig.CertificateName);
-            var credential = new DefaultAzureCredential();
+            var credential = new DefaultAzureCredential(includeInteractiveCredentials: true);
             var certificateClient = new CertificateClient(new Uri(vaultConfig.Url), credential);
             var secretClient = new SecretClient(new Uri(vaultConfig.Url), credential);
 
