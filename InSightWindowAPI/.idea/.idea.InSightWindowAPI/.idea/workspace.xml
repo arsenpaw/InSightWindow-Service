@@ -13,10 +13,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="42013c67-9dbf-4c99-8b15-9ba72cbe5c93" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Application/Configuration/AzureIdentityConfig.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Extensions/AzureExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Api/appsettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Configuration/FireBaseConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Configuration/FireBaseConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Application/Configuration/KeyVault.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Configuration/KeyVault.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,6 +51,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/1ae89a46f0a63cba7160eb1e3ad9bb75ff91ca67712ebd8bed45c1a63295ffe/OptionsFactory.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/58fc515ee783b1426a2d77346b664b891edebd29b32b4a18863e580baa8413e/X509Certificate2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/64cb1fc525db628814504f08348c56bba4e967c99658abf4c914db16bc809e/CertificateClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f4539e22fdc12191dc4ca507e36f9f295b0f6a0963abf367897e0ab3d5078c3/DefaultAzureCredentialOptions.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -73,7 +77,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected=".NET Launch Settings Profile.InSightWindowAPI: IIS Express">
+  <component name="RunManager" selected=".NET Launch Settings Profile.InSightWindowAPI: https">
     <configuration name="InSightWindowAPI: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Api/Api.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net7.0" />

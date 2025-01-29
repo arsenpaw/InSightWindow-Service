@@ -112,13 +112,18 @@ builder.Services.AddCors(options =>
         builder.SetIsOriginAllowed(origin => true) // Allow all origins
              .AllowAnyMethod()
              .AllowAnyHeader()
-             .AllowCredentials(); // Allow credentials if the origin is allowed
+             .AllowCredentials(); 
     });
 
 });
-if (false )
+builder.Configuration.AddAzureCredentialsFromAppsettingToEnv();
+
+// if (builder.Environment.IsEnvironment("Production")) 
+if (true)
 {
-    builder.WebHost.AddVaultCertificate(builder.Configuration);
+    var vaultConfig = new KeyVault();
+    builder.Configuration.GetSection("KeyVault").Bind(vaultConfig);
+    builder.WebHost.AddVaultCertificate(vaultConfig);
 }
 var firebaseSettings = new FirebaseConfig();
 builder.Configuration.GetSection("Firebase").Bind(firebaseSettings);
