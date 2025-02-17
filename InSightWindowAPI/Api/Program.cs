@@ -102,9 +102,8 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("RequireAdminRole", policy => policy.RequireRole(UserRoles.ADMIN));
     options.AddPolicy("RequireUserRole", policy => policy.RequireRole(UserRoles.USER));
-    // Add more policies as needed
 });
-// Configure CORS
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(myCors, builder =>
@@ -112,14 +111,13 @@ builder.Services.AddCors(options =>
         builder.SetIsOriginAllowed(origin => true) // Allow all origins
              .AllowAnyMethod()
              .AllowAnyHeader()
-             .AllowCredentials(); 
+             .AllowCredentials();
     });
 
 });
 builder.Configuration.AddAzureCredentialsFromAppsettingToEnv();
 
-// if (builder.Environment.IsEnvironment("Production")) 
-if (true)
+if (builder.Environment.IsProduction())
 {
     var vaultConfig = new KeyVault();
     builder.Configuration.GetSection("KeyVault").Bind(vaultConfig);
@@ -148,7 +146,7 @@ app.MigrateDatabase<UsersContext>();
 
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
-//app.UseAllowCredentialsToSite();    
+
 
 //if (app.Environment.IsDevelopment())
 if (true) //Tempoorary measure

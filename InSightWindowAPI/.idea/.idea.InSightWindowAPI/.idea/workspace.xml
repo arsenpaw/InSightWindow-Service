@@ -12,15 +12,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="42013c67-9dbf-4c99-8b15-9ba72cbe5c93" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Application/Configuration/AzureIdentityConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.InSightWindowAPI/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/Extensions/WebHostExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Extensions/AzureExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Api/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Api/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/Configuration/FireBaseConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Configuration/FireBaseConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Application/Configuration/KeyVault.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Application/Configuration/KeyVault.cs" afterDir="false" />
-    </list>
+    <list default="true" id="42013c67-9dbf-4c99-8b15-9ba72cbe5c93" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
