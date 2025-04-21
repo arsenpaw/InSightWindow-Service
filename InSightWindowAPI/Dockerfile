@@ -8,9 +8,10 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o /app
 
 # Use the official .NET runtime image for the final stage
+# 2. Copy your PFX(s) into a known folder
+COPY ./Сertificates/. /app/certificates/ 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-
 # Copy the published output from the build stage
 COPY --from=build /app ./
 

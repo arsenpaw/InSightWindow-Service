@@ -63,7 +63,7 @@ builder.Host.UseSerilog((context, config) =>
     var logFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log.txt");
     config.WriteTo.Console(LogEventLevel.Information)
      .WriteTo.Debug(LogEventLevel.Information)
-     .WriteTo.AzureApp(LogEventLevel.Information)
+     //.WriteTo.AzureApp(LogEventLevel.Information)
      .WriteTo.File(logFilePath, LogEventLevel.Warning)
      .MinimumLevel.Information();
 });
@@ -115,14 +115,14 @@ builder.Services.AddCors(options =>
     });
 
 });
-builder.Configuration.AddAzureCredentialsFromAppsettingToEnv();
+//builder.Configuration.AddAzureCredentialsFromAppsettingToEnv();
 
-if (builder.Environment.IsProduction())
-{
-    var vaultConfig = new KeyVault();
-    builder.Configuration.GetSection("KeyVault").Bind(vaultConfig);
-    builder.WebHost.AddVaultCertificate(vaultConfig);
-}
+//if (builder.Environment.IsProduction())
+//{
+//    var vaultConfig = new KeyVault();
+//    builder.Configuration.GetSection("KeyVault").Bind(vaultConfig);
+//    builder.WebHost.AddVaultCertificate(vaultConfig);
+//}
 var firebaseSettings = new FirebaseConfig();
 builder.Configuration.GetSection("Firebase").Bind(firebaseSettings);
 try
@@ -146,7 +146,7 @@ app.MigrateDatabase<UsersContext>();
 
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
-
+app.UseHttpsRedirection();
 
 //if (app.Environment.IsDevelopment())
 if (true) //Tempoorary measure

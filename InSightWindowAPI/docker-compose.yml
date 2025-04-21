@@ -1,13 +1,15 @@
 services:
   docker-api:
     container_name: web-api
-    image: vafelka/windowapi:v1.0.1
+    image: vafelka/insightwindowapi:latest
+    networks:
+      - app-network
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTPS_PORT=443
       - ASPNETCORE_URLS=https://+;http://+
       - ASPNETCORE_Kestrel__Certificates__Default__Password=AXProduct2024
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/aspnetapp.pfx
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/app/certificates/AXProductCert.pfx
     ports:
       - "443:443"
       - "80:80"
@@ -15,9 +17,25 @@ services:
       - docker-sqlserver
   docker-sqlserver:
     container_name: mssql-database
-    image: vafelka/mssql:v1.0
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    networks:
+      - app-network
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=AXProduct2024
     ports:
       - "1401:1433"
+  ngrok:
+    image: ngrok/ngrok:latest
+    networks:
+      - app-network
+    command:
+      - "http"
+      - "https://host.docker.internal:443"
+    environment:
+      NGROK_AUTHTOKEN: "2tOpC2n0Piq4esczGgjG2we1gDV_2ZtsY3owYXP8XHWLe5mhC"
+    ports:
+        - 4040:4040
+networks:
+  app-network:
+    driver: bridge

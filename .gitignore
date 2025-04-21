@@ -402,3 +402,5 @@ InSightWindowAPI/InSightWindowAPI/appsettings.Production.json
 InSightWindowAPI/firebase-admin-sdk.json
 /InSightWindowAPI/.idea
 InSightWindowAPI/Api/appsettings.Development.json
+/InSightWindowAPI/Сertificates
+InSightWindowAPI/Api/appsettings.Production.json
