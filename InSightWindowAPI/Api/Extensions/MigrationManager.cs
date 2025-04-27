@@ -1,9 +1,6 @@
 ﻿using Domain.Entity.Enums;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
 namespace Domain.EntityFramework;
 
 public static class MigrationManager
@@ -20,7 +17,7 @@ public static class MigrationManager
         try
         {
             appContext.Database.Migrate();
-            if (appContext is DeviceContext)
+            if (appContext is UsersContext)
             {
                 RoleSeeder.SeedRolesAsync(services).Wait();
             }
