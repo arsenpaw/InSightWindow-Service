@@ -146,7 +146,7 @@ app.MigrateDatabase<UsersContext>();
 
 // Configure the HTTP request pipeline
 app.UseCors(myCors);
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 //if (app.Environment.IsDevelopment())
 if (true) //Tempoorary measure
